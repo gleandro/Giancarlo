@@ -1,0 +1,145 @@
+@charset "utf-8";
+/* CSS Document */
+html {
+margin: 0px;
+padding: 0px;
+width: 100%;
+height: 100%;
+
+}
+body {	
+	background: #bbd9ed url(../../imgs/admin/bg_login.jpg)top center no-repeat;
+	min-height: 100%; 
+	min-width: 1024px;
+	width: 100%; 
+	height: 100%; 
+	position: fixed;
+	top: 0;
+	left: 0; 
+	font-family: Verdana, Arial, Helvetica, sans-serif;	
+	font-size: 62.5%;color: #000000;
+}
+body#login{
+	
+}
+body#login h1 {
+	font-family:Arial, Helvetica, sans-serif; 
+	font-size:24px; 
+	color:#555555;
+	text-align: center;
+	line-height: 45px;
+}
+
+#sitewrapper{
+	margin: 200px auto 0;
+	width: 420px;
+	height:240px;
+}
+#header { width: 420px;height: 45px; border-bottom: 1px solid #A7A7A7; }
+
+form ul{
+	list-style:none;
+	margin-left: 20px;
+	margin-top: 20px;
+}
+form ul li{
+	height:50px;
+}
+form ul li label{
+	
+	margin-right:30px;
+}
+form ul li .txt{
+	
+	margin-right:30px;
+	margin-top: 3px;
+
+}
+form ul li p{
+	float: right;
+	margin-right: 10px;
+	margin-top: -14px;
+}
+form ul li a{
+	color:#4f8dca;
+}
+form ul li #sign-in	{
+	background:url(../../imgs/admin/btn_entrar.png) no-repeat;
+	width:125px;
+	height:32px;
+	border:none;
+	cursor:pointer;
+	outline: none;
+}
+form ul li #sign-in:hover{
+	background-position:0 -32px;
+}
+form ul li #remember-password{
+	float: left;
+	margin-top: -20px;
+	margin-left: 165px;
+}
+#content {
+	clear: both;
+	background: #eaeaea;
+	z-index: 100;
+	position: relative; 
+	border: 1px solid #A7A7A7;
+	width: 425px; 
+	-webkit-border-radius: 5px; 
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0px 1px 20px rgba(255, 255, 255, 1);
+-moz-box-shadow:    0px 1px 20px rgba(255, 255, 255, 1);
+box-shadow:         0px 1px 20px rgba(255, 255, 255, 1);
+}		
+#content #main {
+	clear: both;
+	z-index: 100;
+	position: relative;
+}
+ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,body,html,p,blockquote,fieldset,input {margin:0;padding:0; } 	
+	
+form .txt{
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px; 
+	font-family:Arial, Helvetica, sans-serif;
+}
+form #inp_usu{
+		background:url(../../imgs/admin/inp_usu.png) no-repeat; 
+		font-style: italic;padding-left: 34px;
+		height: 27px;
+		width: 237px;
+		border: none;
+}
+form #inp_passw{
+	background:url(../../imgs/admin/inp_passw.png) no-repeat; 
+	font-style: italic;
+	padding-left: 34px;
+	height: 27px;
+	width: 237px;
+	border: none;
+	
+}
+form #inp_mail{
+	background:url(../../imgs/admin/inp_mail.png) no-repeat; 
+	font-style: italic;
+	padding-left: 34px;
+	height: 27px;
+	width: 237px;
+	border: none;
+}
+/*recordar password*/
+#btn_enviar{
+	background:url(../../imgs/admin/btn_enviar.png) no-repeat;
+	width:125px;
+	height:32px;
+	border:none;
+}
+#btn_enviar:hover{
+	background-position:0 -32px;
+}
+/*fin recordar password*/
+#exito{ font:normal 11px tahoma; display:block; padding:5px 5px; border-top:1px solid #060; border-bottom:1px solid #060; background:#DFFFEF}	
+#errors{ font:normal 11px tahoma; display:block; padding:5px 5px; border-top:1px solid #900; border-bottom:1px solid #900; background:#FFE1EB}

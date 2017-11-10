@@ -1,0 +1,247 @@
+/* CSS Document */
+
+body, form, ul, li, td, th, p{ margin:0; padding:0; }
+body{ font-size:70%;font-family:Verdana, Geneva, sans-serif;background:#FCFCFC}
+
+input.text:focus,textarea:focus, input.ui-autocomplete-input:focus{ background:#FFFFC6}
+
+a{ text-decoration:none; }
+img{ border:0 }
+
+/*---- Estructura ----*/
+#dw-window{width:100%;height:100%;background:url(../../imgs/admin/bg_menu.jpg) repeat-x;}
+#dw-admin{width:890px;margin:0 auto;}
+
+/*----- Menu -----*/
+#dw-menu{width:100%;height:36px;}
+#dw-menu ul.dropdown {margin:0px;padding:0px;float:left;list-style-image:none;list-style-type:none;position:relative;z-index:597;}
+#dw-menu ul.dropdown a { text-decoration:none;color:#FFF;font-weight:bold}
+#dw-menu ul.dropdown ul {margin:0px;padding:0px;list-style-image:none;list-style-type:none;position:absolute;visibility:hidden;z-index:598;left:0px;top:100%;width:200px;background:url(../../imgs/admin/bg_submenu.jpg) repeat;border-bottom:1px solid #B6B6B6;}
+#dw-menu ul.dropdown>li {float:left;list-style-image:none;background:url(../../imgs/admin/space.jpg) no-repeat left top;padding:9px 25px 0 25px;display:block;height:27px;}
+#dw-menu ul.dropdown>li.last{width:2px;padding-left:0px;padding-right:0px}
+#dw-menu ul.dropdown ul li{padding:11px 15px 0 15px;display:block;height:27px;}
+#dw-menu ul.dropdown ul li span{display:block;padding:0 0 2px 20px;font-weight:bold}
+#dw-menu ul.dropdown li:hover > ul {visibility:visible;}
+#dw-menu ul.dropdown ul ul {left:99%;top:1px;}
+#dw-menu ul.dropdown li:hover { background:url(../../imgs/admin/bg_hover.jpg) repeat-x;position:relative;}
+#dw-menu ul.dropdown ul li:hover {background:#FFED55;border-bottom:1px solid #DBDBDB;border-top:1px solid #DBDBDB;}
+#dw-menu ul.dropdown ul a{background:url(../../imgs/admin/icons.png) no-repeat left 20px;display:block;padding:0 0 2px 20px}
+#dw-menu ul.dropdown ul a.config{background-position:0 1px;}
+#dw-menu ul.dropdown ul a.users{ background-position:0 -32px;}
+#dw-menu ul.dropdown li:hover a	{text-decoration:none;color:#1e8dd3;}
+#dw-menu .actions{float:right;padding-top:10px}
+#dw-menu .actions a{color:#FFF;background:url(../../imgs/admin/icons.png) no-repeat;display:block;float:left;padding-left:18px;padding-bottom:2px;padding-top:1px;margin:0 6px}
+#dw-menu .actions a.user{ background-position:0 -32px;}
+#dw-menu .actions a.salir{background-position:0 -100px;font-weight:bold}
+#dw-menu .develoweb{position:absolute;right:6px;top:2px;opacity:0.7;}
+
+/*-------- Pagina -----*/
+#dw-page{ font:normal 11px Verdana, Geneva, sans-serif;color:#444444;margin-top:30px}
+#dw-page h1 {font-size:20px;font-weight:normal}
+#dw-page .operations{float:right;display:block;overflow:hidden; clear:right}
+#dw-page .operations a{	display:block;height:27px;background:url(../../imgs/admin/button-left.jpg) no-repeat left top;overflow:hidden;font-size:11px;padding-left:16px;color:#1e8dd3;font-weight:bold;float:left;margin:0 6px}
+#dw-page .operations a em:hover{text-decoration:underline}
+#dw-page .operations a em{font-style:normal;display:block;padding-top:5px;float:left}
+#dw-page .operations a span{display:block;float:right;background:url(../../imgs/admin/button-right.jpg) no-repeat;width:16px;height:27px}
+
+/*------- Navegador ----*/
+#nav{width:auto;color:#777777;padding:10px 0}
+#nav a{color:#1e8dd3}
+/*------ Cuerpo -----*/
+
+#dw-cuerpo{ margin-top:20px}
+#dw-cuerpo .listado{width:890px	}
+#dw-cuerpo .head{color:#1e8dd3;background:url(../../imgs/admin/bg_head.jpg) repeat-x}
+#dw-cuerpo .head th{padding:0 15px 8px 15px}
+#dw-cuerpo .row:hover{background:#FEF4D8}
+#dw-cuerpo .row td{padding:7px 0 7px 15px}
+#dw-cuerpo .odl{background:#EBF7FC}
+#content-area{padding-top:10px}
+#dw-cuerpo .font-pagado{ color: tomato; font:bold 12px Arial, Verdana}
+#dw-cuerpo .fila-pagado{ background-color: #FEF4D8 }
+#dw-cuerpo .fila-pagado-boleta{ background-color:rgb(234, 216, 254); }
+
+#conte_insumos{border:1px solid #DDD;border-radius:5px;padding:10px;}
+#conte_insumos table{border:1px solid #CCC;border-radius:5px;}
+#conte_insumos .lista_insumos{padding:10px;}
+#conte_insumos .lista_insumos .cabecera{background:url(../../imgs/admin/bg_menu.jpg);color:#FFF;}
+#conte_insumos .lista_insumos .cabecera th{padding:5px 10px;}
+#conte_insumos .lista_insumos .cuerpo:hover{background:#fef4d8;cursor:pointer;}
+#conte_insumos .lista_insumos .par{background:#ebf7fc;}
+
+/*------- Listado Order ----*/
+#listadoul{ list-style:none}
+#listadoul li{ overflow:hidden; display:block; padding:4px}
+#listadoul li:hover{ background-color: #FEF4D8}
+#listadoul .fila1{background:#EBF7FC}
+#listadoul .fila2:hover{background-color:#FEF4D8}
+#listadoul .options{float:right; width:150px; padding:1px 0; text-align:center}
+#listadoul .data{float:left;padding-left:2px;width:320px}
+
+#listadoul .data.att0{width: 155px;}
+#listadoul .data.att1{width: 140px;}
+#listadoul .data.att2{ width:115px;}
+#listadoul .data.att3{width: 115px;}
+#listadoul .data.att4{width: 120px;}
+#listadoul .data.att5{width: 90px;}
+
+#listadoul .options.att{ width:100px;}
+
+#listadoul .campo_2{float:left;padding-left:2px;width:400px}
+#listadoul .move{ cursor:move}
+
+/*------ Formularios ------*/
+
+#form { border-radius: 8px;-webkit-border-radius: 8px;-moz-border-radius: 8px;border:1px solid #EBEBEB;padding:0 30px 30px 30px;margin-top:20px}
+#form form{margin-top:30px}
+#form legend{color:#1e8dd3;font:bold 11px Verdana, Geneva, sans-serif;}
+#form ul{ list-style:none; padding:1px 0 15px 0 }
+#form ul label{	width:158px;display:block;float:left;margin-top:5px;text-align:right;margin-right:10px;}
+#form ul li{margin-top:10px;}
+#form textarea{	overflow:auto;font:normal 12px Arial, Helvetica, sans-serif}
+#form .text{ padding:5px;font:normal 12px Arial, Helvetica, sans-serif}
+#form select{font:normal 12px Arial, Helvetica, sans-serif}
+#form .button-actions{float:right}
+#form .button-actions input{margin:0 10px 0 0}
+#form .chbxx{ float:left;}
+#form .no-float{width:auto;text-align:left;display:block;margin-left:4px; margin-right: 0; float:left  }
+#form .no-float:hover{ cursor:pointer;color:#D15B00; }
+/*--------- Mensajes ----------*/
+p.notification { border:1px solid;border-radius: 3px 3px 3px 3px;display:block;padding:7px 7px 7px 30px;position:relative;width:95%;}
+.success { background:url(../../imgs/admin/tick.png) no-repeat 7px 8px #D5FFCE;border-color:#9ADF8F !important;color:#556652;}
+
+/*--------- Datos Usuario ---------*/
+#datos_usuario{ list-style:none}
+#datos_usuario label{width:70px;float:left;text-align:right;margin-right:14px;font-weight:bold;color:#1E8DD3}
+#datos_usuario li{display:block;overflow:hidden;border-bottom:1px dotted #E4E4E4;padding:16px 4px 4px 4px}
+#datos_usuario li:hover{border-bottom:1px solid #999;background:#F7F7F7}
+
+/*--------- Tooltip ----------*/
+.tipsy { padding: 5px; font-size: 10px; position: absolute; z-index: 100000; }
+.tipsy-inner { padding: 5px 8px 4px 8px; background-color: black; color: white; max-width: 200px; text-align: center; }
+.tipsy-inner { border-radius: 3px; -moz-border-radius:3px; -webkit-border-radius:3px; }
+.tipsy-arrow { position: absolute; background: url('../../imgs/icons/tipsy.gif') no-repeat top left; width: 9px; height: 5px; }
+.tipsy-n .tipsy-arrow { top: 0; left: 50%; margin-left: -4px; }
+.tipsy-nw .tipsy-arrow { top: 0; left: 10px; }
+.tipsy-ne .tipsy-arrow { top: 0; right: 10px; }
+.tipsy-s .tipsy-arrow { bottom: 0; left: 50%; margin-left: -4px; background-position: bottom left; }
+.tipsy-sw .tipsy-arrow { bottom: 0; left: 10px; background-position: bottom left; }
+.tipsy-se .tipsy-arrow { bottom: 0; right: 10px; background-position: bottom left; }
+.tipsy-e .tipsy-arrow { top: 50%; margin-top: -4px; right: 0; width: 5px; height: 9px; background-position: top right; }
+.tipsy-w .tipsy-arrow { top: 50%; margin-top: -4px; left: 0; width: 5px; height: 9px; }
+
+
+/*-------- welcome --------*/
+#welcome{ list-style:none;padding-top:20px}
+#welcome li{ width:74px;height:79px;display:block;float:left;margin:10px 50px}
+#welcome li a{position:relative;display:block;height:79px;}
+#welcome li a img{ position:relative}
+#welcome li span{display:block;color:#444444;bottom:0;display:block;text-align:center;width:100%}
+.fondo_saldo{ background:#FAFCB4;}
+
+#iframe {border:1px solid #EBEBEB;padding:10px !important;width:94%;overflow:hidden;margin:0 auto 0 auto}
+#iframe .ileft_img {float:left;height:20px;width:70%;}
+#iframe .iright_img { color:#006699;cursor:pointer;float:right;height:20px;width:19%;}
+#iframe .iright_img button {width:160px}
+
+#images { height:300px;width:94%;margin:10px auto 0 auto;border:1px solid #EBEBEB;padding:10px}
+#images .lefti { border:1px solid #EBEBEB;float:left;height:270px;margin-right:2px;text-align:left;width:30%;}
+#images .righti { border:1px solid #EBEBEB;float:right;height:270px;width:62%;text-align:center;}
+#images .bottom { clear:both;padding-top:10px;vertical-align:bottom;width:90%;margin:0 auto 0 auto}
+#images .bottom span {color:#0099CC;cursor:pointer;font-weight:bold;}
+p#msg_delete { color:#FF0000;padding:10px;vertical-align:text-bottom;}
+
+#slide-right{ position:absolute;left:0;top:80px;height:auto; width:184px }
+#slide-right .titulo { margin-bottom:2px; }
+#slide-right .titulo a{line-height:18px;height:20px;padding:2px;background-color: powderblue;font-size:14px;font-weight:normal; color: #444; display:block}
+#slide-right li ul{ display:none; height:300px}
+#slide-right li:hover ul{ display:block;height:400px;overflow-y:auto;}
+#slide-right li ul li:hover{ background-color: aliceblue}
+#slide-right .fila{ height:20px;background-color:#EBF7FC;border-bottom:1px dotted #EBEBEB;display:block }
+#slide-right .nombre{float:left;width:128px;line-height:18px;padding-left:2px  }
+#slide-right .tarifa{ width:34px;background-color:#FFE7A1 ;float:left;text-align:right;line-height:18px;padding-right:1px;margin-top: 1px  }
+
+#items_productos .item span{color: red; font:bold 16px arial; cursor:pointer; margin: 2px; padding:2px}
+.noestile{padding: 5px; border: 1px solid #dddddd;}
+
+#texto_cliente{list-style-type: none; float: left; margin-top: 20px;}
+#texto_cliente li{float: left; clear: left; margin: 2px 0px;}
+#texto_cliente li input{float: left; width: 300px; padding:5px; border: 1px solid #dddddd;}
+#texto_cliente li textarea{border: 1px solid #dddddd; padding: 5px; width: 330px; padding:5px; border: 1px solid #dddddd; height:130px; font-family: arial;}
+#texto_cliente li label{float: left; width: 150px; text-align: right; margin-right: 20px; margin-top: 9px; margin-top:5px;}
+
+#button_grabar{padding: 8px; margin-top: 10px;display: block; width: 215px; float: left; clear: left; margin-left: 170px; -webkit-border-radius: 2px;
+border-radius: 2px; border: 1px solid #dddddd; background: #f6f6f6 url(images/ui-bg_highlight-soft_100_f6f6f6_1x100.png) 50% 50% repeat-x;
+color: #0073ea; font-weight: bold; text-transform: uppercase; font-size: 1.1em;}
+#button_grabar:hover{border: 1px solid #0073ea; background: #0073ea url(images/ui-bg_highlight-soft_25_0073ea_1x100.png) 50% 50% repeat-x; font-weight: bold;
+color: #ffffff;} 
+#texto_cliente li #lbl_hora{ width: 50px;}
+#texto_cliente li #txt_hora{width: 90px;}
+
+#proccess{float: left; width: 100px; height: 30px; margin-top: 10px; margin-left: 10px;}
+#paginador a{padding: 3px; border: 1px solid; margin: 1px; float: left;}
+#paginador b{ float: left;}
+
+.view_productos{ list-style-type: none; font-size: 10px; color: rgb(3, 144, 255);}
+
+.prods{ display:none;}
+.form_filtro{}
+#filtro { font-size: 12px; margin: 5px 0px;}
+#filtro ul{ list-style-type:none; padding:1px 0 15px 0 }
+#filtro ul li{float: left;margin-top:10px;}
+#filtro ul li .ui-autocomplete-input{ width:120px;}
+#filtro ul li label{width:120px;display:block;float:left;margin-top:5px;text-align:right;margin-right:10px;}
+#filtro ul li select{font:normal 12px Arial, Helvetica, sans-serif; width:100px;}
+#filtro ul li input[type=text]{ width: 150px; padding:5px;} 
+#filtro ul li input[type=submit]{ width: 60px; padding:5px;}
+
+.ffiltros{ list-style-type: none; padding: 3px; float: left; border: 1px solid rgb(218, 218, 218); margin-top:10px;
+background-color: rgb(255, 240, 69); -webkit-border-radius: 5px; -webkit-box-shadow: 1px 1px 1px rgb(170, 170, 170); clear: left;}
+.ffiltros ul{float:left; clear: left; list-style-type:none;}
+.ffiltros li.del{width: 10px;}
+.ffiltros li.head{ font-weight:bold; padding: 3px 9px;}
+.ffiltros li{ float:left; padding:3px;}
+.ellipsis{ 	white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#select_filtro{ float:left;}
+.buscar_filtro{ float:left; clear: left; margin: 7px 0px; display:none;}
+#resumen{ list-style-type:none;}
+#resumen li{float:left; margin-top: 5px;}
+#resumen li.cantidad{width:30px;}
+#resumen li.nombre{width:220px;}
+#container_resumen{ background:url(../../imgs/reporte-admin.jpg) no-repeat top right;}
+#list_productos_complementos{ overflow: auto;}
+#list_productos_complementos ul{ float: left;width: 200px;}
+#list_productos_complementos img{ margin:0 auto;}
+#list_productos_complementos ul li{white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 10px;}
+
+form #mylist{border: 1px solid #ccc;}
+#mylist{ border-collapse:collapse; width:100%; }
+
+#mylist th , #mylist td{ text-align: left; padding: 5px; border-bottom: 1px solid #DFDFDF;}
+
+#mylist td span{ display:block; width:20px; height:20px;}
+
+#mylist tr:nth-child(even){ background:#DFDFDF}
+
+#mylist tr:hover{ background:#EEFD45; cursor:pointer;}
+#mylist tr:nth-child(even):hover{ background:#E7F827; cursor:pointer;}
+
+#mylist tr.active:hover{  background:#FCA538;}
+#mylist tr.active{ background:#FFC479;}
+
+#form #mylistmenu{ float:left;}
+#form #mylistmenu li{ float:left;}
+#form #mylistmenu li a{ padding: 5px 10px; border: 1px solid #0F83CC ; padding-left: 25px; margin-right: 10px; border-radius: 3px; color:#fff; cursor:pointer;}
+#form #mylistmenu li a:hover{ opacity:0.8;}
+#form #mylistmenu li a[name=nuevo]{ background:#30A0E7  url(../../imgs/icons/icon_add.png) no-repeat 5px center;}
+#form #mylistmenu li a[name=editar]{ background:#30A0E7  url(../../imgs/admin/edit.png) no-repeat 5px center;}
+#form #mylistmenu li a[name=borrar]{ background:#30A0E7  url(../../imgs/admin/delete.png) no-repeat 5px center;}
+
+#mylist tfoot tr:hover , #mylist thead tr:hover{ background:#fff;}
+#mylist tfoot td{ border-bottom:none;}
+
+#mylist a{ color:#03C; cursor:pointer; float:left; margin:0px 4px;}
+#mylist a[name=eliminar]{ background:url(../../imgs/icons/button_drop.png); display:block; height:17px; width:17px;}
+#mylist a[name=editar]{background:url(../../imgs/icons/button_edit.png); display:block; height:17px; width:17px;}
+
+

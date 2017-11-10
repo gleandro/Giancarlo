@@ -1,0 +1,409 @@
+body {
+    /*background-color: #fff;
+    background-image: -moz-linear-gradient(top, #313944, #20252c);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#313944), to(#20252c));
+    background-image: -webkit-linear-gradient(top, #313944, #20252c);
+    background-image: -o-linear-gradient(top, #313944, #20252c);
+    background-image: linear-gradient(to bottom, #313944, #20252c);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff313944', endColorstr='#ff20252c', GradientType=0);*/
+    
+    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+    font-size: 62.5%;
+    background-color: #fff;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: rgba(39, 39, 39, 0.83);
+}
+
+#principal{
+    width: 600px;
+    margin: 0 auto;
+}
+
+#principal_tabla{
+    width: 900px;
+    margin: 0 auto;
+}
+
+#container{
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 20px;
+    display: block;
+    float: left;
+    padding: 50px;
+    margin-bottom: 30px;
+    background-color: #eeeeee;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    position: relative
+    
+}
+
+#container h1{
+    margin-top: 10px;
+    margin-bottom: 40px;
+    font-size: 52px;
+    line-height: 1;
+    color: inherit;
+    letter-spacing: -1px;
+    text-align: center;
+}
+
+.tip{
+    background: #1BA3F6;
+    /*border: 1px solid #469dd2;*/
+    border-radius: 3px;
+    color: #fff;
+    font-size: 14px;
+    /*left: 437px;*/
+    margin-left: 13px;
+    padding: 14px 20px 14px 38px;
+    position: absolute;
+    width: 260px;
+    z-index: 999;
+    visibility: hidden;
+   
+}
+
+.bg_flecha{
+    background: url(../imgs/bg_flecha2.png);
+    width: 9px;
+    height: 12px;
+    position: absolute;
+    left: -8px;
+    top: 10px
+}
+
+.info_btn{
+    position: relative;
+    top: 6px;
+    cursor: pointer
+}
+
+
+
+.tip img{
+   margin-left: -26px;
+   position: relative;
+   top: 5px
+}
+
+.error_data{
+    color: red;
+}
+
+.load_process{
+   color: #c09853;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    padding: 15px;
+margin-bottom: 20px;
+border: 1px solid transparent;
+border-radius: 4px;
+ box-shadow: 2px 3px 0px;
+ font-size: 14px;
+ font-weight: bold;
+ display: none
+       
+}
+
+
+.btn-primary {
+background-color: #0074cc;
+background-image: -moz-linear-gradient(top, #0088cc, #0055cc);
+background-image: -ms-linear-gradient(top, #0088cc, #0055cc);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0055cc));
+background-image: -webkit-linear-gradient(top, #0088cc, #0055cc);
+background-image: -o-linear-gradient(top, #0088cc, #0055cc);
+background-image: linear-gradient(top, #0088cc, #0055cc);
+background-repeat: repeat-x;
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0088cc', endColorstr='#0055cc', GradientType=0);
+border-color: #0055cc #0055cc #003580;
+border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+color: #ffffff;
+
+padding: 9px 14px;
+font-size: 15px;
+line-height: normal;
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+
+
+cursor: pointer;
+
+}
+
+#formulario_generar, #formulario_generar_tablas{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: #333333;
+    
+}
+/*
+#formulario_generar_tablas input[type='text']{
+    display: block;
+}*/
+
+#contenedor_recarga{
+     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: #333333;
+}
+
+.nombre_tabla{
+    color: #3a87ad;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    font-weight: bold;
+    padding: 13px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    font-size: 18px;
+    box-shadow: 3px 3px 0px;
+    margin-top: -30px;
+    margin-left: -12px;
+}
+
+.tablas_items{
+    border:1px solid #35BCB5; 
+    padding: 10px;
+    border-radius: 4px;
+    padding-left: 25px;
+    margin-bottom: 40px;
+}
+
+.url_admin{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-decoration: none;
+    color: rgb(46, 152, 164);
+    font-size: 13px;
+}
+
+.url_admin:hover{
+    text-decoration: underline
+}
+
+.error_data{
+    color: #b94a48;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: 2px 3px 0px;
+}
+
+label{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    line-height: 1.42857143;
+    color: #333;
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+    padding-right: 15px;
+    text-align: right
+}
+
+input[type='text'] , select {
+    
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /*-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;*/
+}
+
+
+.errores_muestra{
+    background: red;
+    position: absolute;
+    right: 125px;
+    padding: 20px;
+    color: #fff;
+    border-radius: 3px;
+    top: 164px;
+    display: none
+}
+
+.campo-vacio {
+   box-shadow: 0px 0px 8px red;
+}
+
+.text_unic{
+    width: 350px;
+}
+
+.text_tab{
+    width: 92%;
+    text-align: center
+}
+
+
+.text_nomb{
+    width: 55%;
+}
+
+.camp_nomb{
+    width: 240px !important;
+    text-align: left !important;
+    margin-left: 20px;
+}
+
+.camp_tam{
+    width: 100px !important;
+}
+
+/*.camp_coment{
+    width: 250px !important;
+}*/
+
+.coment{
+    width: 250px !important;
+}
+
+.vacio{
+    width: 100%;
+    font-size: 8px;
+    color: rgba(0,0,0,0.5);  
+}
+
+.not_null{
+    position: relative;
+    top: -4px;
+    cursor: pointer;
+}
+
+
+.campo_null{
+    top: 13px !important;
+    padding-left: 20px;
+    
+}
+
+
+
+.comentario{
+    color: #fff;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.cabecera_tabla_campos{
+    width: 100%;
+    border: 1px solid rgba(0,0,0,0.3);
+    
+    border-radius: 4px 4px 0px 0px;
+    float: left;
+    background-color: #fff;
+}
+
+.cabecera_tabla_campos .colum{
+    float: left;
+    border-right: 1px solid rgba(0,0,0,0.3);
+    /*padding: 4px 35.5px;*/
+    width: 195px;
+    padding: 6px 1px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 12px;   
+}
+
+.items-colums{
+    width: 100%;
+    border: 1px solid rgba(0,0,0,0.3);
+    float: left;
+    background-color: rgba(187, 255, 255, 0.27);
+    border-top: 0px;
+}
+
+.items{
+    float: left;
+    border-right: 1px solid rgba(0,0,0,0.3);
+    width: 195px;
+    padding: 6px 1px;
+    text-align: center;
+    position: relative;
+    font-size: 12px;  
+}
+
+
+.prefijo_fin{
+    font-size: 13px;
+    color: rgba(0,0,0,0.6); 
+    font-style: italic;
+}
+
+.btn_agregar{
+    position: relative;
+    top: 10px;
+    left: 15px;
+}
+
+.btn_agregar a{
+    text-decoration: none;
+    color: rgb(64, 162, 28);
+    font-size: 14px;
+}
+
+.btn_agregar a span{
+    position: relative;
+    top: -8px;
+    padding-left: 6px;
+}
+
+#posit_boton{
+    margin: 0 auto;
+    width: 10%;
+}
+
+
+
+//------------------------ESTILOS DE COMBOBOX AUTOCOMPLETE---------------------------------
+     
+#combobox{
+    width: 100px;
+}
+
+.custom-combobox {
+  position: relative;
+  display: inline-block;
+  font-size: 12px;
+}
+.custom-combobox-toggle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin-left: -1px;
+  padding: 0;
+  /* support: IE7 */
+  height: 1.7em;
+  top: 0.1em;
+}
+.custom-combobox-input {
+  margin: 0;
+  padding: 8px 12px;
+  background: #fff;
+  width: 120px;
+}
