@@ -129,8 +129,9 @@ $().ready(function(){
   window.operateEvents = {
         'click .view': function (e, value, row, index) {
             info = JSON.stringify(row);
-
-            swal('You click view icon, row: ', info);
+            // location.href="paquetes.php?action=edit&id="+row.id;
+            location.href="pdf.php?id="+row.id;
+            swal('Espere un momento: ', 'Descargar o abrir el archivo .pdf');
 
         },
         'click .edit': function (e, value, row, index) {
@@ -357,7 +358,6 @@ $("#wizardFormEditarPaquete").submit(function(e) {
 
     var formData = new FormData($("#wizardFormEditarPaquete")[0]);
     var ruta = "ajax2.php";
-
     //alert('envio a ajax2');
 
     $.ajax({

@@ -33,7 +33,7 @@ class Servicio{
 				$this->_contacto_numero =  $row['contacto_numero_servicio'];
 			}
 
-			$sql2 = "SELECT * FROM servicios_ubicacion WHERE id_servicio = '".$this->_id."' " ;
+			$sql2 = "SELECT * FROM servicios_ubicaciones WHERE id_servicio = '".$this->_id."' " ;
 
 			$query2 = new Consulta($sql2);
 

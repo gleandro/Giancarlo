@@ -130,7 +130,7 @@ $().ready(function(){
         'click .view': function (e, value, row, index) {
             info = JSON.stringify(row);
 
-            swal('You click view icon, row: ', info);
+            swal('You click view icon, row: ', 'vista no disponible');
 
         },
         'click .edit': function (e, value, row, index) {

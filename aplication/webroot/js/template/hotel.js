@@ -102,7 +102,7 @@ var $table = $('#bootstrap-table');
           'click .view': function (e, value, row, index) {
               info = JSON.stringify(row);
 
-              swal('You click view icon, row: ', info);
+              swal('You click view icon, row: ', 'vista no disponible');
               console.log(info);
           },
           'click .edit': function (e, value, row, index) {

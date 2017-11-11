@@ -98,7 +98,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="cotizaciones.php">
+                                    <!-- <a href="cotizaciones.php"> -->
+                                    <a href="#cotizaciones.php">
                                         <span class="sidebar-mini"><i class="ti-clipboard"></i></span>
                                         <span class="sidebar-normal">Cotizaciones</span>
                                     </a>
@@ -174,7 +175,8 @@
                     </li>
 
                     <li>
-                        <a href="calendar.html">
+                        <!-- <a href="calendar.html"> -->
+                          <a href="#calendar.html">
                             <i class="ti-clipboard"></i>
                             <p>Reportes</p>
                         </a>

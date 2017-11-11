@@ -565,11 +565,11 @@ class Ajax{
 		$servicio = $_POST['servicio'];
 		$nombreDia = $_POST['nombreDia'];
 		foreach ($nombreDia as $key => $nombre) {
-			$query2 = new Consulta("INSERT INTO paquetes_itinerario VALUES('','". $nuevoid ."','41','". $nombre['0'] ."') ");
+			$query2 = new Consulta("INSERT INTO paquetes_itinerarios VALUES('','". $nuevoid ."','41','". $nombre['0'] ."') ");
 			$nuevoid2 = $query2->nuevoid();
 			$servicioarray = $servicio[$key];
 			foreach ($servicioarray as $llave => $value) {
-				$query3 = new Consulta("INSERT INTO paquetes_itinerario_detalle VALUES('','". $nuevoid2 ."','". $value ."') ");
+				$query3 = new Consulta("INSERT INTO paquetes_itinerarios_detalles VALUES('','". $nuevoid2 ."','". $value ."') ");
 			}
 		}
 	}
@@ -608,16 +608,16 @@ class Ajax{
 		}
 
 		$id_paquete = $_POST['id_paquete'];
-		$query = new Consulta("DELETE FROM paquetes_itinerario WHERE id_paquete = '".$id_paquete."' ");
+		$query = new Consulta("DELETE FROM paquetes_itinerarios WHERE id_paquete = '".$id_paquete."' ");
 
 		$servicio = $_POST['servicio'];
 		$nombreDia = $_POST['nombreDia'];
 		foreach ($nombreDia as $key => $nombre) {
-			$query2 = new Consulta("INSERT INTO paquetes_itinerario VALUES('','". $id_paquete ."','41','". $nombre['0'] ."') ");
+			$query2 = new Consulta("INSERT INTO paquetes_itinerarios VALUES('','". $id_paquete ."','41','". $nombre['0'] ."') ");
 			$nuevoid2 = $query2->nuevoid();
 			$servicioarray = $servicio[$key];
 			foreach ($servicioarray as $llave => $value) {
-				$query3 = new Consulta("INSERT INTO paquetes_itinerario_detalle VALUES('','". $nuevoid2 ."','". $value ."') ");
+				$query3 = new Consulta("INSERT INTO paquetes_itinerarios_detalles VALUES('','". $nuevoid2 ."','". $value ."') ");
 			}
 		}
 
@@ -656,18 +656,18 @@ class Ajax{
 		}
 
 		$id_paquete = $_POST['id_paquete'];
-		$query = new Consulta("DELETE FROM paquetes_itinerario WHERE id_paquete = '".$id_paquete."' ");
+		$query = new Consulta("DELETE FROM paquetes_itinerarios WHERE id_paquete = '".$id_paquete."' ");
 
 		$servicio = $_POST['servicio'];
 		$nombreDia = $_POST['nombreDia'];
 		for($i=0;$i<count($nombreDia);$i++){
 			if ($nombreDia[$i]!='') {
-						$query2 = new Consulta("INSERT INTO paquetes_itinerario VALUES('','". $id_paquete ."','". $_POST['hotel'][$i] ."','". $_POST['nombreDia'][$i] ."') ");
+						$query2 = new Consulta("INSERT INTO paquetes_itinerarios VALUES('','". $id_paquete ."','". $_POST['hotel'][$i] ."','". $_POST['nombreDia'][$i] ."') ");
 
 						$nuevoid2 = $query2->nuevoid();
 						for($j=0;$j<count($servicio);$j++){
 							if ($servicio[$i][$j]!='') {
-								$query3 = new Consulta("INSERT INTO paquetes_itinerario_detalle VALUES('','". $nuevoid2 ."','". $servicio[$i][$j] ."') ");
+								$query3 = new Consulta("INSERT INTO paquetes_itinerarios_detalles VALUES('','". $nuevoid2 ."','". $servicio[$i][$j] ."') ");
 							}
 						}
 
@@ -684,7 +684,7 @@ class Ajax{
 	function deleteDiaPaqueteAjax(){
 		$id = $_POST['id'];
 		if ($id!='') {
-			$query = new Consulta("DELETE FROM paquetes_itinerario WHERE id_paquete_itinerario = '".$id."' ");
+			$query = new Consulta("DELETE FROM paquetes_itinerarios WHERE id_paquete_itinerario = '".$id."' ");
 		}
 	}
 	//FIN PAQUETES

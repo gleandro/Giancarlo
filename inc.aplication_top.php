@@ -14,7 +14,7 @@ require_once(_view_."Icatalogo.php");
 require_once(_view_."Secciones.php");
 
 $link = new Conexion($_config['bd']['server'],$_config['bd']['user'],$_config['bd']['password'],$_config['bd']['name']);
-session_start();	
+session_start();
 
 //msgbox
 if(!(isset($_SESSION['msg']))){

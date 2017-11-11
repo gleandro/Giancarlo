@@ -480,11 +480,11 @@ CREATE TABLE `paquetes_destinos` (
 
 insert  into `paquetes_destinos`(`id_paquete_destinos`,`id_paquete`,`id_departamento`) values (183,47,1),(184,47,3),(193,49,2),(194,49,3),(195,50,2),(196,50,3);
 
-/*Table structure for table `paquetes_itinerario` */
+/*Table structure for table `paquetes_itinerarios` */
 
-DROP TABLE IF EXISTS `paquetes_itinerario`;
+DROP TABLE IF EXISTS `paquetes_itinerarios`;
 
-CREATE TABLE `paquetes_itinerario` (
+CREATE TABLE `paquetes_itinerarios` (
   `id_paquete_itinerario` int(11) NOT NULL AUTO_INCREMENT,
   `id_paquete` int(11) NOT NULL,
   `id_hotel` int(11) NOT NULL,
@@ -497,28 +497,28 @@ CREATE TABLE `paquetes_itinerario` (
   CONSTRAINT `fk_paquetes_paquetes_itinerarios` FOREIGN KEY (`id_paquete`) REFERENCES `paquetes` (`id_paquete`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=176 DEFAULT CHARSET=utf8;
 
-/*Data for the table `paquetes_itinerario` */
+/*Data for the table `paquetes_itinerarios` */
 
-insert  into `paquetes_itinerario`(`id_paquete_itinerario`,`id_paquete`,`id_hotel`,`nombre_paquete_itinerario`,`descripcion_paquete_itinerario`) values (161,47,41,'dia unooo','aaaa'),(162,47,41,'dia doss','bbbb'),(173,49,41,'dia uno','itinerario dia uno'),(174,49,41,'dia dos','itinerario dia dos'),(175,50,41,'dia uno','aaaa');
+insert  into `paquetes_itinerarios`(`id_paquete_itinerario`,`id_paquete`,`id_hotel`,`nombre_paquete_itinerario`,`descripcion_paquete_itinerario`) values (161,47,41,'dia unooo','aaaa'),(162,47,41,'dia doss','bbbb'),(173,49,41,'dia uno','itinerario dia uno'),(174,49,41,'dia dos','itinerario dia dos'),(175,50,41,'dia uno','aaaa');
 
-/*Table structure for table `paquetes_itinerario_detalle` */
+/*Table structure for table `paquetes_itinerarios_detalles` */
 
-DROP TABLE IF EXISTS `paquetes_itinerario_detalle`;
+DROP TABLE IF EXISTS `paquetes_itinerarios_detalles`;
 
-CREATE TABLE `paquetes_itinerario_detalle` (
+CREATE TABLE `paquetes_itinerarios_detalles` (
   `id_paquete_itinerario_detalle` int(11) NOT NULL AUTO_INCREMENT,
   `id_paquete_itinerario` int(11) NOT NULL,
   `id_servicio` int(11) NOT NULL,
   PRIMARY KEY (`id_paquete_itinerario_detalle`),
   KEY `id_paquete_itinerario` (`id_paquete_itinerario`),
   KEY `id_servicio` (`id_servicio`),
-  CONSTRAINT `fk_paquetes_itinerario_paquetes_itinerario_detalle` FOREIGN KEY (`id_paquete_itinerario`) REFERENCES `paquetes_itinerario` (`id_paquete_itinerario`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_servicios_paquetes_itinerario_detalle` FOREIGN KEY (`id_servicio`) REFERENCES `servicios` (`id_servicio`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_paquetes_itinerario_paquetes_itinerarios_detalles` FOREIGN KEY (`id_paquete_itinerario`) REFERENCES `paquetes_itinerarios` (`id_paquete_itinerario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_servicios_paquetes_itinerarios_detalles` FOREIGN KEY (`id_servicio`) REFERENCES `servicios` (`id_servicio`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=223 DEFAULT CHARSET=utf8;
 
-/*Data for the table `paquetes_itinerario_detalle` */
+/*Data for the table `paquetes_itinerarios_detalles` */
 
-insert  into `paquetes_itinerario_detalle`(`id_paquete_itinerario_detalle`,`id_paquete_itinerario`,`id_servicio`) values (208,161,23),(209,162,31),(219,173,24),(220,174,70),(221,175,88),(222,175,90);
+insert  into `paquetes_itinerarios_detalles`(`id_paquete_itinerario_detalle`,`id_paquete_itinerario`,`id_servicio`) values (208,161,23),(209,162,31),(219,173,24),(220,174,70),(221,175,88),(222,175,90);
 
 /*Table structure for table `paquetes_itinerario_hoteles` */
 
@@ -532,7 +532,7 @@ CREATE TABLE `paquetes_itinerario_hoteles` (
   KEY `id_paquete_itinerario` (`id_paquete_itinerario`),
   KEY `id_hotel` (`id_hotel`),
   CONSTRAINT `fk_hoteles_paquetes_itinerario_hotel` FOREIGN KEY (`id_hotel`) REFERENCES `hoteles` (`id_hotel`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_paquetes_itinerario_paquetes_itinerario_hotel` FOREIGN KEY (`id_paquete_itinerario`) REFERENCES `paquetes_itinerario` (`id_paquete_itinerario`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_paquetes_itinerario_paquetes_itinerario_hotel` FOREIGN KEY (`id_paquete_itinerario`) REFERENCES `paquetes_itinerarios` (`id_paquete_itinerario`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Data for the table `paquetes_itinerario_hoteles` */

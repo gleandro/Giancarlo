@@ -26,7 +26,7 @@ class Paquetes{
 
 	static public function getPaquetesItinerarioDetalle($id)
 	{
-		$sql   = "SELECT * FROM paquetes_itinerario_detalle WHERE id_paquete_itinerario= '".$id."' ";
+		$sql   = "SELECT * FROM paquetes_itinerarios_detalles WHERE id_paquete_itinerario= '".$id."' ";
 		$query = new Consulta($sql);
 		$datos = array();
 
@@ -38,7 +38,7 @@ class Paquetes{
 	}
 
 	public function getHotelesxItinerario($id){
-			$sql = "SELECT * FROM paquetes_itinerario_hoteles WHERE id_paquete_itinerario = '".$id."' " ;
+			$sql = "SELECT * FROM paquetes_itinerarios_hoteles WHERE id_paquete_itinerario = '".$id."' " ;
 			$query = new Consulta($sql);
 			while($row = $query->VerRegistro()){
 					$hoteles[] =  $row['id_hotel'];
