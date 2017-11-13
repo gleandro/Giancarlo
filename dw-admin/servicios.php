@@ -29,15 +29,15 @@ if ($_GET['id']) {
     <?php include 'nav.php'; ?>
         <div class="content">
             <div class="container-fluid">
-                
+
                 <!-- PINTA EL TEMPLATE -->
                 <?php include _view_servicio_.$template; ?>
-                <!-- PINTA EL TEMPLATE -->  
-                
+                <!-- PINTA EL TEMPLATE -->
+
             </div>
         </div>
 
-    
+
         <!-- LLAMO AL JS DEL TEMPLATE CORRESPONDIENTE AL MODULO -->
         <script src="<?php echo _js_template_ ?>servicio.js" type="text/javascript"></script>
         <!-- LLAMO AL JS DEL TEMPLATE CORRESPONDIENTE AL MODULO -->

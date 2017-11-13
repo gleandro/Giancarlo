@@ -15,7 +15,8 @@ class Servicios{
 		 'id_empresa' => $row['id_empresa'] ,
 		 'empresa' => $row['razon_social_empresa'] ,
 		 'nombre' => $row['nombre_servicio'] ,
-		 'precio' => $row['precio_servicio'] ,
+		 'precio_nacional' => $row['precio_nacional_servicio'] ,
+		 'precio_extranjero' => $row['precio_extranjero_servicio'] ,
 		 'alcance' => $row['alcance_servicio'] ,
 		 'descipcion' => $row['descripcion_servicio'] ,
 		 'contacto_nombre' => $row['contacto_nombre_servicio'] ,
@@ -27,7 +28,7 @@ class Servicios{
 	public function getServiciosxDepartamentos($departamentos)
 	{
 		//$sql   = "SELECT * FROM servicios_ubicaciones INNER JOIN servicios USING(id_servicio) WHERE id_departamento IN ($departamentos) GROUP BY id_servicio ORDER BY id_departamento asc";
-		$sql = "SELECT * FROM servicios_ubicacioneses INNER JOIN servicios s USING(id_servicio) INNER JOIN tipos_servicios USING(id_tipo_servicio) INNER JOIN departamentos d USING(id_departamento) WHERE id_departamento IN ($departamentos) ORDER BY id_departamento,s.precio_nacional_servicio asc";
+		$sql = "SELECT * FROM servicios_ubicaciones INNER JOIN servicios s USING(id_servicio) INNER JOIN tipos_servicios USING(id_tipo_servicio) INNER JOIN departamentos d USING(id_departamento) WHERE id_departamento IN ($departamentos) ORDER BY id_departamento,s.precio_nacional_servicio asc";
 
 		$query = new Consulta($sql);
 		$datos = array();

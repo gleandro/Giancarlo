@@ -112,86 +112,100 @@
                           </div>
                           <div class="contenedor-hoteles-apend-container">
                             <input type="hidden" class="listahotel-<?php echo (int)($key+1) ?>" value="<?php echo count($itinerario_hoteles) ?>"/>
-                            <?php if (is_array($itinerario_hoteles) || is_object($itinerario_hoteles)){
-                              foreach ($itinerario_hoteles as $llave => $valor) { ?>
-                                <div class="contenedor-hotel-apend contenedor-servicios-apend-<?php echo $llave+1 ?>">
-                                  <div class="row">
-                                    <div class="col-md-12">
-                                      <div class="form-group">
-                                        <label class="control-label">Hotel<star>*</star></label>
-                                        <select title=".::Seleccione Hotel::." class="selectpicker" data-style="btn-info btn-fill btn-block" data-size="7" name="hotel[<?php echo $key ?>][]">
-                                          <?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
-                                            <option value="<?php echo $Hotel['id'] ?>"
-                                              <?php echo ($Hotel['id']==$valor) ? "selected":""; ?>   >
+                            <div class="contenedor-hotel-apend contenedor-servicios-apend-<?php echo $llave+1 ?>">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="form-group">
+                                    <label class="control-label">Hotel<star>*</star></label>
+                                    <select title=".::Seleccione Hotel::." class="selectpicker" multiple data-selected-text-format="count" data-style="btn-info btn-fill btn-block" data-size="5" name="hotel[<?php echo $key ?>][]">
+                                      <?php
+                                      foreach ($listadoHotelesxDepartamentos as $Hotel) {
+                                        $estado = true;
+                                        if ((is_array($itinerario_hoteles) || is_object($itinerario_hoteles)) && !empty($itinerario_hoteles)){
+                                          foreach ($itinerario_hoteles as $llave => $valor) {
+                                            if ($Hotel['id']==$valor) {?>
+                                              <option value="<?php echo $Hotel['id'] ?>"
+                                                <?php echo ($Hotel['id']==$valor) ? "selected":""; ?>   >
+                                                <?php echo $Hotel['departamento'].' ( '.$Hotel['estrellas'].' estrellas - $'.round($Hotel['precio'], 2).' ) : '.$Hotel['nombre'] ?>
+                                              </option>
+                                            <?php $estado = true; break;}else{$estado = false;}}
+                                          if (!$estado) { ?>
+                                            <option value="<?php echo $Hotel['id'] ?>">
                                               <?php echo $Hotel['departamento'].' ( '.$Hotel['estrellas'].' estrellas - $'.round($Hotel['precio'], 2).' ) : '.$Hotel['nombre'] ?>
                                             </option>
-                                          <?php } ?>
-                                        </select>
+                                        <?php  } }else{ ?>
+                                              <option value="<?php echo $Hotel['id'] ?>">
+                                                <?php echo $Hotel['departamento'].' ( '.$Hotel['estrellas'].' estrellas - $'.round($Hotel['precio'], 2).' ) : '.$Hotel['nombre'] ?>
+                                              </option>
+                                            <?php  } }?>
+                                          </select>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              <?php } }?>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-12">
-                                <a class="text-success" style="cursor: pointer;" onclick="addOneMoreHotel(<?php echo (int)($key+1) ?>,<?php echo $_GET['id'] ?>)">Añadir un hotel más al día <i class="fa fa-plus-circle"></i></a>
-                              </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                              <div class="col-md-12">
-                                <p class="category">Servicios incluidos en el día.</p>
-                              </div>
-                            </div>
-                            <?php $servicios = Paquetes::getPaquetesItinerarioDetalle($itinerario['id_paquete_itinerario']); ?>
-                            <div class="contenedor-servicios-apend-container">
-                              <input type="hidden" class="listaservicio-<?php echo (int)($key+1) ?>" value="<?php echo count($servicios) ?>"/>
-                              <?php foreach ($servicios as $llave => $value) { ?>
-                                <div class="contenedor-servicios-apend contenedor-servicios-apend-<?php echo $llave+1 ?>">
-                                  <div class="row">
-                                    <div class="col-md-12">
-                                      <div class="form-group">
-                                        <label class="control-label">Lista de servicios <?php echo $llave+1 ?><star>*</star></label>
-                                        <select class="selectpicker" name="servicio[<?php echo $key ?>][]" data-style="btn btn-default btn-block" title=".::Lista de Servicios::." data-size="7">
-                                          <?php foreach ($listadoServiciosxDepartamentos as $servicio) { ?>
-                                            <option value="<?php echo $servicio['id'] ?>"
-                                              <?php echo ($servicio['id']==$value['id_servicio']) ? "selected":"";  ?> >
-                                              <?php echo $servicio['departamento'].' ( '.$servicio['nombre_tipo_servicio'].' '.$servicio['alcance'].' personas - $'.round($servicio['precio'], 2).' ) : '.$servicio['nombre'] ?>
-                                            <?php } ?>
-                                          </select>
+                                <br>
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <p class="category">Servicios incluidos en el día.</p>
+                                  </div>
+                                </div>
+                                <?php $servicios = Paquetes::getPaquetesItinerarioDetalle($itinerario['id_paquete_itinerario']); ?>
+                                <div class="contenedor-servicios-apend-container">
+                                  <input type="hidden" class="listaservicio-<?php echo (int)($key+1) ?>" value="<?php echo count($servicios) ?>"/>
+                                  <div class="contenedor-servicios-apend contenedor-servicios-apend-<?php echo $llave+1 ?>">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                        <div class="form-group">
+                                          <label class="control-label">Lista de servicios<star>*</star></label>
+                                          <select class="selectpicker" multiple data-selected-text-format="count" name="servicio[<?php echo $key ?>][]" data-style="btn btn-default btn-block" title=".::Lista de Servicios::." data-size="5">
+                                            <?php
+                                              foreach ($listadoServiciosxDepartamentos as $servicio) {
+                                                $estado = true;
+                                                if ((is_array($servicios) || is_object($servicios)) && !empty($servicios)){
+                                                foreach ($servicios as $llave => $value) {
+                                                  if ($servicio['id']==$value['id_servicio']) {?>
+                                                    <option value="<?php echo $servicio['id'] ?>"
+                                                      <?php echo ($servicio['id']==$value['id_servicio']) ? "selected":"";  ?> >
+                                                      <?php echo $servicio['departamento'].' ( '.$servicio['nombre_tipo_servicio'].' '.$servicio['alcance'].' personas - $'.round($servicio['precio'], 2).' ) : '.$servicio['nombre'] ?>
+                                                    </option>
+                                                <?php $estado = true; break; }else{$estado = false;}}
+                                                if (!$estado) { ?>
+                                                  <option value="<?php echo $servicio['id'] ?>">
+                                                    <?php echo $servicio['departamento'].' ( '.$servicio['nombre_tipo_servicio'].' '.$servicio['alcance'].' personas - $'.round($servicio['precio'], 2).' ) : '.$servicio['nombre'] ?>
+                                                  </option>
+                                              <?php  }}else{?>
+                                                <option value="<?php echo $servicio['id'] ?>">
+                                                  <?php echo $servicio['departamento'].' ( '.$servicio['nombre_tipo_servicio'].' '.$servicio['alcance'].' personas - $'.round($servicio['precio'], 2).' ) : '.$servicio['nombre'] ?>
+                                                </option>
+                                              <?php }} ?>
+                                                </select>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 <?php } ?>
                               </div>
-                              <div class="row">
-                                <div class="col-md-12">
-                                  <a class="text-success" style="cursor: pointer;" onclick="addOneMoreService(<?php echo (int)($key+1) ?>,<?php echo $_GET['id'] ?>)">Añadir un servicio más al día <i class="fa fa-plus-circle"></i></a>
-                                </div>
-                              </div>
                             </div>
                           </div>
-                        <?php } ?>
+
+                        </div>
                       </div>
                     </div>
-                  </div>
+                    <div class="card-footer">
+                      <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
+                      <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right">Next</button>
+                      <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Finalizar</button>
+                      <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish click</button>-->
 
+                      <div class="clearfix"></div>
+                    </div>
+
+                  </form>
                 </div>
+
               </div>
             </div>
-            <div class="card-footer">
-              <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
-              <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right">Next</button>
-              <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Finalizar</button>
-              <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish click</button>-->
-
-              <div class="clearfix"></div>
-            </div>
-
-          </form>
-        </div>
-
-      </div>
-    </div>

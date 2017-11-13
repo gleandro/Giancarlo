@@ -371,8 +371,7 @@ class Ajax{
 								<div class="col-md-12">
 									<div class="form-group">
 										<label class="control-label">Hotel<star>*</star></label>
-										<select class="selectpicker form-control" data-style="btn-info btn-fill btn-block" data-size="7" name="hotel[<?php echo $dia_actual ?>][]" style="color: #FFFFFF;background-color: #68B3C8;display: block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #68B3C8;width: 100%;">
-											<option value="">.::Seleccione Hotel::.</option>
+										<select class="selectpicker" title=".::Seleccione Hotel::." id="hoteles" multiple data-selected-text-format="count" data-style="btn-info btn-fill btn-block" data-size="7" name="hotel[<?php echo $dia_actual ?>][]" style="color: #FFFFFF;background-color: #68B3C8;display: block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #68B3C8;width: 100%;">
 											<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
 												<option value="<?php echo $Hotel['id'] ?>">
 													<?php echo $Hotel['departamento'].' ( '.$Hotel['estrellas'].' estrellas - $'.round($Hotel['precio'], 2).' ) : '.$Hotel['nombre'] ?>
@@ -933,7 +932,7 @@ class Ajax{
 							}
 							$dia =  $_POST['dia'];
 							$dia_actual = (int)($dia-1);
-
+							include(_includes_."inc.header.php");
 							?>
 							<div class="contenedor-servicios-apend contenedor-servicios-apend-1">
 								<input type="hidden" class="listaservicio-1" value="1"/>
@@ -941,8 +940,7 @@ class Ajax{
 									<div class="col-md-12">
 										<div class="form-group">
 											<label class="control-label">Lista de servicios<star>*</star></label>
-											<select class="selectpicker form-control" name="servicio[<?php echo $dia_actual ?>][]" style="display:block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;background-color: transparent;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #66615B;color: #66615B;-webkit-transition: all 150ms linear;-moz-transition: all 150ms linear;-o-transition: all 150ms linear;-ms-transition: all 150ms linear;transition: all 150ms linear;" data-style="btn btn-default btn-block" title=".::Lista de Servicios::." data-size="7">
-												<option value="">.::Lista de Servicios::.</option>
+											<select class="selectpicker" id="servicios" multiple data-selected-text-format="count" name="servicio[<?php echo $dia_actual ?>][]" style="display:block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;background-color: transparent;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #66615B;color: #66615B;-webkit-transition: all 150ms linear;-moz-transition: all 150ms linear;-o-transition: all 150ms linear;-ms-transition: all 150ms linear;transition: all 150ms linear;" data-style="btn btn-default btn-block" title=".::Lista de Servicios::." data-size="7">
 												<?php foreach ($listadoServiciosxDepartamentos as $Servicio) { ?>
 													<option value="<?php echo $Servicio['id'] ?>">
 														<?php echo $Servicio['departamento'].' ( '.$Servicio['nombre_tipo_servicio'].' '.$Servicio['alcance'].' personas - $'.round($Servicio['precio'], 2).' ) : '.$Servicio['nombre'] ?>
@@ -999,11 +997,7 @@ class Ajax{
 												<label class="control-label">
 													Nombre
 												</label>
-												<input class="form-control"
-												type="text"
-												name="nombreDia[<?php echo $dia-1 ?>][]"
-												placeholder="Nombre para Identificar el Día"
-												/>
+												<input class="form-control" type="text" name="nombreDia[<?php echo $dia-1 ?>][]" placeholder="Nombre para Identificar el Día"/>
 											</div>
 										</div>
 									</div>
@@ -1017,15 +1011,13 @@ class Ajax{
 											</div>
 										</div>
 									</div>
-
 									<div class="contenedor-hoteles-apend-container">
 										<div class="contenedor-hoteles-apend contenedor-hoteles-apend-1">
 											<div class="row">
 												<div class="col-md-12">
 													<div class="form-group">
 														<label class="control-label">Hotel<star>*</star></label>
-														<select class="selectpicker form-control" data-style="btn-info btn-fill btn-block" data-size="7" name="hotel[<?php echo $dia_actual ?>][]" style="color: #FFFFFF;background-color: #68B3C8;display: block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #68B3C8;width: 100%;">
-															<option value="">.::Seleccione un Hotel::.</option>
+														<select title=".::Seleccione Hotel::." class="selectpicker form-control" multiple data-selected-text-format="count" data-style="btn-info btn-fill btn-block" data-size="7" name="hotel[<?php echo $dia_actual ?>][]" style="color: #FFFFFF;background-color: #68B3C8;display: block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #68B3C8;width: 100%;">
 															<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
 																<option value="<?php echo $Hotel['id'] ?>">
 																	<?php echo $Hotel['departamento'].' ( '.$Hotel['estrellas'].' estrellas - $'.round($Hotel['precio'], 2).' ) : '.$Hotel['nombre'] ?>
@@ -1037,19 +1029,12 @@ class Ajax{
 											</div>
 										</div>
 									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<a class="text-success" style="cursor: pointer;" onclick="addOneMoreHotel(<?php echo $dia ?>,<?php echo $id_paquete ?>)">Añadir un hotel más al día <i class="fa fa-plus-circle"></i></a>
-										</div>
-									</div>
 									<br>
-
 									<div class="row">
 										<div class="col-md-12">
 											<p class="category">Servicios incluidos en el día.</p>
 										</div>
 									</div>
-
 									<div class="contenedor-servicios-apend-container">
 										<div class="contenedor-servicios-apend contenedor-servicios-apend-1">
 											<!--<input type="hidden" class="listaservicio-1" value="1"/>-->
@@ -1057,8 +1042,7 @@ class Ajax{
 												<div class="col-md-12">
 													<div class="form-group">
 														<label class="control-label">Lista de servicios<star>*</star></label>
-														<select class="selectpicker form-control" name="servicio[<?php echo $dia_actual ?>][]" style="display:block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;background-color: transparent;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #66615B;color: #66615B;-webkit-transition: all 150ms linear;-moz-transition: all 150ms linear;-o-transition: all 150ms linear;-ms-transition: all 150ms linear;transition: all 150ms linear;" data-style="btn btn-default btn-block" title=".::Lista de Servicios::." data-size="7">
-															<option value="">.::Lista de Servicios::.</option>
+														<select class="selectpicker form-control" multiple data-selected-text-format="count" name="servicio[<?php echo $dia_actual ?>][]" style="display:block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;background-color: transparent;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #66615B;color: #66615B;-webkit-transition: all 150ms linear;-moz-transition: all 150ms linear;-o-transition: all 150ms linear;-ms-transition: all 150ms linear;transition: all 150ms linear;" data-style="btn btn-default btn-block" title=".::Lista de Servicios::." data-size="7">
 															<?php foreach ($listadoServiciosxDepartamentos as $Servicio) { ?>
 																<option value="<?php echo $Servicio['id'] ?>">
 																	<?php echo $Servicio['departamento'].' ( '.$Servicio['nombre_tipo_servicio'].' '.$Servicio['alcance'].' personas - $'.round($Servicio['precio'], 2).' ) : '.$Servicio['nombre'] ?>
@@ -1068,12 +1052,6 @@ class Ajax{
 													</div>
 												</div>
 											</div>
-										</div>
-									</div>
-
-									<div class="row">
-										<div class="col-md-12">
-											<a class="text-success" style="cursor: pointer;" onclick="addOneMoreService(<?php echo $dia ?>,<?php echo $id_paquete ?>)">Añadir un servicio más al día <i class="fa fa-plus-circle"></i></a>
 										</div>
 									</div>
 								</div>
@@ -1116,22 +1094,19 @@ class Ajax{
 								$query2 = new Consulta("INSERT INTO paquetes_itinerarios VALUES('','". $nuevoid ."','41','". $nombre['0'] ."','". $descripcion[$key]['0'] ."') ");
 								$nuevoid2 = $query2->nuevoid();
 								$servicioarray = $servicio[$key];
-								print_r($servicioarray);
 								if (is_array($servicioarray) || is_object($servicioarray)) {
 									foreach ($servicioarray as $llave => $value) {
-										if (!empty($value) && !is_null($value) && !isset($value) && $value != '') {
+										if (!empty($value) && !is_null($value) && $value != '') {
 											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_detalles VALUES('','". $nuevoid2 ."','". $value ."') ");
 										}
 									}
 								}
 
 								$hotelarray = $hoteles[$key];
-								if (is_array($servicioarray) || is_object($servicioarray)) {
-									if (is_array($hotelarray) || is_object($hotelarray)) {
-										foreach ($hotelarray as $llave => $hotel) {
-											if (!empty($value) && !is_null($value) && !isset($value) && $value != '') {
-												$query3 = new Consulta("INSERT INTO paquetes_itinerario_hoteles VALUES('','". $nuevoid2 ."','". $hotel ."') ");
-											}
+								if (is_array($hotelarray) || is_object($hotelarray)) {
+									foreach ($hotelarray as $llave => $hotel) {
+										if (!empty($hotel) && !is_null($hotel) && $hotel != '') {
+											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $nuevoid2 ."','". $hotel ."') ");
 										}
 									}
 								}
@@ -1228,19 +1203,20 @@ class Ajax{
 								$tipo = $_GET['tipo'];
 								$empresa = $_GET['empresa'];
 								$nombre = $_GET['nombre'];
-								$precio = $_GET['precio'];
+								$precio_nacional = $_GET['precio_nacional'];
+								$precio_extranjero = $_GET['precio_extranjero'];
 								$alcance = $_GET['alcance'];
 								$descripcion = $_GET['descripcion'];
 								$contacto_nombre = $_GET['contacto_nombre'];
 								$contacto_numero = $_GET['contacto_numero'];
 
-								$query = new Consulta("INSERT INTO servicios values('','".$tipo."','".$empresa."','".$nombre."','".$precio."','".$alcance."','".$descripcion."','".$contacto_nombre."','".$contacto_numero."')");
+								$query = new Consulta("INSERT INTO servicios values('','".$tipo."','".$empresa."','".$nombre."','".$precio_nacional."','".$precio_extranjero."','".$alcance."','".$descripcion."','".$contacto_nombre."','".$contacto_numero."')");
 								$nuevoid = $query->nuevoid();
 
 								$departamento = $_GET['departamento'];
 								if ($_GET['departamento']) {
 									foreach ($departamento as $depa) {
-										$query2 =new Consulta( "INSERT INTO servicios_ubicacion values('','".$nuevoid."','".$depa."')" );
+										$query2 =new Consulta( "INSERT INTO servicios_ubicaciones values('','".$nuevoid."','".$depa."')" );
 									}
 								}
 
@@ -1248,7 +1224,7 @@ class Ajax{
 							function borrarServicioAjax()
 							{
 								$id = $_GET['id'];
-								$query = new Consulta("DELETE FROM servicios_ubicacion WHERE id_servicio = '".$id."' ");
+								$query = new Consulta("DELETE FROM servicios_ubicaciones WHERE id_servicio = '".$id."' ");
 
 								$query2 = new Consulta("DELETE FROM servicios WHERE id_servicio = '".$id."' ");
 							}
@@ -1258,7 +1234,8 @@ class Ajax{
 								$tipo = $_GET['tipo'];
 								$empresa = $_GET['empresa'];
 								$nombre = $_GET['nombre'];
-								$precio = $_GET['precio'];
+								$precio_nacional = $_GET['precio_nacional'];
+								$precio_extranjero = $_GET['precio_extranjero'];
 								$alcance = $_GET['alcance'];
 								$descripcion = $_GET['descripcion'];
 								$contacto_nombre = $_GET['contacto_nombre'];
@@ -1268,7 +1245,8 @@ class Ajax{
 									id_tipo_servicio = '".$tipo."',
 									id_empresa = '".$empresa."',
 									nombre_servicio = '".$nombre."',
-									precio_servicio = '".$precio."',
+									precio_nacional_servicio = '".$precio_nacional."',
+									precio_extranjero_servicio = '".$precio_extranjero."',
 									alcance_servicio ='".$alcance."',
 									descripcion_servicio ='".$descripcion."',
 									contacto_nombre_servicio = '".$contacto_nombre."',
@@ -1277,10 +1255,10 @@ class Ajax{
 
 									$departamento = $_GET['departamento'];
 									/*LIMPIAMOS LOS DEPARTAMENTOS*/
-									$query2 = new Consulta("DELETE FROM servicios_ubicacion WHERE id_servicio = '".$id_servicio."' ");
+									$query2 = new Consulta("DELETE FROM servicios_ubicaciones WHERE id_servicio = '".$id_servicio."' ");
 									if ($_GET['departamento']) {
 										foreach ($departamento as $depa) {
-											$query3 =new Consulta( "INSERT INTO servicios_ubicacion values('','".$id_servicio."','".$depa."')" );
+											$query3 =new Consulta( "INSERT INTO servicios_ubicaciones values('','".$id_servicio."','".$depa."')" );
 										}
 									}
 								}

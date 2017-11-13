@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
-        
+
         <div class="card card-wizard" id="wizardCardNuevoServicio">
             <form id="wizardFormNuevoServicio" method="GET" action="">
                 <div class="card-header text-center">
@@ -26,7 +26,7 @@
                                                type="text"
                                                name="nombre"
                                                placeholder="Nombre del servicio"
-                                               required="required" 
+                                               required="required"
                                         />
                                     </div>
                                 </div>
@@ -49,14 +49,30 @@
                                 <div class="col-md-10 col-md-offset-1">
                                     <div class="form-group">
                                         <label class="control-label">
-                                            Precio
+                                            Precio Nacional
                                         </label>
                                         <input class="form-control"
                                                type="text"
-                                               name="precio"
+                                               name="precio_nacional"
                                                number="true"
                                                placeholder="$"
-                                               required="required" 
+                                               required="required"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 col-md-offset-1">
+                                    <div class="form-group">
+                                        <label class="control-label">
+                                            Precio Extranjero
+                                        </label>
+                                        <input class="form-control"
+                                               type="text"
+                                               name="precio_extranjero"
+                                               number="true"
+                                               placeholder="$"
+                                               required="required"
                                         />
                                     </div>
                                 </div>
@@ -98,7 +114,7 @@
                                         ></textarea>
                                     </div>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="tab-pane" id="tab2">
                             <h5 class="text-center">Completa los datos antes de continuar.</h5>
@@ -126,7 +142,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="tab-pane" id="tab3">
                             <h5 class="text-center">Puedes agregar más destinos</h5>
