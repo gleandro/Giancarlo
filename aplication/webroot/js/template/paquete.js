@@ -1,5 +1,6 @@
 /*SERVICIO*/
 var $tablePaquete = $('#bootstrap-table-paquetes');
+var $tableEdit = $('.bootstrap-table-edit');
 
 function operateFormatter(value, row, index) {
   return [
@@ -17,7 +18,53 @@ function operateFormatter(value, row, index) {
   ].join('');
 }
 
+function eliminar_inclusiones(dato){
+  swal({
+    title: '¿Estás Seguro?',
+    text: "No se pueden recuperar los registros!",
+    type: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, borralo!',
+    cancelButtonText: 'No, Cancelar!',
+    confirmButtonClass: 'btn btn-success',
+    cancelButtonClass: 'btn btn-danger',
+    allowOutsideClick: false,
+    allowEscapeKey: false
+  }).then(function () {
+    dato.parentElement.remove();
+    if ($("#incluye")[0].childElementCount == 0) {
+      $("#incluye").append('<li id="vacio" class="list-group-item list-group-item-success"><p>No se ingresaron</p><p>Inclusiones</p></li>');
+    }
+    if ($("#excluye")[0].childElementCount == 0) {
+      $("#excluye").append('<li id="vacio" class="list-group-item list-group-item-danger"><p>No se ingresaron</p><p>Exclusiones</p></li>');
+    }
+  })
+}
+
 $().ready(function(){
+
+  $('#add_inclusion').click(function(){
+    var nombre = $("#nombre_inclusion").val();
+    var tipo = $("#inclusiones").val();
+    if (tipo == 1) {
+      if ($("#incluye").find("#vacio").length > 0) {
+        $("#incluye").find("#vacio").remove();
+      }
+      $("#incluye").append('<li class="list-group-item list-group-item-success">'+nombre+'<input type="hidden" name="incluye[]" value="'+nombre+'"><button type="button" class="close eliminar_inclusiones" onclick="javascript:eliminar_inclusiones(this)" aria-label="Close"><span aria-hidden="true">&times;</span></button></li>');
+    }else {
+      if ($("#excluye").find("#vacio").length > 0) {
+        $("#excluye").find("#vacio").remove();
+      }
+      $("#excluye").append('<li class="list-group-item list-group-item-danger">'+nombre+'<input type="hidden" name="excluye[]" value="'+nombre+'"><button type="button" class="close eliminar_inclusiones" onclick="javascript:eliminar_inclusiones(this)" aria-label="Close"><span aria-hidden="true">&times;</span></button></li>');
+    }
+    $("#nombre_inclusion").val('');
+  });
+
+  $(".eliminar_inclusiones").on("click",function(){
+
+  });
 
   $('#wizardPaquete').bootstrapWizard({
     tabClass: 'nav nav-pills',
@@ -30,6 +77,7 @@ $().ready(function(){
         $validator.focusInvalid();
         return false;
       }
+
     },
     onInit : function(tab, navigation, index){
 
@@ -77,12 +125,24 @@ $().ready(function(){
     nextSelector: '.btn-next',
     previousSelector: '.btn-back',
     onNext: function(tab, navigation, index) {
-      var $valid = $('#wizardFormEditarPaquete').valid();
 
+      var $valid = $('#wizardFormEditarPaquete').valid();
       if(!$valid) {
         $validator.focusInvalid();
         return false;
       }
+
+      var datos = $('.table-hoteles').find(".seleccionado");
+      for (var i = 0; i < datos.length; i++) {
+        $(datos[i]).parents(".table-hoteles").bootstrapTable('check', parseInt(datos[i].id));
+      }
+      datos.removeClass("seleccionado");
+
+      datos = $('.table-servicios').find(".seleccionado");
+      for (var i = 0; i < datos.length; i++) {
+        $(datos[i]).parents(".table-servicios").bootstrapTable('check', parseInt(datos[i].id));
+      }
+      datos.removeClass("seleccionado");
     },
     onInit : function(tab, navigation, index){
 
@@ -139,7 +199,6 @@ $().ready(function(){
       location.href="paquetes.php?action=edit&id="+row.id;
     },
     'click .remove': function (e, value, row, index) {
-
       swal({
         title: '¿Estás Seguro?',
         text: "No se pueden recuperar los registros!",
@@ -217,6 +276,19 @@ $().ready(function(){
     }
   });
 
+  $tableEdit.bootstrapTable({
+    toolbar: ".toolbar",
+    clickToSelect: true,
+    pagination: true,
+    pageSize: 1000,
+    formatShowingRows: function(pageFrom, pageTo, totalRows){
+      //do nothing here, we don't want to show the text "showing x of y from..."
+    },
+    formatRecordsPerPage: function(pageNumber){
+
+    }
+  });
+
   //activate the tooltips after the data table is initialized
   $('[rel="tooltip"]').tooltip();
 
@@ -242,26 +314,35 @@ function addServicioPaquete(dia,id){
     url :"ajax2.php",
     data: $("#wizardForm").serialize()+"&action=agregarServicioPaquete&dia="+dia+"&id="+id,
     beforeSend: function(){
-      swal({
-        title: 'Un momento',
-        text: 'Estamos generando la vista.',
-        imageUrl: 'http://develowebapps.com/proyectos/d5/rasgos/aplication/webroot/imgs/admin/loading.gif',
-        imageWidth: 300,
-        imageHeight: 200,
-        imageAlt: 'Cargando',
-        animation: false
-      })
+      // swal({
+      //   title: 'Un momento',
+      //   text: 'Estamos generando la vista.',
+      //   imageUrl: 'http://develowebapps.com/proyectos/d5/rasgos/aplication/webroot/imgs/admin/loading.gif',
+      //   imageWidth: 300,
+      //   imageHeight: 200,
+      //   imageAlt: 'Cargando',
+      //   animation: false
+      // })
     },
     success: function(datos){
       //alert(datos);
       $(".card-"+dia+" .contenedor-servicios-apend-container").append(datos);
-      $("#hoteles").selectpicker();
-      $("#servicios").selectpicker();
+      // $(".selectpicker").selectpicker();
     },
     complete: function(){
+      $('.bootstrap-table-edit').bootstrapTable({
+        toolbar: ".toolbar",
+        clickToSelect: true,
+        pagination: true,
+        pageSize: 1000,
+        formatShowingRows: function(pageFrom, pageTo, totalRows){
+          //do nothing here, we don't want to show the text "showing x of y from..."
+        },
+        formatRecordsPerPage: function(pageNumber){
 
-      $(".swal2-confirm").click();
-
+        }
+      });
+      // $(".swal2-confirm").click();
     }
   });
 }
@@ -277,6 +358,18 @@ function addHotelPaquete(dia,id){
     success: function(datos){
       //alert(datos);
       $(".card-"+dia+" .contenedor-hoteles-apend-container").append(datos);
+      $('.bootstrap-table-edit').bootstrapTable({
+        toolbar: ".toolbar",
+        clickToSelect: true,
+        pagination: true,
+        pageSize: 1000,
+        formatShowingRows: function(pageFrom, pageTo, totalRows){
+          //do nothing here, we don't want to show the text "showing x of y from..."
+        },
+        formatRecordsPerPage: function(pageNumber){
+
+        }
+      });
     }
   });
 }
@@ -288,9 +381,22 @@ function addDiaServicioPaquete(dia,id){
     beforeSend: function(){
     },
     success: function(datos){
-      //alert(datos);
-      $(".contenedor-card-apend-container").append(datos);
-      $(".selectpicker").selectpicker()
+      if(id.length == 0){
+        $(".card-dia").val(dia);
+      }
+      $(".panel-group").append(datos);
+        $('.bootstrap-table-edit').bootstrapTable({
+          toolbar: ".toolbar",
+          clickToSelect: true,
+          pagination: true,
+          pageSize: 1000,
+          formatShowingRows: function(pageFrom, pageTo, totalRows){
+            //do nothing here, we don't want to show the text "showing x of y from..."
+          },
+          formatRecordsPerPage: function(pageNumber){
+
+          }
+        });
     }
   });
 }
@@ -334,7 +440,7 @@ function addOneMoreHotel(dia,id){
   addHotelPaquete(dia,id);
 }
 function eliminarPaquete(dia,id) {
-  $(".card-"+dia).remove();
+  $(".card-"+dia).parents(".panel-default").remove();
   deletePaqueteItinerario(id);
 }
 $("#wizardForm").submit(function(e) { //AGREGAR UN PAQUETE
@@ -342,6 +448,23 @@ $("#wizardForm").submit(function(e) { //AGREGAR UN PAQUETE
   var $form = $(this);
   if(! $form.valid()) return false;
   var formData = new FormData($("#wizardForm")[0]);
+
+  var dias = $(".card-dia").val();
+
+  for (var i = 0; i < dias; i++) {
+    var dia = $(".card-"+(i+1));
+
+    var hoteles = dia.find("#table-hoteles").find(".selected .id");
+    for (var j = 0; j < hoteles.length; j++) {
+      formData.append('dias['+i+'][0]['+j+']', hoteles[j].innerHTML);
+    }
+
+    var servicios = dia.find("#table-servicios").find(".selected .id");
+    for (var k = 0; k < servicios.length; k++) {
+      formData.append('dias['+i+'][1]['+k+']', servicios[k].innerHTML);
+    }
+  }
+
   var ruta = "ajax2.php";
   //alert(formData);
   $.ajax({
@@ -374,6 +497,26 @@ $("#wizardFormEditarPaquete").submit(function(e) {
   if(! $form.valid()) return false;
 
   var formData = new FormData($("#wizardFormEditarPaquete")[0]);
+
+  var dias = $(".card-dia").val();
+
+  for (var i = 0; i < dias; i++) {
+    var dia = $(".card-"+(i+1));
+
+    var hoteles = dia.find("#table-hoteles").find(".selected .id");
+
+    for (var j = 0; j < hoteles.length; j++) {
+      formData.append('dias['+i+'][0]['+j+']', hoteles[j].innerHTML);
+    }
+
+    var servicios = dia.find("#table-servicios").find(".selected .id");
+
+    for (var k = 0; k < servicios.length; k++) {
+      formData.append('dias['+i+'][1]['+k+']', servicios[k].innerHTML);
+    }
+
+  }
+
   var ruta = "ajax2.php";
   //alert('envio a ajax2');
 
@@ -401,6 +544,7 @@ $("#wizardFormEditarPaquete").submit(function(e) {
   });
   return false;
 });
+
 $("#wizardFormEditarPaquete__").submit(function(e) {
   e.preventDefault();
 
@@ -411,7 +555,7 @@ $("#wizardFormEditarPaquete__").submit(function(e) {
   var formData = new FormData($("#wizardFormEditarPaquete")[0]);
   var ruta = "ajax2.php";
 
-  alert(formData);
+  // alert(formData);
 
   $.ajax({
     url: ruta,
@@ -438,17 +582,14 @@ $("#wizardFormEditarPaquete__").submit(function(e) {
 });
 function onFinishWizardPaquetes(){
   //CUANDO FINALIZA EL FORM WIZARD GUARDAMOS LOS DATOS Y MOSTRAMOS ALERTA
-
-  alert('hola');
-
   $.ajax({
     type : "GET",
     url :"ajax.php",
-    data: $("#wizardFormEditarPaquete").serialize()+"&action=actualizarPaquete",
+    data: $("#wizardFormEditarPaquete").serialize()+"&action=actualizarPaquete&ja=a",
     beforeSend: function(){
     },
     success: function(datos){
-      alert(datos);
+      // alert(datos);
       swal({
         title: 'Listo!',
         text: 'El Paquete fué registrado con éxito',

@@ -3,7 +3,7 @@
 include("inc.aplication_top.php");
 require_once(_ruta_.'dompdf/autoload.inc.php');
 header("Content-Type: text/html;charset=utf-8");
-use Dompdf\Dompdf;
+
 // Introducimos HTML de prueba
 $id = $_GET['id'];
 
@@ -11,96 +11,353 @@ $paquete = new Paquete($id);
 $nombre_paquete = $paquete->__get('_nombre');
 $imagen_paquete = $paquete->__get('_imagen');
 $descripcion_paquete = $paquete->__get('_descripcion');
-$itinerario_paquete = $paquete->__get('_itinerario');
+$itinerarios = $paquete->__get('_itinerario');
+$cantidad_itinerario = count($paquete->__get('_itinerario'));
+
+$paquetes = new Paquetes();
+
+$array_itinerario = array();
+
+$array_inclusiones = $paquetes->getInclusiones($id,1);
+$array_exclusiones = $paquetes->getInclusiones($id,2);
+
+$hoteles = $paquetes->getHotelesxDepartamento_2($id);
+
+$h1_n;
+$h1_e;
+$h2_n;
+$h2_e;
+$h3_n;
+$h3_e;
+
+$contador =1;
 
 
-//creacion de html
+foreach ($hoteles as $key => $value) {
+  if ($contador == 1) {
+    $id = $value['id_hotel'];
+  }
+  if ($id !=$value['id_hotel']) {
+    $id = $value['id_hotel'];
+  }
+  $detalle_hoteles[$id]['nombre_hotel']=$value['nombre_hotel'];
+  if ($value['id_habitacion'] == 1) {
+    $h1_n=$value['precio_nacional_persona'];
+    $h1_e=$value['precio_extranjero_persona'];
+    $detalle_hoteles[$id]['nacional'][1]=$h1_n;
+    $detalle_hoteles[$id]['extranjero'][1]=$h1_e;
+  }
+  if ($value['id_habitacion'] == 2) {
+    $h2_n=$value['precio_nacional_persona'];
+    $h2_e=$value['precio_extranjero_persona'];
+    $detalle_hoteles[$id]['nacional'][2]=$h2_n;
+    $detalle_hoteles[$id]['extranjero'][2]=$h2_e;
+  }
+  if ($value['id_habitacion'] == 3) {
+    $h3_n=$value['precio_nacional_persona'];
+    $h3_e=$value['precio_extranjero_persona'];
+    $detalle_hoteles[$id]['nacional'][3]=$h3_n;
+    $detalle_hoteles[$id]['extranjero'][3]=$h3_e;
+  }
+  $contador++;
+}
+$formato='<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-$html = '<!doctype html>
-<html lang="en">
-<head>
-  <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-  <title>PDF Paquete</title>
-  <link href="../aplication/webroot/css/bootstrap.min.css" rel="stylesheet" />
-  <script src="../aplication/webroot/js/bootstrap.min.js" type="text/javascript"></script>
+<title>Rasgos del Perú</title>
+<style type="text/css">
+
+@page {
+  margin: 0.5cm 1cm 3cm 1cm;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 0.5cm 0;
+  text-align: justify;
+  padding-top: 2cm;
+}
+
+#header,
+#footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  color: #aaa;
+  font-size: 0.9em;
+}
+
+#header {
+  top: 0;
+  border-bottom: 0.1pt solid #aaa;
+  color: #663300;
+}
+
+#footer {
+  bottom: 0;
+  border-top: 0.1pt solid #aaa;
+}
+
+#header table,
+#footer table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+
+#header td,
+#footer td {
+  padding: 0;
+  width: 50%;
+}
+.firma{
+  text-align: center;
+}
+.page-number {
+  text-align: center;
+}
+
+.page-number:before {
+  content: "Página " counter(page);
+}
+
+hr {
+  page-break-after: always;
+  border: 0;
+}
+
+.titulo-paquete{
+  text-align: right;
+}
+.titulo-paquete h2{
+    color: #663300;
+    line-height: 30px;
+    margin-bottom: 5px;
+    font-size: 35px;
+}
+.titulo-paquete h3{
+    color: #ff9901;
+    line-height: 20px;
+    font-size: 22px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.descripcion-paquete .titulo{
+    color: #663300;
+    font-size: 12px;
+    font-weight: 600;
+}
+.descripcion-paquete .titulo-center{
+    color: #663300;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+.descripcion-paquete .titulo-underline{
+    color: #663300;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: underline;
+}
+.descripcion-paquete .parrafo{
+    color: #333;
+    font-size: 12px;
+    font-weight: 400;
+}
+.descripcion-paquete .lista li{
+    color: #333;
+    font-size: 12px;
+    font-weight: 400;
+}
+.table-precios{
+  width: 100%;
+  font-size: 12px;
+  color: #333;
+}
+.table-precios .cabecera1{
+  background-color: #ffc000;
+  border: 1px solid #333;
+  color: #974706
+}
+.table-precios .cabecera2{
+  background-color: #974706;
+  border: 1px solid #333;
+  color: #ffc000;
+}
+
+</style>
+
 </head>
-<body style="margin:0">';
-$html .= '<div class="container">
-          <div class="row">
-          <img class="img-responsive" src="../aplication/webroot/imgs/pdf/rasgos_logo.jpg"/>
-          </div>
-          <div class="row">
-            <h2 style="text-align:center">Nuestro compromiso</h2>
-            <div class="col-md-12">
-              <h3>'.htmlentities("Atención personalizada").'</h3>
-              <span>'.htmlentities("Cada viajero o  grupo de viajeros a su llegada a Cusco será recibido por uno de nuestros representantes bilingüe, quién será el encargado
-      de brindarle información útil de cada ciudad y destino turístico  que visitará durante su periplo por nuestro país").'.</span>
-            </div>
-            <div class="col-md-12">
-              <h3>'.htmlentities("Compromiso Social").'</h3>
-              <span>'.htmlentities("Traducida en  generación de empleo. Cada vez que usted toma nuestros servicios está generando más fuentes de empleo para pers onas
-      menos favorecidas económicamente, así mismo cooperamos con las comunidades campesinas y asilos a través de comedores populares,
-      visitas sociales y campañas de salud").'.</span>
-            </div>
-            <div class="col-md-12">
-              <h3>'.htmlentities("Ética Empresarial").'</h3>
-              <span>'.htmlentities("Somos  respetuosos  de  los  acuerdos  entre  su  agencia  y  nosotros.  Trabajamos  profesionalmente  cuidando  cada  detalle  en  el  servicio,
-      porque sabemos que la satisfacción total de nuestros clientes es nuestra mejor garantía así como una recomendación para ustedes y
-      nosotros. Cuando nuestro personal atiende a sus viajeros asume que es parte del staff de su agencia y se identifica como tal").'.</span>
-            </div>
-            <div class="col-md-12">
-              <h3>'.htmlentities("Tarifas Competitivas").'</h3>
-              <span>'.htmlentities("Nos encargamos de atender directamente a sus clientes; razón por la cual nuestras tarifas son bastante competitivas Estas, son el fruto
-      de un análisis de costos más el justo beneficio por nuestro trabajo").'.</span>
-            </div>
-            <div class="col-md-12">
-              <h3>'.htmlentities("Compromiso con el Medio Ambiente").'</h3>
-              <span>'.htmlentities("Capacitamos a nuestro personal para proteger el medio ambiente y al mismo tiempo en la calidad de atención al cliente, para h acer que
-      cada turista sea un promotor de nuestros servicios, nuestra cultura y nuestra riqueza naturaleza.
-      Finalmente desarrollamos una comunicación estrecha con las comunidades nativas e indígenas, entrenándolos y creando una cultu ra de
-      protección y conservación del medio ambiente").'.</span>
-            </div>
-            <div class="col-md-12">
-              <h3>NUESTROS NUMEROS DE CUENTA EN DOLARES Y SOLES</h3>
-              <span>'.htmlentities("Banco de Crédito").'</span><br>
-              <span>RASGOS CUSCO TOURS OPERADOR EIRL</span><br>
-              <span>'.htmlentities("Cuenta corriente N°: 192-2291073-1-60  en dólares americanos").'</span><br>
-              <span>'.htmlentities("Cuenta corriente N°: 192-2299257-0-16 en nuevos soles").'</span>
-            </div>
-            <div style="text-align:center" class="col-md-12">
-              <span>'.htmlentities("Dirección: Av. Larco 345 Of. 20 Miraflores").'</span><br>
-              <span>Urb. Mariscal Gamarra H-12 (Costado del Colegio Comercio 41) CUSCO</span><br>
-              <span>WWW.RASGOSDELPERU.COM</span><br>
-            </div>
-          </div>
-          </div>';
 
-// $html .= '<div><h1> Paquete - '.htmlentities($nombre_paquete).'</h1>';
-// $html .= '<h1>'.$imagen_paquete.'</h1>';
-// $html .= '<h1>'.htmlentities($descripcion_paquete).'</h1>';
-// foreach ($itinerario_paquete as $key => $itinerario) {
-//   $html .= '<h1>1-'.$key.'='.$itinerario.'</h1>';
-//     $html .= '<h1>2-'.$itinerario['id_paquete_itinerario'].'</h1>';
-//     $html .= '<h1>2-'.$itinerario['nombre'].'</h1>';
-//     $html .= '<h1>2-'.$itinerario['descripcion'].'</h1>';
-//
-// }
-$html .= '</body>
+<body marginwidth="0" marginheight="0">
+
+<div id="header">
+  <table>
+    <tbody>
+      <tr>
+        <td>
+          <img src="logo.jpg" alt="">
+        </td>
+        <td style="text-align: center;">
+          <p> <span style="font-weight: 600">CENTRAL TELEFÓNICA </span> <br>
+             4478100
+             EXT. 101-105-106 <br>
+             <span style="font-weight: 600">RPM: (#) 94320-2320 (#) 95745-5253 (#) 96452-7499 </span>
+          </p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div id="footer">
+  <div class="firma">
+    <p style="font-size: 11px; color: #333">Dirección: Av. Larco 345 Of. 20 Miraflores <br>
+      Urb. Mariscal Gamarra H-12 (Costado del Colegio Comercio 41) CUSCO <br>
+      <span style="text-decoration: underline;">WWW.RASGOSDELPERU.COM</span> </p>
+  </div>
+  <div class="page-number"></div>
+</div>
+
+<div class="titulo-paquete">
+    <h2>'.$nombre_paquete.'</h2>
+    <h3>'.$descripcion_paquete.'</h3>
+</div>
+<div class="descripcion-paquete">
+  <p class="titulo">
+    ITINERARIO:
+  </p>';
+  foreach ($itinerarios as $key => $value) {
+    $formato .='<div>
+    <p class="titulo">
+      Día '.($key+1).': '.$value["nombre"].'
+    </p>
+    <p class="parrafo">
+      '.$value["descripcion"].'
+    </p>
+    </div>';
+  }
+  $formato .=
+  '<p class="titulo-center">
+    Fin de los servicios
+  </p>
+  <p class="titulo-underline">
+    INCLUYE:
+  </p>
+  <ul class="lista">
+  ';
+  foreach ($array_inclusiones as $key => $value) {
+    $formato .='<li>'.$value.'</li>';
+  }
+  $formato .=
+  '</ul>
+  <p class="titulo-underline">
+    NO INCLUYE:
+  </p>
+  <ul class="lista">';
+  foreach ($array_exclusiones as $key => $value) {
+    $formato .='<li>'.$value.'</li>';
+  }
+  $formato .=
+  '</ul>
+</div>
+
+<hr>
+<br><br>
+<table class="table-precios">
+    <tr>
+        <td class="cabecera1">
+          TARIFA EN DOLARES AMERICANOS
+        </td>
+        <td rowspan="2" class="cabecera2">
+
+        </td>
+        <td colspan="3" class="cabecera2">
+          EXTRANJEROS
+        </td>
+        <td colspan="3" class="cabecera2">
+          NACIONALES
+        </td>
+    </tr>
+    <tr>
+      <td class="cabecera1">
+        HOTEL
+      </td>
+
+      <td class="cabecera2">SWB</td>
+      <td class="cabecera2">DWB</td>
+      <td class="cabecera2">TWB</td>
+
+      <td class="cabecera2">SWB</td>
+      <td class="cabecera2">DWB</td>
+      <td class="cabecera2">TWB</td>
+    </tr>';
+    foreach ($detalle_hoteles as $key => $hotel) {
+      $html="<tr>";
+      $html.="<td>".$hotel['nombre_hotel']."</td>";
+      $html.="<td>Expedition</td>";
+
+      //variables nacionales
+      $v_n1="-";
+      $v_n2="-";
+      $v_n3="-";
+      //variables extranjeras
+      $v_e1="-";
+      $v_e2="-";
+      $v_e3="-";
+
+      foreach ($hotel['nacional'] as $key => $value) {
+        if ($key == 1) {
+          $v_n1="$".$value;
+        }
+        if ($key == 2) {
+          $v_n2="$".$value;
+        }
+        if ($key == 3) {
+          $v_n3="$".$value;
+        }
+      }
+      foreach ($hotel['extranjero'] as $key => $value) {
+        if ($key == 1) {
+          $v_e1="$".$value;
+        }
+        if ($key == 2) {
+          $v_e2="$".$value;
+        }
+        if ($key == 3) {
+          $v_e3="$".$value;
+        }
+      }
+      $html.="<td>".$v_e1."</td>";
+      $html.="<td>".$v_e2."</td>";
+      $html.="<td>".$v_e3."</td>";
+      $html.="<td>".$v_n1."</td>";
+      $html.="<td>".$v_n2."</td>";
+      $html.="<td>".$v_n3."</td>";
+      $html.="</tr>";
+      $formato.=$html;
+    }
+
+  $formato .=
+  '</table>
+</body>
 </html>';
+use Dompdf\Dompdf;
 // Instanciamos un objeto de la clase DOMPDF.
 $pdf = new DOMPDF();
+
+// Cargamos el contenido HTML.
+$pdf->load_html($formato);
 
 // Definimos el tamaño y orientación del papel que queremos.
 $pdf->set_paper("A4", "portrait");
 
-// Cargamos el contenido HTML.
-$pdf->load_html(utf8_decode($html));
 
 // Renderizamos el documento PDF.
 $pdf->render();
 
 // Enviamos el fichero PDF al navegador.
-$pdf->stream('FicheroEjemplo.pdf');
+$pdf->stream();
 
 
 ?>

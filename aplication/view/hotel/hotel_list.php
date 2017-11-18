@@ -17,7 +17,7 @@
                         <th data-field="actions" class="td-actions text-right" data-events="operateEvents" data-formatter="operateFormatter">Actions</th>
                     </thead>
                     <tbody>
-                        <?php 
+                        <?php
                         foreach ($listadoHoteles as $Hotel) {?>
                         <tr>
                             <td></td>
@@ -29,7 +29,7 @@
                             <td><?php echo($Hotel['contacto_nombre']) ?></td>
                             <td></td>
                         </tr>
-                        <?php 
+                        <?php
                         }
                         ?>
                     </tbody>

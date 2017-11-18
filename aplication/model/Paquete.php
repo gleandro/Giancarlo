@@ -36,7 +36,6 @@ class Paquete{
 			if($query3->NumeroRegistros() > 0){
 				while($row3 = $query3->VerRegistro()){
 					$this->_itinerario[] = array(
-							'id_hotel' 		=> $row3['id_hotel'],
 							'id_paquete_itinerario' => $row3['id_paquete_itinerario'],
 							'nombre' => $row3['nombre_paquete_itinerario'],
 							'descripcion' => $row3['descripcion_paquete_itinerario']
@@ -46,9 +45,6 @@ class Paquete{
 
 		}
 	}
-
-
-
 	public function __get($attribute){
 		return	$this->$attribute;
 	}

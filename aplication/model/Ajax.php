@@ -364,20 +364,36 @@ class Ajax{
 
 						$dia =  $_POST['dia'];
 						$dia_actual = (int)($dia-1);
+
 						?>
 						<div class="contenedor-hotel-apend contenedor-servicios-apend-1">
-							<input type="hidden" class="listaservicio-1" value="1"/>
-							<div class="row">
+							<input type="hidden" class="listahotel-1" value="1"/>
+							<div class="row" id="ContentService">
 								<div class="col-md-12">
-									<div class="form-group">
-										<label class="control-label">Hotel<star>*</star></label>
-										<select class="selectpicker" title=".::Seleccione Hotel::." id="hoteles" multiple data-selected-text-format="count" data-style="btn-info btn-fill btn-block" data-size="7" name="hotel[<?php echo $dia_actual ?>][]" style="color: #FFFFFF;background-color: #68B3C8;display: block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #68B3C8;width: 100%;">
-											<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
-												<option value="<?php echo $Hotel['id'] ?>">
-													<?php echo $Hotel['departamento'].' ( '.$Hotel['estrellas'].' estrellas - $'.round($Hotel['precio'], 2).' ) : '.$Hotel['nombre'] ?>
-												</option>
-											<?php } ?>
-										</select>
+									<label class="control-label">Hotel<star>*</star></label>
+									<div class="form-group" style="overflow-y: auto;height: 300px;">
+										<table id="table-hoteles" class="table bootstrap-table-edit table-hoteles" >
+											<thead>
+												<th data-field="state" data-checkbox="true"></th>
+												<th data-field="nombre" data-sortable="true">Nombre</th>
+												<th data-field="departamento" data-sortable="true">Departamento</th>
+												<th data-field="estrellas" data-sortable="true">Estrellas</th>
+												<th data-field="empresa" data-sortable="true">Empresa</th>
+												<th data-field="contacto" data-sortable="true">Id</th>
+											</thead>
+											<tbody>
+												<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
+													<tr>
+														<td></td>
+														<td><?php echo $Hotel['nombre']?></td>
+														<td><?php echo $Hotel['departamento'] ?></td>
+														<td><?php echo $Hotel['estrellas'] ?></td>
+														<td><?php echo $Hotel['empresa'] ?></td>
+														<td class="id"><?php echo $Hotel['id'] ?></td>
+													</tr>
+												<?php } ?>
+											</tbody>
+										</table>
 									</div>
 								</div>
 							</div>
@@ -932,21 +948,36 @@ class Ajax{
 							}
 							$dia =  $_POST['dia'];
 							$dia_actual = (int)($dia-1);
-							include(_includes_."inc.header.php");
+
 							?>
 							<div class="contenedor-servicios-apend contenedor-servicios-apend-1">
 								<input type="hidden" class="listaservicio-1" value="1"/>
 								<div class="row" id="ContentService">
 									<div class="col-md-12">
-										<div class="form-group">
-											<label class="control-label">Lista de servicios<star>*</star></label>
-											<select class="selectpicker" id="servicios" multiple data-selected-text-format="count" name="servicio[<?php echo $dia_actual ?>][]" style="display:block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;background-color: transparent;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #66615B;color: #66615B;-webkit-transition: all 150ms linear;-moz-transition: all 150ms linear;-o-transition: all 150ms linear;-ms-transition: all 150ms linear;transition: all 150ms linear;" data-style="btn btn-default btn-block" title=".::Lista de Servicios::." data-size="7">
-												<?php foreach ($listadoServiciosxDepartamentos as $Servicio) { ?>
-													<option value="<?php echo $Servicio['id'] ?>">
-														<?php echo $Servicio['departamento'].' ( '.$Servicio['nombre_tipo_servicio'].' '.$Servicio['alcance'].' personas - $'.round($Servicio['precio'], 2).' ) : '.$Servicio['nombre'] ?>
-													</option>
-												<?php } ?>
-											</select>
+										<label class="control-label">Lista de servicios<star>*</star></label>
+										<div class="form-group" style="overflow-y: auto;height: 300px;">
+											<table id="table-servicios" class="table bootstrap-table-edit table-servicios">
+												<thead>
+													<th data-field="state" data-checkbox="true"></th>
+													<th data-field="nombre" data-sortable="true">Nombre</th>
+													<th data-field="departamento" data-sortable="true">Departamento</th>
+													<th data-field="estrellas" data-sortable="true">Tipo Servicio</th>
+													<th data-field="empresa" data-sortable="true">Alcanse</th>
+													<th data-field="id" class="text-center">ID</th>
+												</thead>
+												<tbody>
+													<?php foreach ($listadoServiciosxDepartamentos as $Servicio) { ?>
+														<tr>
+															<td></td>
+															<td><?php echo $Servicio['nombre'] ?></td>
+															<td><?php echo $Servicio['departamento']?></td>
+															<td><?php echo $Servicio['nombre_tipo_servicio']?></td>
+															<td><?php echo $Servicio['alcance']?></td>
+															<td class="id"><?php echo $Servicio['id'] ?></td>
+														</tr>
+													<?php } ?>
+												</tbody>
+											</table>
 										</div>
 									</div>
 								</div>
@@ -962,7 +993,6 @@ class Ajax{
 							$dia =  $_POST['dia'];
 
 							$dia_actual = (int)($dia-1);
-
 							$departamentos = $_POST['departamento'];
 
 							if (count($departamentos)>0 || $_POST['id']!='') {
@@ -984,71 +1014,114 @@ class Ajax{
 							}
 							$id_paquete = ($_POST['id']!='')?$_POST['id']:"''";
 							?>
-							<div class="card card-<?php echo $dia ?>">
-								<input type="hidden" class="listaservicio-<?php echo $dia ?>" value="1"/>
-								<div class="card-header">
-									<h4 class="card-title">Día <?php echo $dia ?><span> <a class="text-danger" onclick="eliminarPaquete(<?php echo $dia ?>,'');"><i class="fa fa-trash-o"></i></a></span></h4>
-									<p class="category">Detalle del Día</p>
+							<div class="panel panel-default">
+								<div class="panel-heading" role="tab" id="heading<?php echo $dia ?>">
+									<h4 class="panel-title">
+										<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $dia ?>" aria-expanded="true" aria-controls="collapseOne">
+											dia <?php echo $dia ?>
+										</a>
+									</h4>
 								</div>
-								<div class="card-content">
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label class="control-label">
-													Nombre
-												</label>
-												<input class="form-control" type="text" name="nombreDia[<?php echo $dia-1 ?>][]" placeholder="Nombre para Identificar el Día"/>
+								<div id="collapse<?php echo $dia ?>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading<?php echo $dia ?>">
+									<div class="panel-body">
+										<div class="card card-<?php echo $dia ?>">
+											<input type="hidden" class="listaservicio-<?php echo $dia ?>" value="1"/>
+											<div class="card-header">
+												<h4 class="card-title">Día <?php echo $dia ?><span> <a class="text-danger" onclick="eliminarPaquete(<?php echo $dia ?>,'');"><i class="fa fa-trash-o"></i></a></span></h4>
+												<p class="category">Detalle del Día</p>
 											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label class="control-label">
-													Itinerario
-												</label>
-												<textarea class="form-control" name="descripcion[<?php echo $dia-1 ?>][]" rows="5" cols="5"></textarea>
-											</div>
-										</div>
-									</div>
-									<div class="contenedor-hoteles-apend-container">
-										<div class="contenedor-hoteles-apend contenedor-hoteles-apend-1">
-											<div class="row">
-												<div class="col-md-12">
-													<div class="form-group">
-														<label class="control-label">Hotel<star>*</star></label>
-														<select title=".::Seleccione Hotel::." class="selectpicker form-control" multiple data-selected-text-format="count" data-style="btn-info btn-fill btn-block" data-size="7" name="hotel[<?php echo $dia_actual ?>][]" style="color: #FFFFFF;background-color: #68B3C8;display: block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #68B3C8;width: 100%;">
-															<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
-																<option value="<?php echo $Hotel['id'] ?>">
-																	<?php echo $Hotel['departamento'].' ( '.$Hotel['estrellas'].' estrellas - $'.round($Hotel['precio'], 2).' ) : '.$Hotel['nombre'] ?>
-																</option>
-															<?php } ?>
-														</select>
+											<div class="card-content">
+												<div class="row">
+													<div class="col-md-12">
+														<div class="form-group">
+															<label class="control-label">
+																Nombre
+															</label>
+															<input class="form-control" type="text" name="nombreDia[<?php echo $dia-1 ?>][]" placeholder="Nombre para Identificar el Día"/>
+														</div>
 													</div>
 												</div>
-											</div>
-										</div>
-									</div>
-									<br>
-									<div class="row">
-										<div class="col-md-12">
-											<p class="category">Servicios incluidos en el día.</p>
-										</div>
-									</div>
-									<div class="contenedor-servicios-apend-container">
-										<div class="contenedor-servicios-apend contenedor-servicios-apend-1">
-											<!--<input type="hidden" class="listaservicio-1" value="1"/>-->
-											<div class="row" id="ContentService">
-												<div class="col-md-12">
-													<div class="form-group">
-														<label class="control-label">Lista de servicios<star>*</star></label>
-														<select class="selectpicker form-control" multiple data-selected-text-format="count" name="servicio[<?php echo $dia_actual ?>][]" style="display:block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;background-color: transparent;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #66615B;color: #66615B;-webkit-transition: all 150ms linear;-moz-transition: all 150ms linear;-o-transition: all 150ms linear;-ms-transition: all 150ms linear;transition: all 150ms linear;" data-style="btn btn-default btn-block" title=".::Lista de Servicios::." data-size="7">
-															<?php foreach ($listadoServiciosxDepartamentos as $Servicio) { ?>
-																<option value="<?php echo $Servicio['id'] ?>">
-																	<?php echo $Servicio['departamento'].' ( '.$Servicio['nombre_tipo_servicio'].' '.$Servicio['alcance'].' personas - $'.round($Servicio['precio'], 2).' ) : '.$Servicio['nombre'] ?>
-																</option>
-															<?php } ?>
-														</select>
+												<div class="row">
+													<div class="col-md-12">
+														<div class="form-group">
+															<label class="control-label">
+																Itinerario
+															</label>
+															<textarea class="form-control" name="descripcion[<?php echo $dia-1 ?>][]" rows="5" cols="5"></textarea>
+														</div>
+													</div>
+												</div>
+												<div class="contenedor-hoteles-apend-container">
+													<div class="contenedor-hoteles-apend contenedor-hoteles-apend-1">
+														<div class="row">
+															<div class="col-md-12">
+																<label class="control-label">Hotel<star>*</star></label>
+																<div class="form-group" style="overflow-y: auto;height: 300px;">
+																	<table id="table-hoteles" class="table bootstrap-table-edit new_table table-hoteles">
+																		<thead>
+																			<th data-field="state" data-checkbox="true"></th>
+																			<th data-field="nombre" data-sortable="true">Nombre</th>
+																			<th data-field="departamento" data-sortable="true">Departamento</th>
+																			<th data-field="estrellas" data-sortable="true">Estrellas</th>
+																			<th data-field="empresa" data-sortable="true">Empresa</th>
+																			<th data-field="contacto" data-sortable="true">Id</th>
+																		</thead>
+																		<tbody>
+																			<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
+																				<tr>
+																					<td></td>
+																					<td><?php echo $Hotel['nombre']?></td>
+																					<td><?php echo $Hotel['departamento'] ?></td>
+																					<td><?php echo $Hotel['estrellas'] ?></td>
+																					<td><?php echo $Hotel['empresa'] ?></td>
+																					<td class="id"><?php echo $Hotel['id'] ?></td>
+																				</tr>
+																			<?php } ?>
+																		</tbody>
+																	</table>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<br>
+												<div class="row">
+													<div class="col-md-12">
+														<p class="category">Servicios incluidos en el día.</p>
+													</div>
+												</div>
+												<div class="contenedor-servicios-apend-container">
+													<div class="contenedor-servicios-apend contenedor-servicios-apend-1">
+														<!--<input type="hidden" class="listaservicio-1" value="1"/>-->
+														<div class="row" id="ContentService">
+															<div class="col-md-12">
+																<label class="control-label">Lista de servicios<star>*</star></label>
+																<div class="form-group" style="overflow-y: auto;height: 300px;">
+																	<table id="table-servicios" class="table bootstrap-table-edit new_table table-servicios">
+																		<thead>
+																			<th data-field="state" data-checkbox="true"></th>
+																			<th data-field="nombre" data-sortable="true">Nombre</th>
+																			<th data-field="departamento" data-sortable="true">Departamento</th>
+																			<th data-field="estrellas" data-sortable="true">Tipo Servicio</th>
+																			<th data-field="empresa" data-sortable="true">Alcanse</th>
+																			<th data-field="id" class="text-center">ID</th>
+																		</thead>
+																		<tbody>
+																			<?php foreach ($listadoServiciosxDepartamentos as $Servicio) { ?>
+																				<tr>
+																					<td></td>
+																					<td><?php echo $Servicio['nombre'] ?></td>
+																					<td><?php echo $Servicio['departamento']?></td>
+																					<td><?php echo $Servicio['nombre_tipo_servicio']?></td>
+																					<td><?php echo $Servicio['alcance']?></td>
+																					<td class="id"><?php echo $Servicio['id'] ?></td>
+																				</tr>
+																			<?php } ?>
+																		</tbody>
+																	</table>
+																</div>
+															</div>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -1061,7 +1134,6 @@ class Ajax{
 						function registrarPaqueteAjax(){
 
 							if(isset($_FILES['files']) && ($_FILES['files']['name'] != "")){
-
 								$obj  = new Upload();
 								$destino = "../aplication/webroot/imgs/";
 
@@ -1084,31 +1156,44 @@ class Ajax{
 							}
 
 							$servicio = $_POST['servicio'];
-
 							$nombreDia = $_POST['nombreDia'];
-							$hoteles = $_POST['hotel'];
 							$descripcion = $_POST['descripcion'];
+							$dias = $_POST['dias'];
 
 							foreach ($nombreDia as $key => $nombre) {
-
 								$query2 = new Consulta("INSERT INTO paquetes_itinerarios VALUES('','". $nuevoid ."','41','". $nombre['0'] ."','". $descripcion[$key]['0'] ."') ");
 								$nuevoid2 = $query2->nuevoid();
-								$servicioarray = $servicio[$key];
-								if (is_array($servicioarray) || is_object($servicioarray)) {
-									foreach ($servicioarray as $llave => $value) {
+
+								$hoteles = $dias[$key][0];
+								if (is_array($hoteles) || is_object($hoteles)) {
+									foreach ($hoteles as $llave => $hotel) {
+										if (!empty($hotel) && !is_null($hotel) && $hotel != '') {
+											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $nuevoid2 ."','". $hotel ."') ");
+										}
+									}
+								}
+								$servicios = $dias[$key][1];
+								if (is_array($servicios) || is_object($servicios)) {
+									foreach ($servicios as $llave => $value) {
 										if (!empty($value) && !is_null($value) && $value != '') {
 											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_detalles VALUES('','". $nuevoid2 ."','". $value ."') ");
 										}
 									}
 								}
+							}
 
-								$hotelarray = $hoteles[$key];
-								if (is_array($hotelarray) || is_object($hotelarray)) {
-									foreach ($hotelarray as $llave => $hotel) {
-										if (!empty($hotel) && !is_null($hotel) && $hotel != '') {
-											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $nuevoid2 ."','". $hotel ."') ");
-										}
-									}
+							$incluye = $_POST['incluye'];
+							$excluye = $_POST['excluye'];
+
+							$query4 = new Consulta("DELETE FROM paquetes_inclusiones where id_paquete = '".$nuevoid."'");
+							if (is_array($incluye) || is_object($incluye)) {
+								foreach ($incluye as $key => $value) {
+									$query4 = new Consulta("INSERT INTO paquetes_inclusiones values(null,".$nuevoid.",'".$value."',1)");
+								}
+							}
+							if (is_array($excluye) || is_object($excluye)) {
+								foreach ($excluye as $key => $value) {
+									$query4 = new Consulta("INSERT INTO paquetes_inclusiones values(null,".$nuevoid.",'".$value."',2)");
 								}
 							}
 						}
@@ -1152,32 +1237,48 @@ class Ajax{
 									$query = new Consulta("DELETE FROM paquetes_itinerarios_hoteles WHERE id_paquete_itinerario = '".$row['id_paquete_itinerario']."' ");
 								}
 								$query = new Consulta("DELETE FROM paquetes_itinerarios WHERE id_paquete = '".$id_paquete."' ");
-
 								$servicio = $_POST['servicio'];
 								$nombreDia = $_POST['nombreDia'];
 								$hoteles = $_POST['hotel'];
 								$descripcion = $_POST['descripcion'];
+								$dias = $_POST['dias'];
 								foreach ($nombreDia as $key => $nombre) {
 									$query2 = new Consulta("INSERT INTO paquetes_itinerarios VALUES('','". $id_paquete ."','41','". $nombre['0'] ."','". $descripcion[$key]['0'] ."') ");
 									$nuevoid2 = $query2->nuevoid();
-									$servicioarray = $servicio[$key];
-									if (is_array($servicioarray) || is_object($servicioarray)){
-										foreach ($servicioarray as $llave => $value) {
-											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_detalles VALUES('','". $nuevoid2 ."','". $value ."') ");
-										}
-									}
-									$hotelarray = $hoteles[$key];
-									if (is_array($hotelarray) || is_object($hotelarray)){
-										foreach ($hotelarray as $llave => $hotel) {
+
+									$hoteles = $dias[$key][0];
+									if (is_array($hoteles) || is_object($hoteles)){
+										foreach ($hoteles as $llave => $hotel) {
 											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $nuevoid2 ."','". $hotel ."') ");
 										}
 									}
-								}
+									$servicios = $dias[$key][1];
+									if (is_array($servicios) || is_object($servicios)){
+										foreach ($servicios as $llave => $value) {
+											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_detalles VALUES('','". $nuevoid2 ."','". $value ."') ");
+										}
+									}
 
+								}
+								$incluye = $_POST['incluye'];
+								$excluye = $_POST['excluye'];
+
+								$query4 = new Consulta("DELETE FROM paquetes_inclusiones where id_paquete = '".$id_paquete."'");
+								if (is_array($incluye) || is_object($incluye)) {
+									foreach ($incluye as $key => $value) {
+										$query4 = new Consulta("INSERT INTO paquetes_inclusiones values(null,".$id_paquete.",'".$value."',1)");
+									}
+								}
+								if (is_array($excluye) || is_object($excluye)) {
+									foreach ($excluye as $key => $value) {
+										$query4 = new Consulta("INSERT INTO paquetes_inclusiones values(null,".$id_paquete.",'".$value."',2)");
+									}
+								}
 							}
 
 							function borrarPaqueteAjax(){
 								$id = $_GET['id'];
+
 								$query_paquetes_itinerarios = new Consulta("SELECT id_paquete_itinerario FROM paquetes_itinerarios WHERE id_paquete = '".$id."' ");
 
 								while($row = $query_paquetes_itinerarios->VerRegistro()) {
@@ -1186,7 +1287,9 @@ class Ajax{
 								}
 								$query = new Consulta("DELETE FROM paquetes_itinerarios WHERE id_paquete = '".$id."' ");
 								$query = new Consulta("DELETE FROM paquetes_destinos WHERE id_paquete = '".$id."' ");
+								$query = new Consulta("DELETE FROM paquetes_inclusiones WHERE id_paquete = '".$id."' ");
 								$query = new Consulta("DELETE FROM paquetes WHERE id_paquete = '".$id."' ");
+
 							}
 
 							function deleteDiaPaqueteAjax(){

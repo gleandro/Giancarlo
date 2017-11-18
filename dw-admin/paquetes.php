@@ -37,13 +37,18 @@ if ($_GET['id']) {
     $listadoServiciosxDepartamentos = $objServicios->getServiciosxDepartamentos($ubicaciones);
 
     $listadoHotelesxDepartamentos = $objHoteles->getHotelesxDepartamentos($ubicaciones);
+
+    $array_incluye = $objPaquetes->getInclusiones($_GET['id'],1);
+    $array_excluye = $objPaquetes->getInclusiones($_GET['id'],2);
+
 }
+
 ?>
 <?php include 'menu.php'; ?>
     <?php include 'nav.php'; ?>
         <div class="content">
             <div class="container-fluid">
-              
+
                 <!-- PINTA EL TEMPLATE -->
                 <?php include _view_paquete_.$template; ?>
                 <!-- PINTA EL TEMPLATE -->
