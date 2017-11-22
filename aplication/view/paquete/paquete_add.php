@@ -60,10 +60,9 @@
                 </div>
               </div>
               <div class="tab-pane" id="tab2">
-                <h5 class="text-center">Complete el Itinerario para el Paquete</h5>
                 <div class="row">
-                  <div class="col-md-10 col-md-offset-1 text-right">
-                    <a class="text-success" style="cursor: pointer;" onclick="addOneMoreDay()">Agregar un día más al itenerario <span><i class="fa fa-plus-square"></i></span></a>
+                  <div class="col-md-10 col-md-offset-1 text-right" style="padding-top:2%">
+                    <a class="btn btn-info btn-fill" style="cursor: pointer;" onclick="addOneMoreDay()">&nbsp;&nbsp;&nbsp;&nbsp;Agregar día&nbsp;&nbsp;&nbsp;&nbsp;</a>
                   </div>
                 </div>
                 <div class="row">
@@ -71,11 +70,11 @@
                     <input type="hidden" class="card-dia" value="1"/>
                     <div class="contenedor-card-apend-container">
                       <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                          <div class="panel-heading" role="tab" id="heading1">
+                        <div class="panel panel-default" style="border: 1px;border-color: #0003;border-style: solid;background-color:white">
+                          <div class="panel-heading" style="background-color:white" role="tab" id="heading1">
                             <h4 class="panel-title">
                               <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="false" aria-controls="collapseOne">
-                                dia 1
+                                <h4 class="card-title">Día 1</h4>
                               </a>
                             </h4>
                           </div>
@@ -83,10 +82,6 @@
                             <div class="panel-body">
                               <div class="card card-1">
                                 <input type="hidden" class="listaservicio-1" value="1"/>
-                                <div class="card-header">
-                                  <h4 class="card-title">Día 1<span> <a class="text-danger" onclick="eliminarPaquete(1,'');"><i class="fa fa-trash-o"></i></a></span></h4>
-                                  <p class="category">Detalle del Día</p>
-                                </div>
                                 <div class="card-content">
                                   <div class="row">
                                     <div class="col-md-12">
@@ -111,11 +106,6 @@
                                   <div class="contenedor-hoteles-apend-container">
                                   </div>
                                   <br>
-                                  <div class="row">
-                                    <div class="col-md-12">
-                                      <p class="category">Servicios incluidos en el día.</p>
-                                    </div>
-                                  </div>
                                   <div class="contenedor-servicios-apend-container">
                                   </div>
                                 </div>

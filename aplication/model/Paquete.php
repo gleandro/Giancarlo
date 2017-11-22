@@ -14,7 +14,7 @@ class Paquete{
 
 		if($this->_id > 0){
 
-			$sql   = "SELECT * FROM paquetes WHERE id_paquete = '".$this->_id."' ";
+			$sql   = "SELECT * FROM paquetes WHERE id_paquete = '".$this->_id."' order by id_paquete asc";
 
 			$query = new Consulta($sql);
 
@@ -31,7 +31,7 @@ class Paquete{
 				$this->_departamento[] =  $row2['id_departamento'];
 			}
 
-			$sql3 = "SELECT * FROM paquetes_itinerarios WHERE id_paquete = '".$this->_id."' " ;
+			$sql3 = "SELECT * FROM paquetes_itinerarios WHERE id_paquete = '".$this->_id."' order by id_paquete_itinerario asc" ;
 			$query3 = new Consulta($sql3);
 			if($query3->NumeroRegistros() > 0){
 				while($row3 = $query3->VerRegistro()){

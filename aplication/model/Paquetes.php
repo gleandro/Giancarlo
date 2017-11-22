@@ -88,5 +88,21 @@ class Paquetes{
 				return $datos;
 			}
 
+			public function getServiciosxPaquete($id){
+				$sql = "SELECT s.* from paquetes_itinerarios pi
+							inner join paquetes_itinerarios_detalles pid using(id_paquete_itinerario)
+							inner join servicios s using(id_servicio)
+							where pi.id_paquete = ".$id;
+				$query = new Consulta($sql);
+				$result['precio_nacional']=0;
+				$result['precio_extranjero']=0;
+				while ($row = $query->VerRegistro()) {
+					$result['precio_nacional'] += (int)$row['precio_nacional_servicio'];
+					$result['precio_extranjero'] += (int)$row['precio_extranjero_servicio'];
+				}
+				return $result;
+
+			}
+
 		}
 	?>

@@ -71,10 +71,9 @@
               </div>
             </div>
             <div class="tab-pane" id="tab2">
-              <h5 class="text-center">Complete el Itinerario para el Paquete</h5>
               <div class="row">
-                <div class="col-md-10 col-md-offset-1 text-right">
-                  <a class="text-success" style="cursor: pointer;" onclick="addOneMoreDayEdit(<?php echo $_GET['id'] ?>)">Agregar un día más al itenerario <span><i class="fa fa-plus-square"></i></span></a>
+                <div class="col-md-10 col-md-offset-1 text-right" style="padding-top:2%">
+                  <a class="btn btn-info btn-fill" style="cursor: pointer;" onclick="addOneMoreDayEdit(<?php echo $_GET['id'] ?>)">&nbsp;&nbsp;&nbsp;&nbsp;Agregar dia&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </div>
               </div>
               <div class="row">
@@ -85,20 +84,17 @@
                       <?php $i=1;foreach ($objPaquete->__get('_itinerario') as $key => $itinerario) {
                         $itinerario_hoteles = $objPaquetes->getHotelesxItinerario($itinerario['id_paquete_itinerario']);
                         ?>
-                        <div class="panel panel-default">
-                          <div class="panel-heading" role="tab" id="heading<?php echo (int)($key+1); ?>">
+                        <div class="panel panel-default" style="border: 1px;border-color: #0003;border-style: solid;background-color:white">
+                          <div class="panel-heading" style="background-color:white" role="tab" id="heading<?php echo (int)($key+1); ?>">
                             <h4 class="panel-title">
                               <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo (int)($key+1); ?>" aria-expanded="false" aria-controls="collapseOne">
-                                dia <?php echo (int)($key+1); ?>
+                                <h4 class="card-title">Día <?php echo (int)($key+1);?><span> <a class="text-danger" onclick="eliminarPaquete(<?php echo (int)($key+1) ?>,<?php echo $itinerario['id_paquete_itinerario'] ?>);"><i class="fa fa-trash-o"></i></a></span></h4>
                               </a>
                             </h4>
                           </div>
                           <div id="collapse<?php echo (int)($key+1); ?>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading<?php echo (int)($key+1) ?>">
                             <div class="panel-body">
                               <div class="card card-<?php echo (int)($key+1) ?>">
-                                <div class="card-header">
-                                  <h4 class="card-title">Día <?php echo (int)($key+1);?><span> <a class="text-danger" onclick="eliminarPaquete(<?php echo (int)($key+1) ?>,<?php echo $itinerario['id_paquete_itinerario'] ?>);"><i class="fa fa-trash-o"></i></a></span></h4>
-                                </div>
                                 <div class="card-content">
                                   <div class="row">
                                     <div class="col-md-12">
@@ -125,7 +121,7 @@
                                     <div class="contenedor-hotel-apend contenedor-servicios-apend-<?php echo $llave+1 ?>">
                                       <div class="row">
                                         <div class="col-md-12">
-                                          <label class="control-label">Hotel<star>*</star></label>
+                                          <label class="control-label">Hoteles<star>*</star></label>
                                           <div class="form-group" style="overflow-y: auto;height: 300px;">
                                             <table id="table-hoteles" class="table bootstrap-table-edit table-hoteles" >
                                               <thead>
@@ -180,18 +176,13 @@
                                             </div>
                                           </div>
                                           <br>
-                                          <div class="row">
-                                            <div class="col-md-12">
-                                              <p class="category">Servicios incluidos en el día.</p>
-                                            </div>
-                                          </div>
                                           <?php $servicios = Paquetes::getPaquetesItinerarioDetalle($itinerario['id_paquete_itinerario']); ?>
                                           <div class="contenedor-servicios-apend-container">
                                             <input type="hidden" class="listaservicio-<?php echo (int)($key+1) ?>" value="<?php echo count($servicios) ?>"/>
                                             <div class="contenedor-servicios-apend contenedor-servicios-apend-<?php echo $llave+1 ?>">
                                               <div class="row">
                                                 <div class="col-md-12">
-                                                  <label class="control-label">Lista de servicios<star>*</star></label>
+                                                  <label class="control-label">Servicios<star>*</star></label>
                                                   <div class="form-group" style="overflow-y: auto;height: 300px;">
                                                     <table id="table-servicios" class="table bootstrap-table-edit table-servicios">
                                                       <thead>

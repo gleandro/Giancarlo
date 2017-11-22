@@ -23,6 +23,8 @@ $array_exclusiones = $paquetes->getInclusiones($id,2);
 
 $hoteles = $paquetes->getHotelesxDepartamento_2($id);
 
+$precios_servicios = $paquetes->getServiciosxPaquete($id);
+
 $h1_n;
 $h1_e;
 $h2_n;
@@ -31,8 +33,6 @@ $h3_n;
 $h3_e;
 
 $contador =1;
-
-
 foreach ($hoteles as $key => $value) {
   if ($contador == 1) {
     $id = $value['id_hotel'];
@@ -44,20 +44,20 @@ foreach ($hoteles as $key => $value) {
   if ($value['id_habitacion'] == 1) {
     $h1_n=$value['precio_nacional_persona'];
     $h1_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$id]['nacional'][1]=$h1_n;
-    $detalle_hoteles[$id]['extranjero'][1]=$h1_e;
+    $detalle_hoteles[$id]['nacional'][1]=$h1_n+$precios_servicios['precio_nacional'];
+    $detalle_hoteles[$id]['extranjero'][1]=$h1_e+$precios_servicios['precio_extranjero'];
   }
   if ($value['id_habitacion'] == 2) {
     $h2_n=$value['precio_nacional_persona'];
     $h2_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$id]['nacional'][2]=$h2_n;
-    $detalle_hoteles[$id]['extranjero'][2]=$h2_e;
+    $detalle_hoteles[$id]['nacional'][2]=$h2_n+$precios_servicios['precio_nacional'];
+    $detalle_hoteles[$id]['extranjero'][2]=$h2_e+$precios_servicios['precio_extranjero'];
   }
   if ($value['id_habitacion'] == 3) {
     $h3_n=$value['precio_nacional_persona'];
     $h3_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$id]['nacional'][3]=$h3_n;
-    $detalle_hoteles[$id]['extranjero'][3]=$h3_e;
+    $detalle_hoteles[$id]['nacional'][3]=$h3_n+$precios_servicios['precio_nacional'];
+    $detalle_hoteles[$id]['extranjero'][3]=$h3_e+$precios_servicios['precio_extranjero'];
   }
   $contador++;
 }

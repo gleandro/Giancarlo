@@ -370,7 +370,7 @@ class Ajax{
 							<input type="hidden" class="listahotel-1" value="1"/>
 							<div class="row" id="ContentService">
 								<div class="col-md-12">
-									<label class="control-label">Hotel<star>*</star></label>
+									<label class="control-label">Hoteles<star>*</star></label>
 									<div class="form-group" style="overflow-y: auto;height: 300px;">
 										<table id="table-hoteles" class="table bootstrap-table-edit table-hoteles" >
 											<thead>
@@ -495,7 +495,7 @@ class Ajax{
 							<div class="row">
 								<div class="col-md-12">
 									<div class="form-group">
-										<label class="control-label">Hotel<star>*</star></label>
+										<label class="control-label">Hoteles<star>*</star></label>
 										<select class="selectpicker form-control" onchange="addHabitaciones(<?php echo $dia_actual ?>,<?php echo $itemhotel ?>,this.value)" data-style="btn-info btn-fill btn-block" data-size="7" name="hotel[<?php echo $dia_actual ?>][<?php echo $itemhotel ?>][]" style="color: #FFFFFF;background-color: #68B3C8;display: block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #68B3C8;width: 100%;">
 											<option value="">.::Seleccione Hotel::.</option>
 											<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
@@ -571,7 +571,7 @@ class Ajax{
 							<div class="row" id="ContentService">
 								<div class="col-md-12">
 									<div class="form-group">
-										<label class="control-label">Lista de servicios<star>*</star></label>
+										<label class="control-label">Servicios<star>*</star></label>
 										<select class="selectpicker form-control" name="servicio[<?php echo $dia_actual ?>][]" style="display:block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;background-color: transparent;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #66615B;color: #66615B;-webkit-transition: all 150ms linear;-moz-transition: all 150ms linear;-o-transition: all 150ms linear;-ms-transition: all 150ms linear;transition: all 150ms linear;" data-style="btn btn-default btn-block" title=".::Lista de Servicios::." data-size="7">
 											<option value="">.::Lista de Servicios::.</option>
 											<?php foreach ($listadoServiciosxDepartamentos as $Servicio) { ?>
@@ -655,7 +655,7 @@ class Ajax{
 										<div class="row">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label class="control-label">Hotel<star>*</star></label>
+													<label class="control-label">Hoteles<star>*</star></label>
 													<select class="selectpicker form-control" onchange="addHabitaciones(<?php echo $dia_actual ?>,1,this.value)" data-style="btn-info btn-fill btn-block" data-size="7" name="hotel[<?php echo $dia_actual ?>][1][]" style="color: #FFFFFF;background-color: #68B3C8;display: block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #68B3C8;width: 100%;">
 														<option value="">.::Seleccione un Hotel::.</option>
 														<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
@@ -677,20 +677,13 @@ class Ajax{
 									</div>
 								</div>
 								<br>
-
-								<div class="row">
-									<div class="col-md-12">
-										<p class="category">Servicios incluidos en el día.</p>
-									</div>
-								</div>
-
 								<div class="contenedor-servicios-apend-container">
 									<div class="contenedor-servicios-apend contenedor-servicios-apend-1">
 										<!--<input type="hidden" class="listaservicio-1" value="1"/>-->
 										<div class="row" id="ContentService">
 											<div class="col-md-12">
 												<div class="form-group">
-													<label class="control-label">Lista de servicios<star>*</star></label>
+													<label class="control-label">Servicios<star>*</star></label>
 													<select class="selectpicker form-control" name="servicio[<?php echo $dia_actual ?>][]" style="display:block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;background-color: transparent;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #66615B;color: #66615B;-webkit-transition: all 150ms linear;-moz-transition: all 150ms linear;-o-transition: all 150ms linear;-ms-transition: all 150ms linear;transition: all 150ms linear;" data-style="btn btn-default btn-block" title=".::Lista de Servicios::." data-size="7">
 														<option value="">.::Lista de Servicios::.</option>
 														<?php foreach ($listadoServiciosxDepartamentos as $Servicio) { ?>
@@ -954,7 +947,7 @@ class Ajax{
 								<input type="hidden" class="listaservicio-1" value="1"/>
 								<div class="row" id="ContentService">
 									<div class="col-md-12">
-										<label class="control-label">Lista de servicios<star>*</star></label>
+										<label class="control-label">Servicios<star>*</star></label>
 										<div class="form-group" style="overflow-y: auto;height: 300px;">
 											<table id="table-servicios" class="table bootstrap-table-edit table-servicios">
 												<thead>
@@ -1014,11 +1007,11 @@ class Ajax{
 							}
 							$id_paquete = ($_POST['id']!='')?$_POST['id']:"''";
 							?>
-							<div class="panel panel-default">
-								<div class="panel-heading" role="tab" id="heading<?php echo $dia ?>">
+							<div class="panel panel-default" style="border: 1px;border-color: #0003;border-style: solid;background-color:white">
+								<div class="panel-heading" style="background-color:white" role="tab" id="heading<?php echo $dia ?>">
 									<h4 class="panel-title">
 										<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $dia ?>" aria-expanded="true" aria-controls="collapseOne">
-											dia <?php echo $dia ?>
+											<h4 class="card-title">Día <?php echo $dia ?><span> <a class="text-danger" onclick="eliminarPaquete(<?php echo $dia ?>,'');"><i class="fa fa-trash-o"></i></a></span></h4>
 										</a>
 									</h4>
 								</div>
@@ -1026,10 +1019,6 @@ class Ajax{
 									<div class="panel-body">
 										<div class="card card-<?php echo $dia ?>">
 											<input type="hidden" class="listaservicio-<?php echo $dia ?>" value="1"/>
-											<div class="card-header">
-												<h4 class="card-title">Día <?php echo $dia ?><span> <a class="text-danger" onclick="eliminarPaquete(<?php echo $dia ?>,'');"><i class="fa fa-trash-o"></i></a></span></h4>
-												<p class="category">Detalle del Día</p>
-											</div>
 											<div class="card-content">
 												<div class="row">
 													<div class="col-md-12">
@@ -1055,7 +1044,7 @@ class Ajax{
 													<div class="contenedor-hoteles-apend contenedor-hoteles-apend-1">
 														<div class="row">
 															<div class="col-md-12">
-																<label class="control-label">Hotel<star>*</star></label>
+																<label class="control-label">Hoteles<star>*</star></label>
 																<div class="form-group" style="overflow-y: auto;height: 300px;">
 																	<table id="table-hoteles" class="table bootstrap-table-edit new_table table-hoteles">
 																		<thead>
@@ -1085,17 +1074,12 @@ class Ajax{
 													</div>
 												</div>
 												<br>
-												<div class="row">
-													<div class="col-md-12">
-														<p class="category">Servicios incluidos en el día.</p>
-													</div>
-												</div>
 												<div class="contenedor-servicios-apend-container">
 													<div class="contenedor-servicios-apend contenedor-servicios-apend-1">
 														<!--<input type="hidden" class="listaservicio-1" value="1"/>-->
 														<div class="row" id="ContentService">
 															<div class="col-md-12">
-																<label class="control-label">Lista de servicios<star>*</star></label>
+																<label class="control-label">Servicios<star>*</star></label>
 																<div class="form-group" style="overflow-y: auto;height: 300px;">
 																	<table id="table-servicios" class="table bootstrap-table-edit new_table table-servicios">
 																		<thead>

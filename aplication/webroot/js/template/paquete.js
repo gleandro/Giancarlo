@@ -132,6 +132,9 @@ $().ready(function(){
         return false;
       }
 
+      $(".panel-default .text-danger").hide();
+      $(".panel-default .text-danger").last().show();
+
       var datos = $('.table-hoteles').find(".seleccionado");
       for (var i = 0; i < datos.length; i++) {
         $(datos[i]).parents(".table-hoteles").bootstrapTable('check', parseInt(datos[i].id));
@@ -381,9 +384,6 @@ function addDiaServicioPaquete(dia,id){
     beforeSend: function(){
     },
     success: function(datos){
-      if(id.length == 0){
-        $(".card-dia").val(dia);
-      }
       $(".panel-group").append(datos);
         $('.bootstrap-table-edit').bootstrapTable({
           toolbar: ".toolbar",
@@ -397,6 +397,15 @@ function addDiaServicioPaquete(dia,id){
 
           }
         });
+        if(id.length == 0){
+          $(".card-dia").val(dia);
+          var hoteles = $(".card-1").find("#table-hoteles .selected");
+          for (var i = 0; i < hoteles.length; i++) {
+            $(".card-"+dia).find("#table-hoteles").bootstrapTable('check', $(hoteles[i]).attr('data-index'));
+          }
+        }
+        $(".panel-default .text-danger").hide();
+        $(".panel-default .text-danger").last().show();
     }
   });
 }
@@ -408,8 +417,8 @@ function deletePaqueteItinerario(id){
     beforeSend: function(){
     },
     success: function(datos){
-      //alert(datos);
-      //$(".contenedor-card-apend-container").append(datos);
+      var dias = parseInt($(".card-dia").val());
+      $(".card-dia").val(dias-1);
     }
   });
 }
@@ -417,9 +426,10 @@ function addPaquete(){
   location.href="paquetes.php?action=add";
 }
 function addOneMoreDay() {
-  numeroDia++;
-  //$( ".card-"+numeroDia).removeClass( "hidden" );
-  addDiaServicioPaquete(numeroDia,'');
+  var dia = $(".card-dia").val();
+  var diatem = parseInt(dia)+1;
+  $(".card-dia").val(diatem);
+  addDiaServicioPaquete(diatem,'');
 }
 function addOneMoreDayEdit(id) {
   var dia = $(".card-dia").val();
