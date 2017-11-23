@@ -313,15 +313,22 @@ class Ajax{
 					}
 					function cambiarHotelTarifaAjax()
 					{
+
 						$idtarifa = $_GET['edittarifa'];
 						$edittipo = $_GET['edittipo'];
 						$edithabitacion = $_GET['edithabitacion'];
 						$editprecio = $_GET['editprecio'];
 
 						if ($edittipo == 1) {
-							$query = new Consulta("UPDATE hoteles_tarifas SET precio_nacional = ".$editprecio."	WHERE id_hotel_tarifa = ".$idtarifa);
+							$query = new Consulta("UPDATE hoteles_tarifas
+								SET precio_nacional = ".$editprecio.",
+								id_habitacion = ".$edithabitacion."
+								WHERE id_hotel_tarifa = ".$idtarifa);
 						}else {
-							$query = new Consulta("UPDATE hoteles_tarifas SET precio_extranjero = ".$editprecio." WHERE id_hotel_tarifa = ".$idtarifa);
+							$query = new Consulta("UPDATE hoteles_tarifas
+								SET precio_extranjero = ".$editprecio.",
+								id_habitacion = ".$edithabitacion."
+								WHERE id_hotel_tarifa = ".$idtarifa);
 						}
 					}
 					function borrarHotelTarifaAjax()
