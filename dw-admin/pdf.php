@@ -13,7 +13,7 @@ $imagen_paquete = $paquete->__get('_imagen');
 $descripcion_paquete = $paquete->__get('_descripcion');
 $itinerarios = $paquete->__get('_itinerario');
 $cantidad_itinerario = count($paquete->__get('_itinerario'));
-
+$inclusion = $paquete->__get('_utilidad');
 $paquetes = new Paquetes();
 
 $array_itinerario = array();
@@ -44,20 +44,20 @@ foreach ($hoteles as $key => $value) {
   if ($value['id_habitacion'] == 1) {
     $h1_n=$value['precio_nacional_persona'];
     $h1_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$id]['nacional'][1]=$h1_n+$precios_servicios['precio_nacional'];
-    $detalle_hoteles[$id]['extranjero'][1]=$h1_e+$precios_servicios['precio_extranjero'];
+    $detalle_hoteles[$id]['nacional'][1]=($h1_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
+    $detalle_hoteles[$id]['extranjero'][1]=($h1_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
   }
   if ($value['id_habitacion'] == 2) {
     $h2_n=$value['precio_nacional_persona'];
     $h2_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$id]['nacional'][2]=$h2_n+$precios_servicios['precio_nacional'];
-    $detalle_hoteles[$id]['extranjero'][2]=$h2_e+$precios_servicios['precio_extranjero'];
+    $detalle_hoteles[$id]['nacional'][2]=($h2_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
+    $detalle_hoteles[$id]['extranjero'][2]=($h2_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
   }
   if ($value['id_habitacion'] == 3) {
     $h3_n=$value['precio_nacional_persona'];
     $h3_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$id]['nacional'][3]=$h3_n+$precios_servicios['precio_nacional'];
-    $detalle_hoteles[$id]['extranjero'][3]=$h3_e+$precios_servicios['precio_extranjero'];
+    $detalle_hoteles[$id]['nacional'][3]=($h3_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
+    $detalle_hoteles[$id]['extranjero'][3]=($h3_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
   }
   $contador++;
 }
@@ -246,8 +246,12 @@ hr {
   </p>
   <ul class="lista">
   ';
-  foreach ($array_inclusiones as $key => $value) {
-    $formato .='<li>'.$value.'</li>';
+  if (is_array($array_inclusiones) || is_object($array_inclusiones)) {
+    foreach ($array_inclusiones as $key => $value) {
+      $formato .='<li>'.$value.'</li>';
+    }
+  }else {
+    $formato .='<li>No existen Inclusiones</li>';
   }
   $formato .=
   '</ul>
@@ -255,8 +259,12 @@ hr {
     NO INCLUYE:
   </p>
   <ul class="lista">';
-  foreach ($array_exclusiones as $key => $value) {
-    $formato .='<li>'.$value.'</li>';
+  if (is_array($array_inclusiones) || is_object($array_inclusiones)) {
+    foreach ($array_exclusiones as $key => $value) {
+      $formato .='<li>'.$value.'</li>';
+    }
+  }else {
+    $formato .='<li>No existen Exclusiones</li>';
   }
   $formato .=
   '</ul>

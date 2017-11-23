@@ -56,6 +56,15 @@
                 <div class="col-md-10 col-md-offset-1">
                   <div class="form-group">
                     <label class="control-label">
+                      Utilidad
+                    </label>
+                    <input class="form-control" type="number" min="0" max="100" name="utilidad_paquete" id="" value="<?php echo $objPaquete->__get('_utilidad') ?>"></input>
+                  </div>
+                </div>
+
+                <div class="col-md-10 col-md-offset-1">
+                  <div class="form-group">
+                    <label class="control-label">
                       Subir imagen
                     </label>
                     <input class="form-control" type="file" name="files" id="files"/>

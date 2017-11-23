@@ -390,6 +390,7 @@ function addDiaServicioPaquete(dia,id){
           clickToSelect: true,
           pagination: true,
           pageSize: 1000,
+          search: true,
           formatShowingRows: function(pageFrom, pageTo, totalRows){
             //do nothing here, we don't want to show the text "showing x of y from..."
           },

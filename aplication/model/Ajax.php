@@ -379,7 +379,8 @@ class Ajax{
 												<th data-field="departamento" data-sortable="true">Departamento</th>
 												<th data-field="estrellas" data-sortable="true">Estrellas</th>
 												<th data-field="empresa" data-sortable="true">Empresa</th>
-												<th data-field="contacto" data-sortable="true">Id</th>
+												<th data-field="precio" data-sortable="true">Precio Extranjero</th>
+												<th data-field="id" data-sortable="true">Id</th>
 											</thead>
 											<tbody>
 												<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
@@ -389,6 +390,7 @@ class Ajax{
 														<td><?php echo $Hotel['departamento'] ?></td>
 														<td><?php echo $Hotel['estrellas'] ?></td>
 														<td><?php echo $Hotel['empresa'] ?></td>
+														<td><?php echo number_format($Hotel['precio_e'], 2, '.', ''); ?></td>
 														<td class="id"><?php echo $Hotel['id'] ?></td>
 													</tr>
 												<?php } ?>
@@ -955,7 +957,8 @@ class Ajax{
 													<th data-field="nombre" data-sortable="true">Nombre</th>
 													<th data-field="departamento" data-sortable="true">Departamento</th>
 													<th data-field="estrellas" data-sortable="true">Tipo Servicio</th>
-													<th data-field="empresa" data-sortable="true">Alcanse</th>
+													<th data-field="precio_e" data-sortable="true">Precio Extranjero</th>
+													<th data-field="alcanse" data-sortable="true">Alcanse</th>
 													<th data-field="id" class="text-center">ID</th>
 												</thead>
 												<tbody>
@@ -965,6 +968,7 @@ class Ajax{
 															<td><?php echo $Servicio['nombre'] ?></td>
 															<td><?php echo $Servicio['departamento']?></td>
 															<td><?php echo $Servicio['nombre_tipo_servicio']?></td>
+															<td><?php echo number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
 															<td><?php echo $Servicio['alcance']?></td>
 															<td class="id"><?php echo $Servicio['id'] ?></td>
 														</tr>
@@ -1129,7 +1133,7 @@ class Ajax{
 								$obj->upload_imagen($name, $temp, $destino, $type, $size);
 							}
 
-							$query = new Consulta("INSERT INTO paquetes values('','".$_POST['nombre_paquete']."','".$_POST['descripcion_paquete']."','".$name."','')");
+							$query = new Consulta("INSERT INTO paquetes values('','".$_POST['nombre_paquete']."','".$_POST['descripcion_paquete']."','".$name."','','".$_POST['utilidad_paquete']."')");
 							$nuevoid = $query->nuevoid();
 
 							$departamento = $_POST['departamento'];
@@ -1203,6 +1207,7 @@ class Ajax{
 							$query = new Consulta("UPDATE paquetes SET
 								".$update."
 								nombre_paquete = '".$_POST['nombre_paquete']."',
+								utilidad_paquete = '".$_POST['utilidad_paquete']."',
 								descripcion_paquete = '".$_POST['descripcion_paquete']."'
 								WHERE id_paquete = '".$id_paquete."' ");
 

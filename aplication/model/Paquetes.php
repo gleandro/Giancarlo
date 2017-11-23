@@ -56,24 +56,15 @@ class Paquetes{
 			}
 
 			public function getHotelesxDepartamento_2($id){
-				$sql = "SELECT * FROM paquetes_destinos where id_paquete = ".$id ;
-				$query = new Consulta($sql);
-				$count = 1;
-				$adicional ="(";
-				while ($row = $query->VerRegistro()) {
-					if ($count == 1) {
-						$adicional .= $row['id_departamento'];
-					}else {
-						$adicional .= ",".$row['id_departamento'];
-					}
-					$count++;
-				}
-				$adicional .=")";
 				$sql = "SELECT ht.id_hotel,h.nombre_hotel,ha.id_habitacion,ROUND(ht.precio_nacional/ha.cantidad_habitacion,2) 'precio_nacional_persona',
 				ROUND(ht.precio_extranjero/ha.cantidad_habitacion,2) 'precio_extranjero_persona',ha.nombre_habitacion
 				FROM hoteles_tarifas ht inner join habitaciones ha using(id_habitacion) inner join hoteles h using(id_hotel)
 				where id_habitacion IN (1,2,3) and id_hotel
-				IN (select id_hotel from hoteles where id_departamento IN ".$adicional.") order by id_hotel,ha.id_habitacion;";
+				IN (select DISTINCT id_hotel from paquetes p
+				inner join paquetes_itinerarios pit USING(id_paquete)
+				inner join paquetes_itinerarios_hoteles pih USING(id_paquete_itinerario)
+				inner join hoteles h USING(id_hotel)
+				where p.id_paquete = ".$id." ) order by id_hotel,ha.id_habitacion;";
 				$resultado = new Consulta($sql);
 				while ($row = $resultado->VerRegistro()) {
 					$datos[] = array(
@@ -89,10 +80,10 @@ class Paquetes{
 			}
 
 			public function getServiciosxPaquete($id){
-				$sql = "SELECT s.* from paquetes_itinerarios pi
+				$sql = "SELECT s.* from paquetes_itinerarios pit
 							inner join paquetes_itinerarios_detalles pid using(id_paquete_itinerario)
 							inner join servicios s using(id_servicio)
-							where pi.id_paquete = ".$id;
+							where pit.id_paquete = ".$id;
 				$query = new Consulta($sql);
 				$result['precio_nacional']=0;
 				$result['precio_extranjero']=0;

@@ -6,6 +6,7 @@ class Paquete{
 	$_imagen,
 	$_departamento,
 	$_itinerario,
+	$_utilidad,
 	$_descripcion;
 
 	public function __construct($id = 0, Idioma $idioma = Null){
@@ -23,6 +24,7 @@ class Paquete{
 				$this->_nombre =  $row['nombre_paquete'];
 				$this->_descripcion =  $row['descripcion_paquete'];
 				$this->_imagen =  $row['imagen_paquete'];
+				$this->_utilidad =  $row['utilidad_paquete'];
 			}
 
 			$sql2 = "SELECT * FROM paquetes_destinos WHERE id_paquete = '".$this->_id."' " ;
