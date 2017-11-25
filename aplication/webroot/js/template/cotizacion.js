@@ -457,4 +457,6 @@ function archivo(evt) {
        reader.readAsDataURL(f);
    }
 }
-document.getElementById('files').addEventListener('change', archivo, false);
+if ($("#files").length > 0) {
+    document.getElementById('files').addEventListener('change', archivo, false);
+}

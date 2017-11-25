@@ -263,6 +263,7 @@ function eliminarTarifa(id) {
           'success'
         )
         $('#card'+id).remove();
+        location.reload();
       }
     });
 
@@ -282,7 +283,14 @@ function eliminarTarifa(id) {
 function editarTarifa(id,habitacion,precio,tipo) {
   $('#modalEditarTarifa').modal('show');
   $('#editprecio').attr("value",precio);
-  $("#edittipo").val(tipo).change();
+  if (tipo == 1) {
+    $("#edittipo").val("Tarifa Nacional");
+    $("#tipo").val(tipo);
+  }else {
+    $("#edittipo").val("Tarifa Extranjera");
+    $("#tipo").val(tipo);
+  }
+
   $("#edithabitacion").val(habitacion).change();
   $('#idtarifa').attr("value",id);
 }

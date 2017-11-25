@@ -313,13 +313,12 @@ class Ajax{
 					}
 					function cambiarHotelTarifaAjax()
 					{
-
 						$idtarifa = $_GET['edittarifa'];
-						$edittipo = $_GET['edittipo'];
 						$edithabitacion = $_GET['edithabitacion'];
 						$editprecio = $_GET['editprecio'];
+						$tipo = $_GET['tipo'];
 
-						if ($edittipo == 1) {
+						if ($tipo == 1) {
 							$query = new Consulta("UPDATE hoteles_tarifas
 								SET precio_nacional = ".$editprecio.",
 								id_habitacion = ".$edithabitacion."
@@ -371,28 +370,28 @@ class Ajax{
 
 						$dia =  $_POST['dia'];
 						$dia_actual = (int)($dia-1);
-
+						$count=0;
 						?>
 						<div class="contenedor-hotel-apend contenedor-servicios-apend-1">
 							<input type="hidden" class="listahotel-1" value="1"/>
 							<div class="row" id="ContentService">
 								<div class="col-md-12">
 									<label class="control-label">Hoteles<star>*</star></label>
-									<div class="form-group" style="overflow-y: auto;height: 300px;">
-										<table id="table-hoteles" class="table bootstrap-table-edit table-hoteles" >
+									<div class="form-group" style="overflow-y: auto;height: 345px;">
+										<table id="table_h_<?php echo $dia_actual?>" class="display table_hotel" width="100%" cellspacing="0" data-page-length='5'>
 											<thead>
-												<th data-field="state" data-checkbox="true"></th>
-												<th data-field="nombre" data-sortable="true">Nombre</th>
-												<th data-field="departamento" data-sortable="true">Departamento</th>
-												<th data-field="estrellas" data-sortable="true">Estrellas</th>
-												<th data-field="empresa" data-sortable="true">Empresa</th>
-												<th data-field="precio" data-sortable="true">Precio Extranjero</th>
-												<th data-field="id" data-sortable="true">Id</th>
+												<tr>
+													<th>Nombre</th>
+													<th>Departamento</th>
+													<th>Estrellas</th>
+													<th>Empresa</th>
+													<th>Precio Extranjero</th>
+													<th>Id</th>
+												</tr>
 											</thead>
 											<tbody>
 												<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
-													<tr>
-														<td></td>
+													<tr id="<?php echo $count ?>">
 														<td><?php echo $Hotel['nombre']?></td>
 														<td><?php echo $Hotel['departamento'] ?></td>
 														<td><?php echo $Hotel['estrellas'] ?></td>
@@ -400,7 +399,7 @@ class Ajax{
 														<td><?php echo number_format($Hotel['precio_e'], 2, '.', ''); ?></td>
 														<td class="id"><?php echo $Hotel['id'] ?></td>
 													</tr>
-												<?php } ?>
+												<?php $count++;} ?>
 											</tbody>
 										</table>
 									</div>
@@ -957,21 +956,19 @@ class Ajax{
 								<div class="row" id="ContentService">
 									<div class="col-md-12">
 										<label class="control-label">Servicios<star>*</star></label>
-										<div class="form-group" style="overflow-y: auto;height: 300px;">
-											<table id="table-servicios" class="table bootstrap-table-edit table-servicios">
+										<div class="form-group" style="overflow-y: auto;height: 345px;">
+											<table id="table_s_<?php echo $dia_actual?>" class="display table_servicio" width="100%" cellspacing="0" data-page-length='5'>
 												<thead>
-													<th data-field="state" data-checkbox="true"></th>
-													<th data-field="nombre" data-sortable="true">Nombre</th>
-													<th data-field="departamento" data-sortable="true">Departamento</th>
-													<th data-field="estrellas" data-sortable="true">Tipo Servicio</th>
-													<th data-field="precio_e" data-sortable="true">Precio Extranjero</th>
-													<th data-field="alcanse" data-sortable="true">Alcanse</th>
-													<th data-field="id" class="text-center">ID</th>
+													<th>Nombre</th>
+													<th>Departamento</th>
+													<th>Tipo Servicio</th>
+													<th>Precio Extranjero</th>
+													<th>Alcanse</th>
+													<th>ID</th>
 												</thead>
 												<tbody>
 													<?php foreach ($listadoServiciosxDepartamentos as $Servicio) { ?>
 														<tr>
-															<td></td>
 															<td><?php echo $Servicio['nombre'] ?></td>
 															<td><?php echo $Servicio['departamento']?></td>
 															<td><?php echo $Servicio['nombre_tipo_servicio']?></td>
@@ -1017,6 +1014,7 @@ class Ajax{
 
 							}
 							$id_paquete = ($_POST['id']!='')?$_POST['id']:"''";
+							$count=0;
 							?>
 							<div class="panel panel-default" style="border: 1px;border-color: #0003;border-style: solid;background-color:white">
 								<div class="panel-heading" style="background-color:white" role="tab" id="heading<?php echo $dia ?>">
@@ -1056,27 +1054,25 @@ class Ajax{
 														<div class="row">
 															<div class="col-md-12">
 																<label class="control-label">Hoteles<star>*</star></label>
-																<div class="form-group" style="overflow-y: auto;height: 300px;">
-																	<table id="table-hoteles" class="table bootstrap-table-edit new_table table-hoteles">
+																	<div class="form-group" style="overflow-y: auto;height: 345px;">
+																	<table id="table_edit_h_<?php echo $dia-1?>" class="display table_hotel" width="100%" cellspacing="0" data-page-length='5'>
 																		<thead>
-																			<th data-field="state" data-checkbox="true"></th>
-																			<th data-field="nombre" data-sortable="true">Nombre</th>
-																			<th data-field="departamento" data-sortable="true">Departamento</th>
-																			<th data-field="estrellas" data-sortable="true">Estrellas</th>
-																			<th data-field="empresa" data-sortable="true">Empresa</th>
-																			<th data-field="contacto" data-sortable="true">Id</th>
+																			<th>Nombre</th>
+																			<th>Departamento</th>
+																			<th>Estrellas</th>
+																			<th>Empresa</th>
+																			<th>Id</th>
 																		</thead>
 																		<tbody>
 																			<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
-																				<tr>
-																					<td></td>
+																				<tr id="<?php echo $count ?>">
 																					<td><?php echo $Hotel['nombre']?></td>
 																					<td><?php echo $Hotel['departamento'] ?></td>
 																					<td><?php echo $Hotel['estrellas'] ?></td>
 																					<td><?php echo $Hotel['empresa'] ?></td>
 																					<td class="id"><?php echo $Hotel['id'] ?></td>
 																				</tr>
-																			<?php } ?>
+																			<?php $count++; } ?>
 																		</tbody>
 																	</table>
 																</div>
@@ -1091,20 +1087,18 @@ class Ajax{
 														<div class="row" id="ContentService">
 															<div class="col-md-12">
 																<label class="control-label">Servicios<star>*</star></label>
-																<div class="form-group" style="overflow-y: auto;height: 300px;">
-																	<table id="table-servicios" class="table bootstrap-table-edit new_table table-servicios">
+																<div class="form-group" style="overflow-y: auto;height: 345px;">
+																	<table id="table_edit_s_<?php echo $dia-1?>" class="display table_servicio" width="100%" cellspacing="0" data-page-length='5'>
 																		<thead>
-																			<th data-field="state" data-checkbox="true"></th>
-																			<th data-field="nombre" data-sortable="true">Nombre</th>
-																			<th data-field="departamento" data-sortable="true">Departamento</th>
-																			<th data-field="estrellas" data-sortable="true">Tipo Servicio</th>
-																			<th data-field="empresa" data-sortable="true">Alcanse</th>
-																			<th data-field="id" class="text-center">ID</th>
+																			<th>Nombre</th>
+																			<th>Departamento</th>
+																			<th>Tipo Servicio</th>
+																			<th>Alcanse</th>
+																			<th>ID</th>
 																		</thead>
 																		<tbody>
 																			<?php foreach ($listadoServiciosxDepartamentos as $Servicio) { ?>
 																				<tr>
-																					<td></td>
 																					<td><?php echo $Servicio['nombre'] ?></td>
 																					<td><?php echo $Servicio['departamento']?></td>
 																					<td><?php echo $Servicio['nombre_tipo_servicio']?></td>

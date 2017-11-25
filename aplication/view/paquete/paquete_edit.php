@@ -1,5 +1,12 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.3/css/select.dataTables.min.css">
+
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.2.3/js/dataTables.select.min.js"></script>
+
+
 <div class="row">
-  <div class="col-md-10 col-md-offset-1">
+  <div class="col-md-12">
 
     <div class="card card-wizard" id="wizardEditarPaquete">
       <form id="wizardFormEditarPaquete" method="post" novalidate="" enctype="multipart/form-data">
@@ -58,7 +65,7 @@
                     <label class="control-label">
                       Utilidad
                     </label>
-                    <input class="form-control" type="number" min="0" max="100" name="utilidad_paquete" id="" value="<?php echo $objPaquete->__get('_utilidad') ?>"></input>
+                    <input class="form-control" type="number" min="0" max="100" required name="utilidad_paquete" id="utilidad" value="<?php echo $objPaquete->__get('_utilidad') ?>"></input>
                   </div>
                 </div>
 
@@ -111,7 +118,7 @@
                                         <label class="control-label">
                                           Nombre
                                         </label>
-                                        <input class="form-control" type="text" name="nombreDia[<?php echo $key ?>][]" placeholder="Nombre para Identificar el Día" value="<?php echo $itinerario['nombre'] ?>"/>
+                                        <input class="form-control" type="text" required name="nombreDia[<?php echo $key ?>][]" placeholder="Nombre para Identificar el Día" value="<?php echo $itinerario['nombre'] ?>"/>
                                       </div>
                                     </div>
                                   </div>
@@ -131,52 +138,105 @@
                                       <div class="row">
                                         <div class="col-md-12">
                                           <label class="control-label">Hoteles<star>*</star></label>
-                                          <div class="form-group" style="overflow-y: auto;height: 300px;">
-                                            <table id="table-hoteles" class="table bootstrap-table-edit table-hoteles" >
+                                          <div class="form-group" style="overflow-y: auto;height: 345px;">
+                                            <table id="table_h_<?php echo $key?>" class="display table_hotel" width="100%" cellspacing="0" data-page-length='5'>
                                               <thead>
-                                                <th data-field="state" data-checkbox="true"></th>
-                                                <th data-field="nombre" data-sortable="true">Nombre</th>
-                                                <th data-field="departamento" data-sortable="true">Departamento</th>
-                                                <th data-field="estrellas" data-sortable="true">Estrellas</th>
-                                                <th data-field="empresa" data-sortable="true">Empresa</th>
-                                                <th data-field="contacto" data-sortable="true">Id</th>
+                                                <tr>
+                                                  <th>Nombre</th>
+                                                  <th>Departamento</th>
+                                                  <th>Estrellas</th>
+                                                  <th>Empresa</th>
+                                                  <th>Id</th>
+                                                </tr>
                                               </thead>
                                               <tbody>
-                                                <?php
-                                                $contador_table=0;
-                                                foreach ($listadoHotelesxDepartamentos as $Hotel) {
+                                                <?php foreach($listadoHotelesxDepartamentos as $Hotel){
                                                   $estado = true;
                                                   if ((is_array($itinerario_hoteles) || is_object($itinerario_hoteles)) && !empty($itinerario_hoteles)){
                                                     foreach ($itinerario_hoteles as $llave => $valor) {
-                                                      if ($Hotel['id']==$valor) {?>
-                                                        <tr class="seleccionado" id="<?php echo $contador_table ?>">
-                                                          <td></td>
+                                                      if ($Hotel['id']==$valor){?>
+                                                        <tr class="selected">
                                                           <td><?php echo $Hotel['nombre']?></td>
                                                           <td><?php echo $Hotel['departamento'] ?></td>
                                                           <td><?php echo $Hotel['estrellas'] ?></td>
                                                           <td><?php echo $Hotel['empresa'] ?></td>
                                                           <td class="id"><?php echo $Hotel['id'] ?></td>
                                                         </tr>
-                                                        <?php $estado = true; break;}else{$estado = false;}}
+                                                    <?php $estado = true; break;}else{$estado = false;}}
+                                                    if (!$estado) {?>
+                                                      <tr>
+                                                      <td><?php echo $Hotel['nombre']?></td>
+                                                      <td><?php echo $Hotel['departamento'] ?></td>
+                                                      <td><?php echo $Hotel['estrellas'] ?></td>
+                                                      <td><?php echo $Hotel['empresa'] ?></td>
+                                                      <td class="id"><?php echo $Hotel['id'] ?></td>
+                                                    </tr>
+                                                    <?php } }else {?>
+                                                      <tr>
+                                                        <td><?php echo $Hotel['nombre']?></td>
+                                                        <td><?php echo $Hotel['departamento'] ?></td>
+                                                        <td><?php echo $Hotel['estrellas'] ?></td>
+                                                        <td><?php echo $Hotel['empresa'] ?></td>
+                                                        <td class="id"><?php echo $Hotel['id'] ?></td>
+                                                      </tr>
+                                                    <?php } $contador_table++; }?>
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <br>
+                                  <?php $servicios = Paquetes::getPaquetesItinerarioDetalle($itinerario['id_paquete_itinerario']); ?>
+                                  <div class="contenedor-servicios-apend-container">
+                                    <input type="hidden" class="listaservicio-<?php echo (int)($key+1) ?>" value="<?php echo count($servicios) ?>"/>
+                                    <div class="contenedor-servicios-apend contenedor-servicios-apend-<?php echo $llave+1 ?>">
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <label class="control-label">Servicios<star>*</star></label>
+                                          <div class="form-group" style="overflow-y: auto;height: 345px;">
+                                            <table id="table_s_<?php echo $key?>" class="display table_servicio" width="100%" cellspacing="0" data-page-length='5'>
+                                              <thead>
+                                                <th>Nombre</th>
+                                                <th>Departamento</th>
+                                                <th>Tipo Servicio</th>
+                                                <th>Alcanse</th>
+                                                <th>ID</th>
+                                              </thead>
+                                              <tbody>
+                                                <?php
+                                                $contador_table=0;
+                                                foreach ($listadoServiciosxDepartamentos as $servicio) {
+                                                  $estado = true;
+                                                  if ((is_array($servicios) || is_object($servicios)) && !empty($servicios)){
+                                                    foreach ($servicios as $llave => $value) {
+                                                      if ($servicio['id']==$value['id_servicio']) {?>
+                                                        <tr class="selected">
+                                                          <td><?php echo $servicio['nombre'] ?></td>
+                                                          <td><?php echo $servicio['departamento']?></td>
+                                                          <td><?php echo $servicio['nombre_tipo_servicio']?></td>
+                                                          <td><?php echo $servicio['alcance']?></td>
+                                                          <td class="id"><?php echo $servicio['id'] ?></td>
+                                                        </tr>
+                                                        <?php $estado = true; break; }else{$estado = false;}}
                                                         if (!$estado) { ?>
                                                           <tr>
-                                                            <td></td>
-                                                            <td><?php echo $Hotel['nombre']?></td>
-                                                            <td><?php echo $Hotel['departamento'] ?></td>
-                                                            <td><?php echo $Hotel['estrellas'] ?></td>
-                                                            <td><?php echo $Hotel['empresa'] ?></td>
-                                                            <td class="id"><?php echo $Hotel['id'] ?></td>
+                                                            <td><?php echo $servicio['nombre'] ?></td>
+                                                            <td><?php echo $servicio['departamento']?></td>
+                                                            <td><?php echo $servicio['nombre_tipo_servicio']?></td>
+                                                            <td><?php echo $servicio['alcance']?></td>
+                                                            <td class="id"><?php echo $servicio['id'] ?></td>
                                                           </tr>
-                                                        <?php  } }else{ ?>
+                                                        <?php  }}else{?>
                                                           <tr>
-                                                            <td></td>
-                                                            <td><?php echo $Hotel['nombre']?></td>
-                                                            <td><?php echo $Hotel['departamento'] ?></td>
-                                                            <td><?php echo $Hotel['estrellas'] ?></td>
-                                                            <td><?php echo $Hotel['empresa'] ?></td>
-                                                            <td class="id"><?php echo $Hotel['id'] ?></td>
+                                                            <td><?php echo $servicio['nombre'] ?></td>
+                                                            <td><?php echo $servicio['departamento']?></td>
+                                                            <td><?php echo $servicio['nombre_tipo_servicio']?></td>
+                                                            <td><?php echo $servicio['alcance']?></td>
+                                                            <td class="id"><?php echo $servicio['id'] ?></td>
                                                           </tr>
-                                                        <?php  } $contador_table++; }?>
+                                                        <?php } $contador_table++;} ?>
                                                       </tbody>
                                                     </table>
                                                   </div>
@@ -184,144 +244,83 @@
                                               </div>
                                             </div>
                                           </div>
-                                          <br>
-                                          <?php $servicios = Paquetes::getPaquetesItinerarioDetalle($itinerario['id_paquete_itinerario']); ?>
-                                          <div class="contenedor-servicios-apend-container">
-                                            <input type="hidden" class="listaservicio-<?php echo (int)($key+1) ?>" value="<?php echo count($servicios) ?>"/>
-                                            <div class="contenedor-servicios-apend contenedor-servicios-apend-<?php echo $llave+1 ?>">
-                                              <div class="row">
-                                                <div class="col-md-12">
-                                                  <label class="control-label">Servicios<star>*</star></label>
-                                                  <div class="form-group" style="overflow-y: auto;height: 300px;">
-                                                    <table id="table-servicios" class="table bootstrap-table-edit table-servicios">
-                                                      <thead>
-                                                        <th data-field="state" data-checkbox="true"></th>
-                                                        <th data-field="nombre" data-sortable="true">Nombre</th>
-                                                        <th data-field="departamento" data-sortable="true">Departamento</th>
-                                                        <th data-field="estrellas" data-sortable="true">Tipo Servicio</th>
-                                                        <th data-field="empresa" data-sortable="true">Alcanse</th>
-                                                        <th data-field="id" class="text-center">ID</th>
-                                                      </thead>
-                                                      <tbody>
-                                                        <?php
-                                                        $contador_table=0;
-                                                        foreach ($listadoServiciosxDepartamentos as $servicio) {
-                                                          $estado = true;
-                                                          if ((is_array($servicios) || is_object($servicios)) && !empty($servicios)){
-                                                            foreach ($servicios as $llave => $value) {
-                                                              if ($servicio['id']==$value['id_servicio']) {?>
-                                                                <tr class="seleccionado" id="<?php echo $contador_table ?>">
-                                                                  <td></td>
-                                                                  <td><?php echo $servicio['nombre'] ?></td>
-                                                                  <td><?php echo $servicio['departamento']?></td>
-                                                                  <td><?php echo $servicio['nombre_tipo_servicio']?></td>
-                                                                  <td><?php echo $servicio['alcance']?></td>
-                                                                  <td class="id"><?php echo $servicio['id'] ?></td>
-                                                                </tr>
-                                                                  <?php $estado = true; break; }else{$estado = false;}}
-                                                                  if (!$estado) { ?>
-                                                                    <tr>
-                                                                      <td></td>
-                                                                      <td><?php echo $servicio['nombre'] ?></td>
-                                                                      <td><?php echo $servicio['departamento']?></td>
-                                                                      <td><?php echo $servicio['nombre_tipo_servicio']?></td>
-                                                                      <td><?php echo $servicio['alcance']?></td>
-                                                                      <td class="id"><?php echo $servicio['id'] ?></td>
-                                                                    </tr>
-                                                                  <?php  }}else{?>
-                                                                    <tr>
-                                                                      <td></td>
-                                                                      <td><?php echo $servicio['nombre'] ?></td>
-                                                                      <td><?php echo $servicio['departamento']?></td>
-                                                                      <td><?php echo $servicio['nombre_tipo_servicio']?></td>
-                                                                      <td><?php echo $servicio['alcance']?></td>
-                                                                      <td class="id"><?php echo $servicio['id'] ?></td>
-                                                                    </tr>
-                                                                  <?php } $contador_table++;} ?>
-                                                                </tbody>
-                                                              </table>
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        <?php } ?>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-
-                              </div>
-                              <div class="tab-pane" id="tab3">
-                                <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
-                                <div class="row">
-                                  <div class="col-md-10 col-md-offset-1">
-                                    <div class="form-group">
-                                      <label class="control-label">
-                                        Descripción de inclusion
-                                      </label>
-                                      <input class="form-control" type="text" id="nombre_inclusion" placeholder="descripcion de inclusion " value=""/>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-10 col-md-offset-1">
-                                    <div class="form-group">
-                                      <select class="selectpicker" Title=".::.Seleccione Tipo de inclusion.::." id="inclusiones">
-                                        <option value="1">Incluye</option>
-                                        <option value="2">No Incluye</option>
-                                      </select>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-10 col-md-offset-1">
-                                    <div class="form-group text-right">
-                                      <button type="button" class="btn btn-info" id="add_inclusion">Ingresar inclusion</button>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-10 col-md-offset-1">
-                                    <div class="row">
-                                      <div class="col-md-6 text-center">
-                                        <h3>Incluye</h3>
-                                        <ul class="list-group" id="incluye">
-                                          <?php if (is_array($array_incluye) || is_object($array_incluye)) {
-                                            foreach ($array_incluye as $key => $value){?>
-                                              <li class="list-group-item list-group-item-success"><?php echo $value; ?><input type="hidden" name="incluye[]" value="<?php echo $value; ?>"> <button type="button" class="close" onclick="javascript:eliminar_inclusiones(this)" aria-label="Close"><span aria-hidden="true">&times;</span></button></li>
-                                            <?php }}else { ?>
-                                              <li id="vacio" class="list-group-item list-group-item-success"><p>No se ingresaron</p><p>Inclusiones</p></li>
-                                            <?php }?>
-                                          </ul>
-                                        </div>
-                                        <div class="col-md-6 text-center">
-                                          <h3>No Incluye</h3>
-                                          <ul class="list-group" id="excluye">
-                                            <?php if (is_array($array_excluye) || is_object($array_excluye)) {
-                                              foreach ($array_excluye as $key => $value){ ?>
-                                                <li class="list-group-item list-group-item-danger"><?php echo $value; ?><input type="hidden" name="excluye[]" value="<?php echo $value; ?>"><button type="button" class="close" onclick="javascript:eliminar_inclusiones(this)" aria-label="Close"><span aria-hidden="true">&times;</span></button></li>
-                                              <?php }}else { ?>
-                                                <li id="vacio" class="list-group-item list-group-item-danger"><p>No se ingresaron</p><p>Exclusiones</p></li>
-                                              <?php }?>
-                                            </ul>
-                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                              <div class="card-footer">
-                                <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
-                                <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right">Next</button>
-                                <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Finalizar</button>
-                                <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish click</button>-->
-
-                                <div class="clearfix"></div>
-                              </div>
-
-                            </form>
+                              <?php } ?>
+                            </div>
                           </div>
-
                         </div>
                       </div>
+
+                    </div>
+                    <div class="tab-pane" id="tab3">
+                      <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
+                      <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                          <div class="form-group">
+                            <label class="control-label">
+                              Descripción de inclusion
+                            </label>
+                            <input class="form-control" type="text" id="nombre_inclusion" placeholder="descripcion de inclusion " value=""/>
+                          </div>
+                        </div>
+                        <div class="col-md-10 col-md-offset-1">
+                          <div class="form-group">
+                            <select class="selectpicker" Title=".::.Seleccione Tipo de inclusion.::." id="inclusiones">
+                              <option value="1">Incluye</option>
+                              <option value="2">No Incluye</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-10 col-md-offset-1">
+                          <div class="form-group text-right">
+                            <button type="button" class="btn btn-info" id="add_inclusion">Ingresar inclusion</button>
+                          </div>
+                        </div>
+                        <div class="col-md-10 col-md-offset-1">
+                          <div class="row">
+                            <div class="col-md-6 text-center">
+                              <h3>Incluye</h3>
+                              <ul class="list-group" id="incluye">
+                                <?php if (is_array($array_incluye) || is_object($array_incluye)) {
+                                  foreach ($array_incluye as $key => $value){?>
+                                    <li class="list-group-item list-group-item-success"><?php echo $value; ?><input type="hidden" name="incluye[]" value="<?php echo $value; ?>"> <button type="button" class="close" onclick="javascript:eliminar_inclusiones(this)" aria-label="Close"><span aria-hidden="true">&times;</span></button></li>
+                                  <?php }}else { ?>
+                                    <li id="vacio" class="list-group-item list-group-item-success"><p>No se ingresaron</p><p>Inclusiones</p></li>
+                                  <?php }?>
+                                </ul>
+                              </div>
+                              <div class="col-md-6 text-center">
+                                <h3>No Incluye</h3>
+                                <ul class="list-group" id="excluye">
+                                  <?php if (is_array($array_excluye) || is_object($array_excluye)) {
+                                    foreach ($array_excluye as $key => $value){ ?>
+                                      <li class="list-group-item list-group-item-danger"><?php echo $value; ?><input type="hidden" name="excluye[]" value="<?php echo $value; ?>"><button type="button" class="close" onclick="javascript:eliminar_inclusiones(this)" aria-label="Close"><span aria-hidden="true">&times;</span></button></li>
+                                    <?php }}else { ?>
+                                      <li id="vacio" class="list-group-item list-group-item-danger"><p>No se ingresaron</p><p>Exclusiones</p></li>
+                                    <?php }?>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                      <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
+                      <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right">Next</button>
+                      <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Finalizar</button>
+                      <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish click</button>-->
+
+                      <div class="clearfix"></div>
+                    </div>
+
+                  </form>
+                </div>
+
+              </div>
+            </div>

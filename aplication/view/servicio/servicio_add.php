@@ -85,7 +85,7 @@
                                         </label>
                                         <input class="form-control"
                                                type="text"
-                                               name="contacto_numero"
+                                               name="contacto_nombre"
                                         />
                                     </div>
                                 </div>
@@ -98,7 +98,7 @@
                                         </label>
                                         <input class="form-control"
                                                type="text"
-                                               name="contacto_nombre"
+                                               name="contacto_numero"
                                         />
                                     </div>
                                 </div>

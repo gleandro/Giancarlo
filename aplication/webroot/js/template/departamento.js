@@ -46,7 +46,7 @@ $().ready(function(){
                 beforeSend: function(){
                 },
                 success: function(datos){
-                  alert(datos);
+                  
                   swal({
                     title:'Listo!',
                     text: 'El registro fué modificado.',

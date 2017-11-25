@@ -1,5 +1,11 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.3/css/select.dataTables.min.css">
+
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.2.3/js/dataTables.select.min.js"></script>
+
 <div class="row">
-  <div class="col-md-10 col-md-offset-1">
+  <div class="col-md-12">
     <div class="card card-wizard" id="wizardPaquete">
       <!--<form id="wizardForm" method="GET" action="">-->
       <form id="wizardForm" method="post" novalidate="" enctype="multipart/form-data">
@@ -52,7 +58,7 @@
                       <label class="control-label">
                         Utilidad
                       </label>
-                      <input class="form-control" type="number" min="0" max="100" name="utilidad_paquete" id="" value="0"></input>
+                      <input class="form-control" required="required" type="number" min="0" max="100" name="utilidad_paquete" id="" value="0"></input>
                     </div>
                   </div>
                   <div class="col-md-10 col-md-offset-1">
@@ -97,7 +103,7 @@
                                         <label class="control-label">
                                           Nombre
                                         </label>
-                                        <input class="form-control" type="text" name="nombreDia[0][]" placeholder="Nombre para Identificar el Día"/>
+                                        <input class="form-control" type="text" name="nombreDia[0][]" required="required" placeholder="Nombre para Identificar el Día"/>
                                       </div>
                                     </div>
                                   </div>

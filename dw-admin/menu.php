@@ -98,8 +98,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <!-- <a href="cotizaciones.php"> -->
-                                    <a href="#cotizaciones.php">
+                                    <a href="cotizaciones.php">
                                         <span class="sidebar-mini"><i class="ti-clipboard"></i></span>
                                         <span class="sidebar-normal">Cotizaciones</span>
                                     </a>

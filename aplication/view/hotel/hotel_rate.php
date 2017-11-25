@@ -106,7 +106,7 @@
                       Tipo de Habitación
                     </label>
                     <div class="col-sm-9">
-                      <select class="selectpicker" name="habitacion" data-style="btn btn-default btn-block" title="Tipo" data-size="7" required="required">
+                      <select class="selectpicker" name="habitacion" data-style="btn btn-default btn-block" title="Seleccione tipo de habitación" data-size="7" required="required">
                         <?php foreach ($listadoHabitaciones as $habitacion) {?>
                           <option value="<?php echo $habitacion['id'] ?>" ><?php echo $habitacion['habitacion'] ?></option>
                         <?php } ?>
@@ -162,6 +162,7 @@
             <div class="modal-body">
               <input type="hidden" name="edithotel" id="hotel" value="<?php echo $_GET['id'] ?>">
               <input type="hidden" name="edittarifa" id="idtarifa" value="">
+              <input type="hidden" name="tipo" id="tipo" value="">
               <div class="card-content">
 
                 <fieldset>
@@ -170,10 +171,7 @@
                       Tipo de Tarifa
                     </label>
                     <div class="col-sm-9">
-                      <select class="selectpicker" id="edittipo" name="edittipo" data-style="btn btn-default btn-block" title="Tipo" data-size="7" required="required">
-                        <option value="1" >Tarifa Nacional</option>
-                        <option value="2" >Tarifa Extrangera</option>
-                      </select>
+                      <input type="text" id="edittipo" name="edittipo" class="form-control" value="" disabled>
                     </div>
                   </div>
                 </fieldset>

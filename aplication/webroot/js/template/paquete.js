@@ -1,6 +1,5 @@
 /*SERVICIO*/
 var $tablePaquete = $('#bootstrap-table-paquetes');
-var $tableEdit = $('.bootstrap-table-edit');
 
 function operateFormatter(value, row, index) {
   return [
@@ -43,7 +42,36 @@ function eliminar_inclusiones(dato){
   })
 }
 
+function crear_table(){
+  var dias_edit = $(".card-dia").val();
+  for (var i = 0; i < dias_edit; i++) {
+      var table_h = $('#table_h_'+i).DataTable({
+        "paging":   false
+      });
+      var table_s = $('#table_s_'+i).DataTable({
+        "paging":   false
+      });
+    $('#table_h_'+i+' tbody').on( 'click', 'tr', function () {
+      $(this).toggleClass('selected');
+    } );
+
+    $('#button').click( function () {
+      alert( table_h.rows('.selected').data().length +' row(s) selected' );
+    } );
+
+    $('#table_s_'+i+' tbody').on( 'click', 'tr', function () {
+      $(this).toggleClass('selected');
+    } );
+
+    $('#button').click( function () {
+      alert( table_s.rows('.selected').data().length +' row(s) selected' );
+    } );
+
+  }
+}
+
 $().ready(function(){
+  crear_table();
 
   $('#add_inclusion').click(function(){
     var nombre = $("#nombre_inclusion").val();
@@ -72,6 +100,14 @@ $().ready(function(){
     previousSelector: '.btn-back',
     onNext: function(tab, navigation, index) {
       var $valid = $('#wizardForm').valid();
+
+        var datos =$(".dataTables_filter").find("input");
+        for (var i = 0; i < datos.length; i++) {
+          if ($(datos[i]).val() != '') {
+            swal('No puede continuar ', 'Los campos search de hoteles y servicios deben estar vacios.');
+            return false;
+          };
+        }
 
       if(!$valid) {
         $validator.focusInvalid();
@@ -126,26 +162,28 @@ $().ready(function(){
     previousSelector: '.btn-back',
     onNext: function(tab, navigation, index) {
 
+      var datos =$(".dataTables_filter").find("input");
+      for (var i = 0; i < datos.length; i++) {
+        if ($(datos[i]).val() != '') {
+          swal('No puede continuar ', 'Los campos search de hoteles y servicios deben estar vacios.');
+          return false;
+        };
+      }
+
       var $valid = $('#wizardFormEditarPaquete').valid();
       if(!$valid) {
         $validator.focusInvalid();
         return false;
       }
 
+      var dias = $(".card-dia").val();
+      for (var i = 0; i < dias; i++) {
+        $("#collapse"+(i+1)).collapse('toggle');
+      }
+
       $(".panel-default .text-danger").hide();
       $(".panel-default .text-danger").last().show();
 
-      var datos = $('.table-hoteles').find(".seleccionado");
-      for (var i = 0; i < datos.length; i++) {
-        $(datos[i]).parents(".table-hoteles").bootstrapTable('check', parseInt(datos[i].id));
-      }
-      datos.removeClass("seleccionado");
-
-      datos = $('.table-servicios').find(".seleccionado");
-      for (var i = 0; i < datos.length; i++) {
-        $(datos[i]).parents(".table-servicios").bootstrapTable('check', parseInt(datos[i].id));
-      }
-      datos.removeClass("seleccionado");
     },
     onInit : function(tab, navigation, index){
 
@@ -279,19 +317,6 @@ $().ready(function(){
     }
   });
 
-  $tableEdit.bootstrapTable({
-    toolbar: ".toolbar",
-    clickToSelect: true,
-    pagination: true,
-    pageSize: 1000,
-    formatShowingRows: function(pageFrom, pageTo, totalRows){
-      //do nothing here, we don't want to show the text "showing x of y from..."
-    },
-    formatRecordsPerPage: function(pageNumber){
-
-    }
-  });
-
   //activate the tooltips after the data table is initialized
   $('[rel="tooltip"]').tooltip();
 
@@ -305,6 +330,7 @@ $().ready(function(){
       addHotelPaquete(activar,'');
     }
     activar++;
+	window.setTimeout("crear_table()",1000);
   })
 
 });
@@ -331,21 +357,6 @@ function addServicioPaquete(dia,id){
       //alert(datos);
       $(".card-"+dia+" .contenedor-servicios-apend-container").append(datos);
       // $(".selectpicker").selectpicker();
-    },
-    complete: function(){
-      $('.bootstrap-table-edit').bootstrapTable({
-        toolbar: ".toolbar",
-        clickToSelect: true,
-        pagination: true,
-        pageSize: 1000,
-        formatShowingRows: function(pageFrom, pageTo, totalRows){
-          //do nothing here, we don't want to show the text "showing x of y from..."
-        },
-        formatRecordsPerPage: function(pageNumber){
-
-        }
-      });
-      // $(".swal2-confirm").click();
     }
   });
 }
@@ -361,18 +372,6 @@ function addHotelPaquete(dia,id){
     success: function(datos){
       //alert(datos);
       $(".card-"+dia+" .contenedor-hoteles-apend-container").append(datos);
-      $('.bootstrap-table-edit').bootstrapTable({
-        toolbar: ".toolbar",
-        clickToSelect: true,
-        pagination: true,
-        pageSize: 1000,
-        formatShowingRows: function(pageFrom, pageTo, totalRows){
-          //do nothing here, we don't want to show the text "showing x of y from..."
-        },
-        formatRecordsPerPage: function(pageNumber){
-
-        }
-      });
     }
   });
 }
@@ -385,28 +384,40 @@ function addDiaServicioPaquete(dia,id){
     },
     success: function(datos){
       $(".panel-group").append(datos);
-        $('.bootstrap-table-edit').bootstrapTable({
-          toolbar: ".toolbar",
-          clickToSelect: true,
-          pagination: true,
-          pageSize: 1000,
-          search: true,
-          formatShowingRows: function(pageFrom, pageTo, totalRows){
-            //do nothing here, we don't want to show the text "showing x of y from..."
-          },
-          formatRecordsPerPage: function(pageNumber){
+      var dias_edit = $(".card-dia").val();
+      for (var i = 0; i < dias_edit; i++) {
+          var table_h = $('#table_edit_h_'+i).DataTable({
+            "paging":   false
+          });
+          var table_s = $('#table_edit_s_'+i).DataTable({
+            "paging":   false
+          });
+        $('#table_edit_h_'+i+' tbody').on( 'click', 'tr', function () {
+          $(this).toggleClass('selected');
+        } );
 
-          }
-        });
-        if(id.length == 0){
-          $(".card-dia").val(dia);
-          var hoteles = $(".card-1").find("#table-hoteles .selected");
-          for (var i = 0; i < hoteles.length; i++) {
-            $(".card-"+dia).find("#table-hoteles").bootstrapTable('check', $(hoteles[i]).attr('data-index'));
-          }
+        $('#button').click( function () {
+          alert( table_h.rows('.selected').data().length +' row(s) selected' );
+        } );
+
+        $('#table_edit_s_'+i+' tbody').on( 'click', 'tr', function () {
+          $(this).toggleClass('selected');
+        } );
+
+        $('#button').click( function () {
+          alert( table_s.rows('.selected').data().length +' row(s) selected' );
+        } );
+
+      }
+      if(id.length == 0){
+        $(".card-dia").val(dia);
+        var hoteles = $(".card-1").find("#table_h_0 .selected");
+        for (var i = 0; i < hoteles.length; i++) {
+          $(".card-"+dia).find(".table_hotel").find("#"+$(hoteles[i]).attr("id")).addClass('selected');
         }
-        $(".panel-default .text-danger").hide();
-        $(".panel-default .text-danger").last().show();
+      }
+      $(".panel-default .text-danger").hide();
+      $(".panel-default .text-danger").last().show();
     }
   });
 }
@@ -465,12 +476,12 @@ $("#wizardForm").submit(function(e) { //AGREGAR UN PAQUETE
   for (var i = 0; i < dias; i++) {
     var dia = $(".card-"+(i+1));
 
-    var hoteles = dia.find("#table-hoteles").find(".selected .id");
+    var hoteles = dia.find(".table_hotel").find(".selected .id");
     for (var j = 0; j < hoteles.length; j++) {
       formData.append('dias['+i+'][0]['+j+']', hoteles[j].innerHTML);
     }
 
-    var servicios = dia.find("#table-servicios").find(".selected .id");
+    var servicios = dia.find(".table_servicio").find(".selected .id");
     for (var k = 0; k < servicios.length; k++) {
       formData.append('dias['+i+'][1]['+k+']', servicios[k].innerHTML);
     }
@@ -514,13 +525,13 @@ $("#wizardFormEditarPaquete").submit(function(e) {
   for (var i = 0; i < dias; i++) {
     var dia = $(".card-"+(i+1));
 
-    var hoteles = dia.find("#table-hoteles").find(".selected .id");
+    var hoteles = dia.find(".table_hotel").find(".selected .id");
 
     for (var j = 0; j < hoteles.length; j++) {
       formData.append('dias['+i+'][0]['+j+']', hoteles[j].innerHTML);
     }
 
-    var servicios = dia.find("#table-servicios").find(".selected .id");
+    var servicios = dia.find(".table_servicio").find(".selected .id");
 
     for (var k = 0; k < servicios.length; k++) {
       formData.append('dias['+i+'][1]['+k+']', servicios[k].innerHTML);
@@ -638,4 +649,6 @@ function archivo(evt) {
     reader.readAsDataURL(f);
   }
 }
-document.getElementById('files').addEventListener('change', archivo, false);
+if ($("#files").length > 0) {
+    document.getElementById('files').addEventListener('change', archivo, false);
+}
