@@ -42,6 +42,26 @@ function eliminar_inclusiones(dato){
   })
 }
 
+function eliminar_opciones_hoteles(dato){
+  swal({
+    title: '¿Estás Seguro?',
+    text: "No se pueden recuperar los registros!",
+    type: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Si, borralo!',
+    cancelButtonText: 'No, Cancelar!',
+    confirmButtonClass: 'btn btn-success',
+    cancelButtonClass: 'btn btn-danger',
+    allowOutsideClick: false,
+    allowEscapeKey: false
+  }).then(function () {
+    dato.parentElement.remove();
+    // $("#incluye").append('<li id="vacio" class="list-group-item list-group-item-success"><p>No se ingresaron</p><p>Inclusiones</p></li>');
+  })
+}
+
 function crear_table(){
   var dias_edit = $(".card-dia").val();
   for (var i = 0; i < dias_edit; i++) {
@@ -100,11 +120,29 @@ $().ready(function(){
     previousSelector: '.btn-back',
     onNext: function(tab, navigation, index) {
       var $valid = $('#wizardForm').valid();
+      if (index==3) {
+        var dias = $(".card-dia").val();
+          $.ajax({
+            type : "POST",
+            url :"ajax2.php",
+            data: $("#wizardForm").serialize()+"&action=getHotelesOpciones&dias="+dias,
+            beforeSend: function(){
+            },
+            success: function(datos){
+              $("#opciones_hoteles").html(datos);
+              $('.select_hoteles').multiselect({
+                enableFiltering: true
+              });
+            }
+          });
+
+      }
+
 
         var datos =$(".dataTables_filter").find("input");
         for (var i = 0; i < datos.length; i++) {
           if ($(datos[i]).val() != '') {
-            swal('No puede continuar ', 'Los campos search de hoteles y servicios deben estar vacios.');
+            swal('No puede continuar ', 'El campo search de servicios debe estar vacio.');
             return false;
           };
         }
@@ -161,24 +199,43 @@ $().ready(function(){
     nextSelector: '.btn-next',
     previousSelector: '.btn-back',
     onNext: function(tab, navigation, index) {
-
-      var datos =$(".dataTables_filter").find("input");
-      for (var i = 0; i < datos.length; i++) {
-        if ($(datos[i]).val() != '') {
-          swal('No puede continuar ', 'Los campos search de hoteles y servicios deben estar vacios.');
-          return false;
-        };
+      if (index == 3) {
+        var dias = $(".card-dia").val();
+          $.ajax({
+            type : "POST",
+            url :"ajax2.php",
+            data: $("#wizardFormEditarPaquete").serialize()+"&action=getHotelesOpciones&dias="+dias,
+            beforeSend: function(){
+            },
+            success: function(datos){
+              $("#opciones_hoteles").html(datos);
+              $('.select_hoteles').multiselect({
+                enableFiltering: true
+              });
+            }
+          });
       }
+      if (index == 2) {
+        var datos =$(".dataTables_filter").find("input");
+        for (var i = 0; i < datos.length; i++) {
+          if ($(datos[i]).val() != '') {
+            swal('No puede continuar ', 'El campo search de servicios debe estar vacio.');
+            return false;
+          };
+        }
+      }
+
 
       var $valid = $('#wizardFormEditarPaquete').valid();
       if(!$valid) {
         $validator.focusInvalid();
         return false;
       }
-
-      var dias = $(".card-dia").val();
-      for (var i = 0; i < dias; i++) {
-        $("#collapse"+(i+1)).collapse('toggle');
+      if (index == 1) {
+        var dias = $(".card-dia").val();
+        for (var i = 0; i < dias; i++) {
+          $("#collapse"+(i+1)).collapse('toggle');
+        }
       }
 
       $(".panel-default .text-danger").hide();
@@ -327,10 +384,10 @@ $().ready(function(){
   $(".btn-next-add").click(function(e){
     if (activar=='1') {
       addServicioPaquete(activar,'');
-      addHotelPaquete(activar,'');
+
+      window.setTimeout("crear_table()",1000);
     }
     activar++;
-	window.setTimeout("crear_table()",1000);
   })
 
 });
@@ -355,26 +412,12 @@ function addServicioPaquete(dia,id){
     },
     success: function(datos){
       //alert(datos);
-      $(".card-"+dia+" .contenedor-servicios-apend-container").append(datos);
+      $(".card-"+dia+" .contenedor-servicios-apend-container").html(datos);
       // $(".selectpicker").selectpicker();
     }
   });
 }
-function addHotelPaquete(dia,id){
 
-  $.ajax({
-    type : "POST",
-    url :"ajax2.php",
-    //data: $("#wizardFormEditarPaquete").serialize()+"&action=agregarHotelPaquete&dia="+dia+"&id="+id,
-    data: $("#wizardForm").serialize()+"&action=agregarHotelPaquete&dia="+dia+"&id="+id,
-    beforeSend: function(){
-    },
-    success: function(datos){
-      //alert(datos);
-      $(".card-"+dia+" .contenedor-hoteles-apend-container").append(datos);
-    }
-  });
-}
 function addDiaServicioPaquete(dia,id){
   $.ajax({
     type : "POST",
@@ -434,6 +477,24 @@ function deletePaqueteItinerario(id){
     }
   });
 }
+function addHotelOpcion(){
+  var selected = $(".select_hoteles option:selected");
+  var html = '<div class="panel panel-default"><button type="button" class="close eliminar_opciones_hoteles" onclick="javascript:eliminar_opciones_hoteles(this)" aria-label="Close"><span aria-hidden="true">×</span></button><div class="panel-body">';
+  var ids='';
+  for (var i = 0; i < selected.length; i++) {
+    var id = $(selected[i]).val();
+    if (i == 0) {
+      ids += id;
+    }else {
+      ids += ","+id;
+    }
+    var valor = $(selected[i]).html();
+    html +='<p>Dia '+(i+1)+':'+valor+'</p>';
+  }
+  html +='<input type="hidden" name="opciones_hoteles[]" value="'+ids+'">';
+  html +='</div><div>';
+  $("#lista_opciones_hoteles").append(html);
+}
 function addPaquete(){
   location.href="paquetes.php?action=add";
 }
@@ -454,12 +515,6 @@ function addOneMoreService(dia,id){
   var listaserviciotem = parseInt(listaservicio)+1;
   $(".card-"+dia+" .listaservicio-"+dia).val(listaserviciotem);
   addServicioPaquete(dia,id);
-}
-function addOneMoreHotel(dia,id){
-  var listahotel = $(".card-"+dia+" .listahotel-"+dia).val();
-  var listahoteltem = parseInt(listahotel)+1;
-  $(".card-"+dia+" .listahotel-"+dia).val(listahoteltem);
-  addHotelPaquete(dia,id);
 }
 function eliminarPaquete(dia,id) {
   $(".card-"+dia).parents(".panel-default").remove();

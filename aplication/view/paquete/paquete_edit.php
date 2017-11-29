@@ -1,13 +1,14 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.3/css/select.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="<?php echo _css_ ?>bootstrap-multiselect.css">
 
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.2.3/js/dataTables.select.min.js"></script>
-
+<script type="text/javascript" language="javascript" src="<?php echo _js_ ?>bootstrap-multiselect.js"></script>
 
 <div class="row">
+  <input type="hidden" id="id_paquete" value="<?php echo $_GET['id'] ?>">
   <div class="col-md-12">
-
     <div class="card card-wizard" id="wizardEditarPaquete">
       <form id="wizardFormEditarPaquete" method="post" novalidate="" enctype="multipart/form-data">
         <input type="hidden" name="action" id="action" value="actualizarPaquete">
@@ -21,6 +22,7 @@
             <li><a href="#tab1" data-toggle="tab">Datos del Programa</a></li>
             <li><a href="#tab2" data-toggle="tab">Itinerario del Programa</a></li>
             <li><a href="#tab3" data-toggle="tab">Inclusiones del Programa</a></li>
+            <li><a href="#tab4" data-toggle="tab">Configuración de Hoteles</a></li>
           </ul>
           <div class="tab-content">
             <div class="tab-pane" id="tab1">
@@ -97,8 +99,8 @@
                   <input type="hidden" class="card-dia" value="<?php echo count($objPaquete->__get('_itinerario')) ?>"/>
                   <div class="contenedor-card-apend-container">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                      <?php $i=1;foreach ($objPaquete->__get('_itinerario') as $key => $itinerario) {
-                        $itinerario_hoteles = $objPaquetes->getHotelesxItinerario($itinerario['id_paquete_itinerario']);
+                      <?php foreach ($objPaquete->__get('_itinerario') as $key => $itinerario) {
+                        $itinerario_hoteles = $objPaquetes->getHotelesxItinerario($_GET['id']);
                         ?>
                         <div class="panel panel-default" style="border: 1px;border-color: #0003;border-style: solid;background-color:white">
                           <div class="panel-heading" style="background-color:white" role="tab" id="heading<?php echo (int)($key+1); ?>">
@@ -132,62 +134,6 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div class="contenedor-hoteles-apend-container">
-                                    <input type="hidden" class="listahotel-<?php echo (int)($key+1) ?>" value="<?php echo count($itinerario_hoteles) ?>"/>
-                                    <div class="contenedor-hotel-apend contenedor-servicios-apend-<?php echo $llave+1 ?>">
-                                      <div class="row">
-                                        <div class="col-md-12">
-                                          <label class="control-label">Hoteles<star>*</star></label>
-                                          <div class="form-group" style="overflow-y: auto;height: 345px;">
-                                            <table id="table_h_<?php echo $key?>" class="display table_hotel" width="100%" cellspacing="0" data-page-length='5'>
-                                              <thead>
-                                                <tr>
-                                                  <th>Nombre</th>
-                                                  <th>Departamento</th>
-                                                  <th>Estrellas</th>
-                                                  <th>Empresa</th>
-                                                  <th>Id</th>
-                                                </tr>
-                                              </thead>
-                                              <tbody>
-                                                <?php foreach($listadoHotelesxDepartamentos as $Hotel){
-                                                  $estado = true;
-                                                  if ((is_array($itinerario_hoteles) || is_object($itinerario_hoteles)) && !empty($itinerario_hoteles)){
-                                                    foreach ($itinerario_hoteles as $llave => $valor) {
-                                                      if ($Hotel['id']==$valor){?>
-                                                        <tr class="selected">
-                                                          <td><?php echo $Hotel['nombre']?></td>
-                                                          <td><?php echo $Hotel['departamento'] ?></td>
-                                                          <td><?php echo $Hotel['estrellas'] ?></td>
-                                                          <td><?php echo $Hotel['empresa'] ?></td>
-                                                          <td class="id"><?php echo $Hotel['id'] ?></td>
-                                                        </tr>
-                                                    <?php $estado = true; break;}else{$estado = false;}}
-                                                    if (!$estado) {?>
-                                                      <tr>
-                                                      <td><?php echo $Hotel['nombre']?></td>
-                                                      <td><?php echo $Hotel['departamento'] ?></td>
-                                                      <td><?php echo $Hotel['estrellas'] ?></td>
-                                                      <td><?php echo $Hotel['empresa'] ?></td>
-                                                      <td class="id"><?php echo $Hotel['id'] ?></td>
-                                                    </tr>
-                                                    <?php } }else {?>
-                                                      <tr>
-                                                        <td><?php echo $Hotel['nombre']?></td>
-                                                        <td><?php echo $Hotel['departamento'] ?></td>
-                                                        <td><?php echo $Hotel['estrellas'] ?></td>
-                                                        <td><?php echo $Hotel['empresa'] ?></td>
-                                                        <td class="id"><?php echo $Hotel['id'] ?></td>
-                                                      </tr>
-                                                    <?php } $contador_table++; }?>
-                                              </tbody>
-                                            </table>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <br>
                                   <?php $servicios = Paquetes::getPaquetesItinerarioDetalle($itinerario['id_paquete_itinerario']); ?>
                                   <div class="contenedor-servicios-apend-container">
                                     <input type="hidden" class="listaservicio-<?php echo (int)($key+1) ?>" value="<?php echo count($servicios) ?>"/>
@@ -259,15 +205,12 @@
                     <div class="tab-pane" id="tab3">
                       <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
                       <div class="row">
-                        <div class="col-md-10 col-md-offset-1">
+                        <div class="col-sm-12 col-md-5 col-md-offset-1">
                           <div class="form-group">
-                            <label class="control-label">
-                              Descripción de inclusion
-                            </label>
                             <input class="form-control" type="text" id="nombre_inclusion" placeholder="descripcion de inclusion " value=""/>
                           </div>
                         </div>
-                        <div class="col-md-10 col-md-offset-1">
+                        <div class="col-sm-9 col-md-4">
                           <div class="form-group">
                             <select class="selectpicker" Title=".::.Seleccione Tipo de inclusion.::." id="inclusiones">
                               <option value="1">Incluye</option>
@@ -275,12 +218,12 @@
                             </select>
                           </div>
                         </div>
-                        <div class="col-md-10 col-md-offset-1">
+                        <div class="col-sm-3 col-md-1">
                           <div class="form-group text-right">
                             <button type="button" class="btn btn-info" id="add_inclusion">Ingresar inclusion</button>
                           </div>
                         </div>
-                        <div class="col-md-10 col-md-offset-1">
+                        <div class="col-sm-12 col-md-10 col-md-offset-1">
                           <div class="row">
                             <div class="col-md-6 text-center">
                               <h3>Incluye</h3>
@@ -308,19 +251,68 @@
                             </div>
                           </div>
                         </div>
+                        <div class="tab-pane" id="tab4">
+                          <h5 class="text-center">Ingrese las diferentes opciones de hoteles para el paquete.</h5>
+
+                          <div class="row">
+                            <div class="col-xs-12 col-sm-7 col-md-7">
+                              <h5>Seleccion las opciones de hoteles(Destino-estrellas-hotel-precio)</h5>
+                              <div id="opciones_hoteles" class="form-group">
+                              </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-5 col-md-5">
+                              <h5>Lista de opciones de hoteles</h5>
+                              <div id="lista_opciones_hoteles" class="form-group">
+                                <?php $itinerario_hoteles = $objPaquetes->getHotelesxOpcion($_GET['id']);
+                                foreach ($itinerario_hoteles as $key => $opciones):
+                                  $id_hotel_opc="";
+                                  ?>
+                                  <div class="panel panel-default">
+                                    <button type="button" class="close eliminar_opciones_hoteles" onclick="javascript:eliminar_opciones_hoteles(this)" aria-label="Close">
+                                      <span aria-hidden="true">×</span>
+                                    </button>
+                                    <div class="panel-body">
+                                      <?php foreach ($opciones as $key => $hotel_ops):
+                                        if (is_null($hotel_ops['id_hotel'])) {
+                                          $hotel_ops['id_hotel']=0;
+                                        }
+                                        if ($key !=0) {
+                                          $id_hotel_opc .= ",".$hotel_ops['id_hotel'];
+                                        }else {
+                                          $id_hotel_opc .= $hotel_ops['id_hotel'];
+                                        }
+                                        ?>
+                                        <?php if ($hotel_ops['id_hotel'] ==0){ ?>
+                                          <p>Dia <?php echo $key+1; ?> : - sin Hotel - </p>
+                                        <?php }else{ ?>
+                                          <p>Dia <?php echo $key+1; ?> :<?php echo $hotel_ops['nombre_departamento']?> - <?php echo $hotel_ops['estrellas_hotel'] ?> - <?php echo $hotel_ops['nombre_hotel'] ?> - $<?php echo number_format($hotel_ops['precio_e'], 2, '.', '')?> </p>
+                                        <?php } endforeach; ?>
+                                        <input name="opciones_hoteles[]" value="<?php echo $id_hotel_opc ?>" type="hidden">
+                                      </div>
+                                    </div>
+                                  <?php endforeach; ?>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12 text-right">
+                                <a class="btn btn-info btn-fill" style="cursor: pointer;" onclick="addHotelOpcion()">&nbsp;&nbsp;&nbsp;&nbsp;Agregar opción&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div class="card-footer">
-                      <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
-                      <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right">Next</button>
-                      <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Finalizar</button>
-                      <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish click</button>-->
+                      <div class="card-footer">
+                        <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
+                        <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right">Next</button>
+                        <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Finalizar</button>
+                        <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish click</button>-->
 
-                      <div class="clearfix"></div>
-                    </div>
+                        <div class="clearfix"></div>
+                      </div>
 
-                  </form>
+                    </form>
+                  </div>
+
                 </div>
-
               </div>
-            </div>

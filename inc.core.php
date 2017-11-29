@@ -25,6 +25,8 @@ include("aplication/inc.config.php");
 
 
 	define("_js_template_","../aplication/webroot/js/template/");
+	define("_js_","../aplication/webroot/js/");
+	define("_css_","../aplication/webroot/css/");
 
 	define("_view_empresa_",$_config["server"]["host"]."aplication/view/empresa/");
 	define("_view_hotel_",$_config["server"]["host"]."aplication/view/hotel/");

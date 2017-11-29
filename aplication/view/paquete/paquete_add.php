@@ -1,8 +1,10 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.3/css/select.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="<?php echo _css_ ?>bootstrap-multiselect.css">
 
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.2.3/js/dataTables.select.min.js"></script>
+<script type="text/javascript" language="javascript" src="<?php echo _js_ ?>bootstrap-multiselect.js"></script>
 
 <div class="row">
   <div class="col-md-12">
@@ -19,6 +21,7 @@
             <li><a href="#tab1" data-toggle="tab">Datos del Programa</a></li>
             <li><a href="#tab2" data-toggle="tab">Itinerario del Programa</a></li>
             <li><a href="#tab3" data-toggle="tab">Inclusiones del Programa</a></li>
+            <li><a href="#tab4" data-toggle="tab">Configuración de Hoteles</a></li>
           </ul>
           <div class="tab-content">
             <div class="tab-pane" id="tab1">
@@ -117,9 +120,6 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <div class="contenedor-hoteles-apend-container">
-                                  </div>
-                                  <br>
                                   <div class="contenedor-servicios-apend-container">
                                   </div>
                                 </div>
@@ -137,15 +137,12 @@
               <div class="tab-pane" id="tab3">
                 <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
                 <div class="row">
-                  <div class="col-md-10 col-md-offset-1">
+                  <div class="col-sm-12 col-md-5 col-md-offset-1">
                     <div class="form-group">
-                      <label class="control-label">
-                        Descripción de inclusion
-                      </label>
                       <input class="form-control" type="text" id="nombre_inclusion" placeholder="descripcion de inclusion " value=""/>
                     </div>
                   </div>
-                  <div class="col-md-10 col-md-offset-1">
+                  <div class="col-sm-9 col-md-4">
                     <div class="form-group">
                       <select class="selectpicker" Title=".::.Seleccione Tipo de inclusion.::." id="inclusiones">
                         <option value="1">Incluye</option>
@@ -153,12 +150,12 @@
                       </select>
                     </div>
                   </div>
-                  <div class="col-md-10 col-md-offset-1">
+                  <div class="col-sm-3 col-md-1">
                     <div class="form-group text-right">
                       <button type="button" class="btn btn-info" id="add_inclusion">Ingresar inclusion</button>
                     </div>
                   </div>
-                  <div class="col-md-10 col-md-offset-1">
+                  <div class="col-sm-12 col-md-10 col-md-offset-1">
                     <div class="row">
                       <div class="col-md-6 text-center">
                         <h3>Incluye</h3>
@@ -173,6 +170,26 @@
                         </ul>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="tab4">
+                <h5 class="text-center">Ingrese las diferentes opciones de hoteles para el paquete.</h5>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-7 col-md-7">
+                    <h5>Seleccion las opciones de hoteles(Destino-estrellas-hotel-precio)</h5>
+                    <div id="opciones_hoteles" class="form-group">
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-5 col-md-5">
+                    <h5>Lista de opciones de hoteles</h5>
+                    <div id="lista_opciones_hoteles" class="form-group">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12 text-right">
+                    <a class="btn btn-info btn-fill" style="cursor: pointer;" onclick="addHotelOpcion()">&nbsp;&nbsp;&nbsp;&nbsp;Agregar dia&nbsp;&nbsp;&nbsp;&nbsp;</a>
                   </div>
                 </div>
               </div>

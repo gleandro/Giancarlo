@@ -658,33 +658,11 @@ class Ajax{
 									</div>
 								</div>
 
-								<div class="contenedor-hoteles-apend-container">
-									<div class="contenedor-hoteles-apend contenedor-hoteles-apend-1">
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label class="control-label">Hoteles<star>*</star></label>
-													<select class="selectpicker form-control" onchange="addHabitaciones(<?php echo $dia_actual ?>,1,this.value)" data-style="btn-info btn-fill btn-block" data-size="7" name="hotel[<?php echo $dia_actual ?>][1][]" style="color: #FFFFFF;background-color: #68B3C8;display: block !important;border-radius: 20px;box-sizing: border-box;border-width: 2px;font-size: 14px;font-weight: 600;padding: 7px 18px;border-color: #68B3C8;width: 100%;">
-														<option value="">.::Seleccione un Hotel::.</option>
-														<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
-															<option value="<?php echo $Hotel['id'] ?>">
-																<?php echo $Hotel['departamento'].' ( '.$Hotel['estrellas'].' estrellas - $'.round($Hotel['precio'], 2).' ) : '.$Hotel['nombre'] ?>
-															</option>
-														<?php } ?>
-													</select>
-													<div class="select-container-<?php echo $dia_actual ?>-1">
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
 								<div class="row">
 									<div class="col-md-12">
 										<a class="text-success" style="cursor: pointer;" onclick="addOneMoreHotel(<?php echo $dia ?>,<?php echo $id_paquete ?>)">Añadir un hotel más al día <i class="fa fa-plus-circle"></i></a>
 									</div>
 								</div>
-								<br>
 								<div class="contenedor-servicios-apend-container">
 									<div class="contenedor-servicios-apend contenedor-servicios-apend-1">
 										<!--<input type="hidden" class="listaservicio-1" value="1"/>-->
@@ -932,6 +910,7 @@ class Ajax{
 							$objServicios = new Servicios();
 							$listadoServicios = $objServicios->getServicios();
 							$departamentos = $_POST['departamento'];
+
 							if (count($departamentos)>0 || $_POST['id']!='') {
 								if (count($departamentos)>0 && $_POST['id']=='') {
 									foreach ($departamentos as $key => $value) {
@@ -1035,7 +1014,7 @@ class Ajax{
 															<label class="control-label">
 																Nombre
 															</label>
-															<input class="form-control" type="text" name="nombreDia[<?php echo $dia-1 ?>][]" placeholder="Nombre para Identificar el Día"/>
+															<input class="form-control" type="text" required name="nombreDia[<?php echo $dia-1 ?>][]" placeholder="Nombre para Identificar el Día"/>
 														</div>
 													</div>
 												</div>
@@ -1049,38 +1028,6 @@ class Ajax{
 														</div>
 													</div>
 												</div>
-												<div class="contenedor-hoteles-apend-container">
-													<div class="contenedor-hoteles-apend contenedor-hoteles-apend-1">
-														<div class="row">
-															<div class="col-md-12">
-																<label class="control-label">Hoteles<star>*</star></label>
-																	<div class="form-group" style="overflow-y: auto;height: 345px;">
-																	<table id="table_edit_h_<?php echo $dia-1?>" class="display table_hotel" width="100%" cellspacing="0" data-page-length='5'>
-																		<thead>
-																			<th>Nombre</th>
-																			<th>Departamento</th>
-																			<th>Estrellas</th>
-																			<th>Empresa</th>
-																			<th>Id</th>
-																		</thead>
-																		<tbody>
-																			<?php foreach ($listadoHotelesxDepartamentos as $Hotel) { ?>
-																				<tr id="<?php echo $count ?>">
-																					<td><?php echo $Hotel['nombre']?></td>
-																					<td><?php echo $Hotel['departamento'] ?></td>
-																					<td><?php echo $Hotel['estrellas'] ?></td>
-																					<td><?php echo $Hotel['empresa'] ?></td>
-																					<td class="id"><?php echo $Hotel['id'] ?></td>
-																				</tr>
-																			<?php $count++; } ?>
-																		</tbody>
-																	</table>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-												<br>
 												<div class="contenedor-servicios-apend-container">
 													<div class="contenedor-servicios-apend contenedor-servicios-apend-1">
 														<!--<input type="hidden" class="listaservicio-1" value="1"/>-->
@@ -1147,20 +1094,23 @@ class Ajax{
 							$servicio = $_POST['servicio'];
 							$nombreDia = $_POST['nombreDia'];
 							$descripcion = $_POST['descripcion'];
+							$opciones = $_POST['opciones_hoteles'];
 							$dias = $_POST['dias'];
+
+							foreach ($opciones as $key => $opcion) {
+								$hoteles_opcion = explode(",",$opcion);
+								foreach ($hoteles_opcion as $key2 => $opcion_h) {
+									if ($opcion_h == 0) {
+										$opcion_h="null";
+									}
+									$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $nuevoid ."',". $opcion_h .",'".$key."',".$key2.") ");
+								}
+							}
 
 							foreach ($nombreDia as $key => $nombre) {
 								$query2 = new Consulta("INSERT INTO paquetes_itinerarios VALUES('','". $nuevoid ."','41','". $nombre['0'] ."','". $descripcion[$key]['0'] ."') ");
 								$nuevoid2 = $query2->nuevoid();
 
-								$hoteles = $dias[$key][0];
-								if (is_array($hoteles) || is_object($hoteles)) {
-									foreach ($hoteles as $llave => $hotel) {
-										if (!empty($hotel) && !is_null($hotel) && $hotel != '') {
-											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $nuevoid2 ."','". $hotel ."') ");
-										}
-									}
-								}
 								$servicios = $dias[$key][1];
 								if (is_array($servicios) || is_object($servicios)) {
 									foreach ($servicios as $llave => $value) {
@@ -1224,31 +1174,34 @@ class Ajax{
 
 								while($row = $query_paquetes_itinerarios->VerRegistro()) {
 									$query = new Consulta("DELETE FROM paquetes_itinerarios_detalles WHERE id_paquete_itinerario = '".$row['id_paquete_itinerario']."' ");
-									$query = new Consulta("DELETE FROM paquetes_itinerarios_hoteles WHERE id_paquete_itinerario = '".$row['id_paquete_itinerario']."' ");
+									$query = new Consulta("DELETE FROM paquetes_itinerarios_hoteles WHERE id_paquete = '".$id_paquete."' ");
 								}
 								$query = new Consulta("DELETE FROM paquetes_itinerarios WHERE id_paquete = '".$id_paquete."' ");
 								$servicio = $_POST['servicio'];
 								$nombreDia = $_POST['nombreDia'];
-								$hoteles = $_POST['hotel'];
+								$opciones = $_POST['opciones_hoteles'];
 								$descripcion = $_POST['descripcion'];
 								$dias = $_POST['dias'];
+
+								foreach ($opciones as $key => $opcion) {
+									$hoteles_opcion = explode(",",$opcion);
+									foreach ($hoteles_opcion as $key2 => $opcion_h) {
+										if ($opcion_h == 0) {
+											$opcion_h="null";
+										}
+										$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $id_paquete ."',". $opcion_h .",'".$key."',".$key2.") ");
+									}
+								}
+
 								foreach ($nombreDia as $key => $nombre) {
 									$query2 = new Consulta("INSERT INTO paquetes_itinerarios VALUES('','". $id_paquete ."','41','". $nombre['0'] ."','". $descripcion[$key]['0'] ."') ");
 									$nuevoid2 = $query2->nuevoid();
-
-									$hoteles = $dias[$key][0];
-									if (is_array($hoteles) || is_object($hoteles)){
-										foreach ($hoteles as $llave => $hotel) {
-											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $nuevoid2 ."','". $hotel ."') ");
-										}
-									}
 									$servicios = $dias[$key][1];
 									if (is_array($servicios) || is_object($servicios)){
 										foreach ($servicios as $llave => $value) {
 											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_detalles VALUES('','". $nuevoid2 ."','". $value ."') ");
 										}
 									}
-
 								}
 								$incluye = $_POST['incluye'];
 								$excluye = $_POST['excluye'];
@@ -1273,7 +1226,7 @@ class Ajax{
 
 								while($row = $query_paquetes_itinerarios->VerRegistro()) {
 									$query = new Consulta("DELETE FROM paquetes_itinerarios_detalles WHERE id_paquete_itinerario = '".$row['id_paquete_itinerario']."' ");
-									$query = new Consulta("DELETE FROM paquetes_itinerarios_hoteles WHERE id_paquete_itinerario = '".$row['id_paquete_itinerario']."' ");
+									$query = new Consulta("DELETE FROM paquetes_itinerarios_hoteles WHERE id_paquete = '".$row['id_paquete']."' ");
 								}
 								$query = new Consulta("DELETE FROM paquetes_itinerarios WHERE id_paquete = '".$id."' ");
 								$query = new Consulta("DELETE FROM paquetes_destinos WHERE id_paquete = '".$id."' ");
@@ -1355,6 +1308,35 @@ class Ajax{
 										}
 									}
 								}
+								function getHotelesOpcionesAjax(){
+									$dias = $_POST['dias'];
+									$departamentos = $_POST['departamento'];
+									foreach ($departamentos as $key => $value) {
+										$ubicaciones_lista .= $value.',';
+									}
+									$ubicaciones = substr($ubicaciones_lista, 0, -1);
+									$hoteles = new Hoteles();
+
+									$lista_hoteles = $hoteles->getHotelesxDepartamentos($ubicaciones);
+									for ($i=0; $i <$dias ; $i++) {
+									?>
+
+									<div class="row">
+									<div class="col-xs-2 col-sm-2 col-md-2">
+										<h6>Dia <?php echo (int)$i+1; ?>:</h6>
+									</div>
+									<div class="col-xs-10 col-sm-10 col-md-10">
+										<select class="select_hoteles">
+											<option value="0"> - sin Hotel - </option>
+											<?php foreach ($lista_hoteles as $key => $value): ?>
+													<option value="<?php echo $value['id'] ?>"><?php echo $value['departamento']?> - <?php echo $value['estrellas'] ?> - <?php echo $value['nombre'] ?> - $<?php echo number_format($value['precio_e'], 2, '.', '') ?></option>
+											<?php endforeach; ?>
+										</select>
+									</div>
+									</div>
+								<?php
+								}
+							}
 								/*AJAX PARA TABLA SERVICIOS */
 							}
 							?>

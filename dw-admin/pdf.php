@@ -40,24 +40,25 @@ foreach ($hoteles as $key => $value) {
   if ($id !=$value['id_hotel']) {
     $id = $value['id_hotel'];
   }
-  $detalle_hoteles[$id]['nombre_hotel']=$value['nombre_hotel'];
+  $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nombre_hotel']=$value['nombre_hotel'];
+  $detalle_hoteles[$value['opcion']][$value['dia']][$id]['estrellas_hotel']=$value['estrellas_hotel'];
   if ($value['id_habitacion'] == 1) {
     $h1_n=$value['precio_nacional_persona'];
     $h1_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$id]['nacional'][1]=($h1_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
-    $detalle_hoteles[$id]['extranjero'][1]=($h1_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][1]=($h1_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][1]=($h1_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
   }
   if ($value['id_habitacion'] == 2) {
     $h2_n=$value['precio_nacional_persona'];
     $h2_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$id]['nacional'][2]=($h2_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
-    $detalle_hoteles[$id]['extranjero'][2]=($h2_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][2]=($h2_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][2]=($h2_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
   }
   if ($value['id_habitacion'] == 3) {
     $h3_n=$value['precio_nacional_persona'];
     $h3_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$id]['nacional'][3]=($h3_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
-    $detalle_hoteles[$id]['extranjero'][3]=($h3_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][3]=($h3_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][3]=($h3_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
   }
   $contador++;
 }
@@ -274,7 +275,7 @@ hr {
 <br><br>
 <table class="table-precios">
     <tr>
-        <td class="cabecera1">
+        <td class="cabecera1" colspan ="3">
           TARIFA EN DOLARES AMERICANOS
         </td>
         <td rowspan="2" class="cabecera2">
@@ -288,7 +289,7 @@ hr {
         </td>
     </tr>
     <tr>
-      <td class="cabecera1">
+      <td class="cabecera1" colspan ="3">
         HOTEL
       </td>
 
@@ -300,50 +301,99 @@ hr {
       <td class="cabecera2">DWB</td>
       <td class="cabecera2">TWB</td>
     </tr>';
-    foreach ($detalle_hoteles as $key => $hotel) {
-      $html="<tr>";
-      $html.="<td>".$hotel['nombre_hotel']."</td>";
-      $html.="<td>Expedition</td>";
+    foreach ($detalle_hoteles as $key => $opcion) {
+      //variables totales nacionales
+      $vt_n1=0.00;
+      $vt_n2=0.00;
+      $vt_n3=0.00;
+      //variables totales extranjeras
+      $vt_e1=0.00;
+      $vt_e2=0.00;
+      $vt_e3=0.00;
+      $html ='
+      <tr>
+      <td class="cabecera1" colspan="10">Opcion'.($key+1).'</td>
+      </tr>';
 
-      //variables nacionales
-      $v_n1="-";
-      $v_n2="-";
-      $v_n3="-";
-      //variables extranjeras
-      $v_e1="-";
-      $v_e2="-";
-      $v_e3="-";
+      foreach ($opcion as $key2 => $dia) {
+        $html .='<tr style="text-align:right">
+                  <td>Dia '.($key2+1).':</td>';
+      foreach ($dia as $key3 => $hotel) {
+        if ($hotel["nombre_hotel"]=='') {
+          $hotel["nombre_hotel"] = "No se selecciono un hotel";
+        }
+        $html.='<td>'.$hotel["nombre_hotel"].'</td>';
+        $html.='<td>Expedition</td>';
+        //variables nacionales
+        $v_n1=0.00;
+        $v_n2=0.00;
+        $v_n3=0.00;
+        //variables extranjeras
+        $v_e1=0.00;
+        $v_e2=0.00;
+        $v_e3=0.00;
 
-      foreach ($hotel['nacional'] as $key => $value) {
-        if ($key == 1) {
-          $v_n1="$".$value;
+        if (is_array($hotel["nacional"]) || is_object($hotel["nacional"]))
+        {
+          foreach ($hotel["nacional"] as $key => $value) {
+            if ($key == 1) {
+              $v_n1=$value;
+            }
+            if ($key == 2) {
+              $v_n2=$value;
+            }
+            if ($key == 3) {
+              $v_n3=$value;
+            }
+          }
         }
-        if ($key == 2) {
-          $v_n2="$".$value;
+        if (is_array($hotel["extranjero"]) || is_object($hotel["extranjero"]))
+        {
+          foreach ($hotel["extranjero"] as $key => $value) {
+            if ($key == 1) {
+              $v_e1=$value;
+            }
+            if ($key == 2) {
+              $v_e2=$value;
+            }
+            if ($key == 3) {
+              $v_e3=$value;
+            }
+          }
         }
-        if ($key == 3) {
-          $v_n3="$".$value;
-        }
+        //variables nacionales
+        $vt_n1+=$v_n1;
+        $vt_n2+=$v_n2;
+        $vt_n3+=$v_n3;
+        //variables extranjeras
+        $vt_e1+=$v_e1;
+        $vt_e2+=$v_e2;
+        $vt_e3+=$v_e3;
+
+
+        $html.='<td>'.$hotel["estrellas_hotel"].'</td>';
+        $html.='<td>$'.number_format($v_e1, 2, '.', '').'</td>';
+        $html.='<td>$'.number_format($v_e2, 2, '.', '').'</td>';
+        $html.='<td>$'.number_format($v_e3, 2, '.', '').'</td>';
+        $html.='<td>$'.number_format($v_n1, 2, '.', '').'</td>';
+        $html.='<td>$'.number_format($v_n2, 2, '.', '').'</td>';
+        $html.='<td>$'.number_format($v_n3, 2, '.', '').'</td>';
+
       }
-      foreach ($hotel['extranjero'] as $key => $value) {
-        if ($key == 1) {
-          $v_e1="$".$value;
-        }
-        if ($key == 2) {
-          $v_e2="$".$value;
-        }
-        if ($key == 3) {
-          $v_e3="$".$value;
-        }
+          $html .='</tr>';
       }
-      $html.="<td>".$v_e1."</td>";
-      $html.="<td>".$v_e2."</td>";
-      $html.="<td>".$v_e3."</td>";
-      $html.="<td>".$v_n1."</td>";
-      $html.="<td>".$v_n2."</td>";
-      $html.="<td>".$v_n3."</td>";
-      $html.="</tr>";
-      $formato.=$html;
+      $html .='<tr style="text-align:right">
+      <td colspan="3" style="color:red">Total</td>
+      <td></td>
+      <td>$'.number_format($vt_e1, 2, '.', '').'</td>
+      <td>$'.number_format($vt_e2, 2, '.', '').'</td>
+      <td>$'.number_format($vt_e3, 2, '.', '').'</td>
+      <td>$'.number_format($vt_n1, 2, '.', '').'</td>
+      <td>$'.number_format($vt_n2, 2, '.', '').'</td>
+      <td>$'.number_format($vt_n3, 2, '.', '').'</td>
+      </tr>';
+
+      $formato .=$html;
     }
 
   $formato .=

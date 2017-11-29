@@ -60,12 +60,12 @@ function consultaAsesoria(form) {
     }
     if (correo == "") {
         $(".mensaje-consulta-asesoria").text('Ingresar su correo electrónico');
-        $("#correo_consulta").focus();      
+        $("#correo_consulta").focus();
         return false;
     }
     if (!correo.match(emailRegex)) {
         $(".mensaje-consulta-asesoria").text('Ingresar un correo electrónico válido');
-        $("#correo_consulta").focus();      
+        $("#correo_consulta").focus();
         return false;
     }
     if (telefono == "") {
@@ -79,11 +79,11 @@ function consultaAsesoria(form) {
         return false;
     }
 
-    $.ajax({     
-              type  : "POST", 
+    $.ajax({
+              type  : "POST",
               url: url_web+"ajax.php?action=enviarConsultaAsesoria",
               data  : $("#form_consulta_asesoria").serialize(),
-              success: function(data) {  
+              success: function(data) {
                     $(".mensaje-consulta-asesoria").text('');
                     $("#nombre_consulta").val('');
                     $("#apellido_consulta").val('');
@@ -97,14 +97,14 @@ function consultaAsesoria(form) {
                         $('.modal-asesoria-consulta-mensaje').modal('hide');
                     },10000)
               },
-              beforeSend: function(objeto){       
+              beforeSend: function(objeto){
               },
-              complete: function(){                
+              complete: function(){
               }
     });
-    
+
     return false;
-   
+
 }
 /*** INICIO MODAL CONSULTA ***/
 
@@ -135,13 +135,13 @@ function reclamoAsesoria(form) {
 
 
 
-    
+
     if (producto == "") {
         $(".mensaje-reclamo-asesoria").text('Debe ingresar un producto.');
         $("#buscador_producto_reclamo").focus();
         return false;
     }
-    
+
     if (color == "") {
         $(".mensaje-reclamo-asesoria").text('Debe ingresar un color.');
         $("#color_reclamo").focus();
@@ -154,80 +154,80 @@ function reclamoAsesoria(form) {
     }
     if (lugar == "") {
         $(".mensaje-reclamo-asesoria").text('Ingresar el lugar donde compró.');
-        $("#lugar_compra_reclamo").focus();      
+        $("#lugar_compra_reclamo").focus();
         return false;
     }
 
     if (nombre == "") {
         $(".mensaje-reclamo-asesoria").text('Ingrese sus nombres y apellidos.');
-        $("#nombre_reclamo").focus();      
+        $("#nombre_reclamo").focus();
         return false;
     }
     if (dni == "") {
         $(".mensaje-reclamo-asesoria").text('Ingrese DNI o pasaporte.');
-        $("#dni_reclamo").focus();      
+        $("#dni_reclamo").focus();
         return false;
     }
     if (!/^([0-9])*$/.test(dni)) {
         $(".mensaje-reclamo-asesoria").text('Ingrese un DNI o pasaporte válido.');
-        $("#dni_reclamo").focus();      
+        $("#dni_reclamo").focus();
         return false;
     }
     if (telefono == "") {
         $(".mensaje-reclamo-asesoria").text('Ingrese su teléfono.');
-        $("#telefono_reclamo").focus();      
+        $("#telefono_reclamo").focus();
         return false;
     }
     if (!/^([0-9])*$/.test(telefono)) {
         $(".mensaje-reclamo-asesoria").text('Ingrese un número válido.');
-        $("#telefono_reclamo").focus();      
+        $("#telefono_reclamo").focus();
         return false;
     }
     if (email == "") {
         $(".mensaje-reclamo-asesoria").text('Ingrese su correo electrónico.');
-        $("#email_reclamo").focus();      
+        $("#email_reclamo").focus();
         return false;
     }
 
     if (!email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
         $(".mensaje-consulta-asesoria").text('Ingresar un correo electrónico válido');
-        $("#email_reclamo").focus();      
+        $("#email_reclamo").focus();
         return false;
     }
 
     if (pais == "") {
         $(".mensaje-reclamo-asesoria").text('Ingresar el nombre del país.');
-        $("#pais_reclamo").focus();      
+        $("#pais_reclamo").focus();
         return false;
     }
     if (provincia == "") {
         $(".mensaje-reclamo-asesoria").text('Ingresar el nombre de la provincia.');
-        $("#provincia_reclamo").focus();      
+        $("#provincia_reclamo").focus();
         return false;
     }
     if (distrito == "") {
         $(".mensaje-reclamo-asesoria").text('Ingresar el nombre del distrito.');
-        $("#distrito_reclamo").focus();      
+        $("#distrito_reclamo").focus();
         return false;
     }
     if (direccion == "") {
         $(".mensaje-reclamo-asesoria").text('Ingrese su dirección.');
-        $("#direccion_reclamo").focus();      
+        $("#direccion_reclamo").focus();
         return false;
     }
-    
+
     if (ruc != "") {
         if (!/^([0-9])*$/.test(ruc)) {
             $(".mensaje-reclamo-asesoria").text('Ingrese un RUC válido.');
-            $("#ruc_reclamo").focus();      
+            $("#ruc_reclamo").focus();
             return false;
         }
     }
-    
-    
 
 
-    
+
+
+
     if (comentario == "") {
         $(".mensaje-reclamo-asesoria").text('Ingrese el detalle del reclamo.');
         $("#comentario_reclamo").focus();
@@ -247,13 +247,13 @@ function reclamoAsesoria(form) {
         return false;
     }
 
-    
 
-    $.ajax({     
-              type  : "POST", 
+
+    $.ajax({
+              type  : "POST",
               url: url_web+"ajax.php?action=enviarReclamoAsesoria",
               data  : $("#form_reclamo_asesoria").serialize(),
-              success: function(datos) {  
+              success: function(datos) {
                     $(".mensaje-reclamo-asesoria").text('');
                     $("#color_reclamo").val('');
                     $("#numero_lote_reclamo").val('');
@@ -280,14 +280,14 @@ function reclamoAsesoria(form) {
                         $('.modal-asesoria-reclamo-mensaje').modal('hide');
                     },100000)
               },
-              beforeSend: function(objeto){       
+              beforeSend: function(objeto){
               },
-              complete: function(){                
+              complete: function(){
               }
     });
-    
+
     return false;
-   
+
 }
 /*** INICIO MODAL RECLAMO ***/
 
@@ -303,7 +303,7 @@ function calcularPinturaProyecto(form) {
 
     var validardecimales = /^(\d|-)*\.?\d*$/;
     //alert(producto+'-'+ancho+'-'+alto+'-'+numero_puertas+'-'+numero_ventanas);
-    
+
     //alert(producto+'-'+ancho+'-'+alto+'-'+numero_puertas+'-'+numero_ventanas+'-'+numero_manos);
     //return false;
 
@@ -404,13 +404,13 @@ function eliminar_cesta_cliente(id) {
             }
     });
     return false;
-                                            
+
 }
 function modificar_cesta_cliente(id) {
    $("#cantidad_"+id).css("border", "1px solid rgb(193, 203, 224)");
    $("#cantidad_"+id).focus();
    $("#cantidad_"+id).select();
-   return false;                           
+   return false;
 }
 /*** INICIO MODAL CALCULAR PINTURA
 function validarPinturaProyecto(form){
@@ -423,8 +423,8 @@ FIN MODAL CALCULAR PINTURA ***/
 /*** INICIO MODAL RECOMENDAR A UN AMIGO ***/
 function validarMailAmigos(form) {
 
-    var email_cliente = form.email_cliente.value;    
-    var email_amigo = form.email_amigo.value; 
+    var email_cliente = form.email_cliente.value;
+    var email_amigo = form.email_amigo.value;
     var url_enviar_amigo = $(".url_enviar_amigo").html();
     //alert(url_enviar_amigo);
 
@@ -432,40 +432,40 @@ function validarMailAmigos(form) {
 
     if (email_cliente == "") {
         $(".mensaje-recomendar-amigo").text('Ingresar su correo electrónico');
-        $("#email_cliente_recomendado").focus();      
+        $("#email_cliente_recomendado").focus();
         return false;
     }
     if (!email_cliente.match(emailRegex)) {
         $(".mensaje-recomendar-amigo").text('Ingresar un correo electrónico válido');
-        $("#email_cliente_recomendado").focus();      
+        $("#email_cliente_recomendado").focus();
         return false;
     }
     if (email_amigo == "") {
         $(".mensaje-recomendar-amigo").text('Ingresar el correo electrónico de su amigo');
-        $("#email_amigo_recomendado").focus();      
+        $("#email_amigo_recomendado").focus();
         return false;
     }
     if (!email_amigo.match(emailRegex)) {
         $(".mensaje-recomendar-amigo").text('Ingresar el correo electrónico de su amigo válido');
-        $("#email_amigo_recomendado").focus();         
+        $("#email_amigo_recomendado").focus();
         return false;
     }
     if(document.getElementById('privacidad_recomendado').checked == false){
         $(".mensaje-recomendar-amigo").text('Debe aceptar los Términos y Condiciones.');
         return false;
     }
-    
+
     //var ruta=$("#ruta_web").val();
-    $.ajax({     
-              type  : "POST", 
+    $.ajax({
+              type  : "POST",
               url: url_web+"ajax.php?action=enviarMailAmigo&url_enviar_amigo="+url_enviar_amigo,
               data  : $("#form_datos_mail").serialize(),
-              success: function(data) {  
+              success: function(data) {
                     //alert(data);
-                    $("#email_cliente_recomendado").val(''); 
-                    $("#email_amigo_recomendado").val('');  
-                    $(".mensaje-recomendar-amigo").text(''); 
-                    document.getElementById('privacidad_recomendado').checked=0; 
+                    $("#email_cliente_recomendado").val('');
+                    $("#email_amigo_recomendado").val('');
+                    $(".mensaje-recomendar-amigo").text('');
+                    document.getElementById('privacidad_recomendado').checked=0;
                     $('.modal-enviar-amigo').modal('hide');
                     $('.modal-recomendar-mensaje').modal('show');
                     setTimeout(function(){
@@ -473,12 +473,12 @@ function validarMailAmigos(form) {
                     },10000)
               },
               beforeSend: function(objeto){
-                                 
+
               },
-              complete: function(){                
+              complete: function(){
               }
     });
-    
+
     return false;
 }
 /*** FIN MODAL RECOMENDAR A UN AMIGO ***/
@@ -599,7 +599,7 @@ function validarEmpresaAddCesta() {
        complete:function(){
        }
     });
-    
+
     return false;
 
 }
@@ -643,7 +643,7 @@ function validarCotizacionClientePedido(form) {
         document.form_pedidos.submit();
     }
     return false;
-    
+
 }
 
 function validarLogeoEmpresa_antiguo(form) {
@@ -799,7 +799,7 @@ function validarRegistroPostulante(form) {
     })
     .done(function(data){
       //alert(data);
-        
+
         $("#nombre").val('');
         $("#apellidos").val('');
         $("#telefono").val('');
@@ -813,7 +813,7 @@ function validarRegistroPostulante(form) {
         setTimeout(function(){
             $('.modal-registrar-postulante-mensaje').modal('hide');
         },10000)
-        
+
     });
 
     return false;
@@ -1023,7 +1023,7 @@ function validarRegistroCliente(form) {
               data  : $("#form_registrar_cliente").serialize(),
               success: function(data) {
                     //alert('valor: '+data);
-                    
+
                     if(data==1){
                         //window.location.replace("/cuenta.php?cuenta=bienvenido");
                         $("#nombre_cliente").val('');
@@ -1035,7 +1035,7 @@ function validarRegistroCliente(form) {
                         $("#distrito").val('');
                         $("#privacidad").val('');
                         $(".mensaje_registro_cliente").text('');
-                        
+
                         $('.close').click();
                         $('.modal-registro-cliente').modal('hide');
                         $('.modal-cotizar-pedido-cliente').modal('show');
@@ -1057,7 +1057,7 @@ function validarRegistroCliente(form) {
                         $("#ruc").focus();
                         return false;
                     }
-                    
+
 
               },
               beforeSend: function(objeto){
@@ -1116,7 +1116,7 @@ function validarRegistroCliente(form) {
 /*** INICIO MODAL DESCRIPCION DE TRABAJA CON NOSOTROS ***/
 
 function openModalDescripcionCargo(id_bolsa_trabajo) {
-    
+
     $.ajax({
               type  : "GET",
               url: 'ajax.php?action=descripcionCargo&id_bolsa_trabajo='+id_bolsa_trabajo,
@@ -1138,7 +1138,7 @@ function openModalDescripcionCargo(id_bolsa_trabajo) {
 /*** FIN MODAL DESCRIPCION DE TRABAJA CON NOSOTROS ***/
 
 
-/*** INICIO MODAL COTIZACION ***/ 
+/*** INICIO MODAL COTIZACION ***/
 function validarLogeoCliente(form) {
 
     var email = form.mail_cliente.value;
@@ -1219,7 +1219,7 @@ function validarLogeoEmpresa(form) {
         $("#email_empresa").focus();
         return false;
     }
-    
+
     $.ajax({
               type  : "POST",
               url   : 'validateUser.php?logeo_sistema_empresa=1&email='+email+'&ruc='+ruc,
@@ -1258,13 +1258,13 @@ function eliminar_bloque_colores(id) {
     $(".bloque_color_"+id).css("display", "none");
     $(".bloque_color_"+id).remove(); //elimino un bloque
     return false;
-                                            
+
 }
 function modificar_cesta_empresa(id) {
    $("#cantidad_empresa_"+id).css("border", "1px solid rgb(193, 203, 224)");
    $("#cantidad_empresa_"+id).focus();
    $("#cantidad_empresa_"+id).select();
-   return false;                           
+   return false;
 }
 function eliminar_cesta_empresa(id) {
     //var ruta_producto = $("#valor_url_producto").val();
@@ -1285,7 +1285,7 @@ function eliminar_cesta_empresa(id) {
             }
     });
     return false;
-                                            
+
 }
 function anularCotizacionEmpresa() {
     $('.modal-cotizar-pedido-empresa').modal('hide');
@@ -1306,9 +1306,9 @@ function anularCotizacionEmpresa() {
     });
     return false;
 }
-/*** FIN MODAL COTIZACION ***/ 
+/*** FIN MODAL COTIZACION ***/
 
-/*** INICIO MODAL COTIZACION FINALIZADA ***/  
+/*** INICIO MODAL COTIZACION FINALIZADA ***/
 function detalleCotizacion() {
     $('.modal-cotizar-pedido-cliente').modal('hide');
     $('.close').click();
@@ -1317,9 +1317,9 @@ function detalleCotizacion() {
     $('.modal-detalle-cotizar-pedido-cliente').modal('show');
     $.get("ajax.php",{ action:'detallePedidoCliente'},function(data){
        $(".bloque-detalle-pedido-cliente").append(data);
-    })     
+    })
 }
-/*** FIN MODAL COTIZACION FINALIZADA ***/ 
+/*** FIN MODAL COTIZACION FINALIZADA ***/
 
 
 /*
@@ -1396,7 +1396,7 @@ function validarLogeoCliente(form) {
               }
     });
     return false;
-    
+
 }
 
 function productosController($scope,$http) {
@@ -1438,7 +1438,7 @@ function validate_pregunta_maestro(form){
     var departamento = form.departamento.value;
     var distrito = form.distrito.value;
     var provincia = form.provincia.value;
-   
+
     var emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
     if(nombre == "") {
@@ -1551,7 +1551,7 @@ function validarDescargaGuiaDecorativa(form){
     }
 
     var interval;
-    
+
     $.ajax({
         type: "GET",
         url: url_web+"ajax.php?action=guiaDecorativa", //url: "ajax.php?action=GuardarConsulta",
@@ -1560,10 +1560,10 @@ function validarDescargaGuiaDecorativa(form){
         },
         success: function(data){
             if (parseInt(data)==1){
-              $("#nombre_guia").val('');  
-              $("#telefono_guia").val('');  
-              $("#email_guia").val('');  
-              $(".mensaje-descarga-guia-decorativa").text('');  
+              $("#nombre_guia").val('');
+              $("#telefono_guia").val('');
+              $("#email_guia").val('');
+              $(".mensaje-descarga-guia-decorativa").text('');
               $('.modal-guia-decorativa').modal('hide');
               $('.modal-mensaje-guia-decorativa').modal('show');
               //$.fancybox.hideLoading();
@@ -1626,7 +1626,7 @@ function cambiaProducto(nombre,color) {
     //console.log('entro a cambiaProducto');
 }
 $(document).ready(function(){
-    
+
     $('.listado-colores').on('click touchstart', function(e) {
         var pared_temporal = $('#pared_temporal').val();
         var nombre  = $(this).data('nombre');
@@ -1642,15 +1642,15 @@ $(document).ready(function(){
             $('#color_02_producto').val(color);
             //console.log('entro a 0:'+color);
         }
-        //alert("touchstart: "+nombre+'-'+color);          
+        //alert("touchstart: "+nombre+'-'+color);
     });
     /*
     $('.cuadro-color').on('click touchstart', function(e) {
         $(this).removeClass('posicion-base');
     });
     */
-    
-    
+
+
     /*** INICIO MODAL BUSCADOR PRODUCTO LIMPIADOR***/
     $('.link-buscador-producto').on('click', function(ev) {
         $(".mensaje-calculo").text('por calcular');
@@ -1687,10 +1687,10 @@ $(document).ready(function(){
         }else{
             $('.modal-registro-cliente').modal('show');
         }
-        
-        
+
+
   });
-  /*** FIN MODAL PEDIDO CLIENTE ***/  
+  /*** FIN MODAL PEDIDO CLIENTE ***/
 
   /*** INICIO MODAL RECOMENDAR A UN AMIGO ***/
   $('.recomendar-amigo').on('click', function(ev) {
@@ -1737,15 +1737,15 @@ $(document).ready(function(){
   $("#ac-gn-searchform-input").autocomplete({
                 source: "search.php?tipe=dni",
                 minLength: 2,
-                select: function( event, ui ) { 
+                select: function( event, ui ) {
                     cargardatos(ui.item.id, 1);
                 }
   });
-  
+
   $("#buscador").autocomplete({
                 source: "search.php?tipe=dni",
                 minLength: 2,
-                select: function( event, ui ) { 
+                select: function( event, ui ) {
                     cargardatos(ui.item.id, 1);
                 }
   });

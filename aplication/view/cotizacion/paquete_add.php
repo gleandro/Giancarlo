@@ -114,9 +114,6 @@
                                                       </div>
                                                   </div>
                                               </div>
-                                              <div class="contenedor-hoteles-apend-container">
-
-          			                            	</div>
                                               <div class="row">
           			                            		<div class="col-md-12">
           			                            			<a class="text-success" style="cursor: pointer;" onclick="addOneMoreHotel(1,'')">Añadir un hotel más al día <i class="fa fa-plus-circle"></i></a>

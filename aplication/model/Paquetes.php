@@ -38,12 +38,31 @@ class Paquetes{
 			}
 
 			public function getHotelesxItinerario($id){
-				$sql = "SELECT * FROM paquetes_itinerarios_hoteles WHERE id_paquete_itinerario = '".$id."' " ;
+				$sql = "SELECT * FROM paquetes_itinerarios_hoteles WHERE id_paquete = '".$id."' " ;
 				$query = new Consulta($sql);
 				while($row = $query->VerRegistro()){
 					$hoteles[] =  $row['id_hotel'];
 				}
 				return $hoteles;
+			}
+
+			public function getHotelesxOpcion($id){
+				$sql = "SELECT *,(SELECT min(precio_extranjero) FROM hoteles_tarifas ht WHERE ht.id_hotel=h.id_hotel) as precio
+							from paquetes_itinerarios_hoteles piq
+							LEFT JOIN hoteles h USING(id_hotel)
+							INNER JOIN paquetes p USING(id_paquete)
+							LEFT JOIN departamentos d USING(id_departamento)
+							where p.id_paquete =".$id ;
+				$query = new Consulta($sql);
+				while($row = $query->VerRegistro()){
+					$datos[$row['opcion']][$row['dia']]['id_hotel']=$row['id_hotel'];
+					$datos[$row['opcion']][$row['dia']]['nombre_hotel']=$row['nombre_hotel'];
+					$datos[$row['opcion']][$row['dia']]['estrellas_hotel']=$row['estrellas_hotel'];
+					$datos[$row['opcion']][$row['dia']]['nombre_departamento']=$row['nombre_departamento'];
+					$datos[$row['opcion']][$row['dia']]['precio_e']=$row['precio'];
+					$datos[$row['opcion']][$row['dia']]['estrellas_hotel']=$row['estrellas_hotel'];
+				}
+				return $datos;
 			}
 
 			public function getInclusiones($id,$tipo){
@@ -55,20 +74,53 @@ class Paquetes{
 				return $inclusiones;
 			}
 
+			// public function getHotelesxDepartamento_2($id){
+			// 	$sql = "SELECT ht.id_hotel,h.nombre_hotel,ha.id_habitacion,ROUND(ht.precio_nacional/ha.cantidad_habitacion,2) 'precio_nacional_persona',
+			// 	ROUND(ht.precio_extranjero/ha.cantidad_habitacion,2) 'precio_extranjero_persona',ha.nombre_habitacion
+			// 	FROM hoteles_tarifas ht inner join habitaciones ha using(id_habitacion) inner join hoteles h using(id_hotel)
+			// 	where id_habitacion IN (1,2,3) and id_hotel
+			// 	IN (select DISTINCT id_hotel from paquetes p
+			// 	inner join paquetes_itinerarios pit USING(id_paquete)
+			// 	inner join paquetes_itinerarios_hoteles pih USING(id_paquete)
+			// 	inner join hoteles h USING(id_hotel)
+			// 	where p.id_paquete = ".$id." ) order by id_hotel,ha.id_habitacion;";
+			// 	$resultado = new Consulta($sql);
+			// 	while ($row = $resultado->VerRegistro()) {
+			// 		$datos[] = array(
+			// 			'id_hotel' => $row['id_hotel'],
+			// 			'nombre_hotel' => $row['nombre_hotel'],
+			// 			'id_habitacion' => $row['id_habitacion'],
+			// 			'precio_nacional_persona' => $row['precio_nacional_persona'],
+			// 			'precio_extranjero_persona' => $row['precio_extranjero_persona'],
+			// 			'nombre_habitacion' => $row['nombre_habitacion']
+			// 		);
+			// 	}
+			// 	return $datos;
+			// }
+
 			public function getHotelesxDepartamento_2($id){
-				$sql = "SELECT ht.id_hotel,h.nombre_hotel,ha.id_habitacion,ROUND(ht.precio_nacional/ha.cantidad_habitacion,2) 'precio_nacional_persona',
+				$sql = "SELECT pih.opcion,pih.dia,ht.id_hotel,h.estrellas_hotel,h.nombre_hotel,ha.id_habitacion,ROUND(ht.precio_nacional/ha.cantidad_habitacion,2) 'precio_nacional_persona',
 				ROUND(ht.precio_extranjero/ha.cantidad_habitacion,2) 'precio_extranjero_persona',ha.nombre_habitacion
-				FROM hoteles_tarifas ht inner join habitaciones ha using(id_habitacion) inner join hoteles h using(id_hotel)
-				where id_habitacion IN (1,2,3) and id_hotel
+				FROM hoteles_tarifas ht
+				inner join habitaciones ha using(id_habitacion)
+				inner join hoteles h using(id_hotel)
+				right join paquetes_itinerarios_hoteles pih USING(id_hotel)
+				inner join paquetes p USING(id_paquete)
+				where (id_habitacion IN (1,2,3) and id_paquete = ".$id.") and
+				id_hotel
 				IN (select DISTINCT id_hotel from paquetes p
 				inner join paquetes_itinerarios pit USING(id_paquete)
-				inner join paquetes_itinerarios_hoteles pih USING(id_paquete_itinerario)
+				inner join paquetes_itinerarios_hoteles pih USING(id_paquete)
 				inner join hoteles h USING(id_hotel)
-				where p.id_paquete = ".$id." ) order by id_hotel,ha.id_habitacion;";
+				where p.id_paquete = ".$id." ) or id_hotel is null and id_paquete = ".$id."
+				order by opcion,dia,id_hotel,id_habitacion";
 				$resultado = new Consulta($sql);
 				while ($row = $resultado->VerRegistro()) {
 					$datos[] = array(
+						'opcion' => $row['opcion'],
+						'dia' => $row['dia'],
 						'id_hotel' => $row['id_hotel'],
+						'estrellas_hotel' => $row['estrellas_hotel'],
 						'nombre_hotel' => $row['nombre_hotel'],
 						'id_habitacion' => $row['id_habitacion'],
 						'precio_nacional_persona' => $row['precio_nacional_persona'],
