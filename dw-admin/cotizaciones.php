@@ -6,6 +6,7 @@ switch ($_GET['action']) {
         break;
     case 'add':
         $template = 'cotizacion_add.php';
+        $titlecontent = "Nueva Cotización";
         break;
     default:
         $template = 'cotizacion_list.php';
@@ -16,6 +17,12 @@ include(_includes_."admin/inc.header.php");
 
 $objCotizaciones = new Cotizaciones();
 $listadoCotizaciones = $objCotizaciones->getCotizaciones();
+
+$objClientes = new Clientes();
+$listadoClientes = $objClientes->getClientes();
+
+$objPaquetes = new Paquetes();
+$listaPaquetes = $objPaquetes->getPaquetes();
 
 $objServicios = new Servicios();
 $listadoDepartamentos = $objServicios->getDepartamentos();
@@ -40,6 +47,10 @@ if ($_GET['id']) {
     $listadoServiciosxDepartamentos = $objServicios->getServiciosxDepartamentos($ubicaciones);
 
     $listadoHotelesxDepartamentos = $objHoteles->getHotelesxDepartamentos($ubicaciones);
+
+    $array_incluye = $objCotizaciones->getInclusiones($_GET['id'],1);
+    $array_excluye = $objCotizaciones->getInclusiones($_GET['id'],2);
+
 }
 ?>
 <?php include 'menu.php'; ?>

@@ -148,7 +148,8 @@
                                                 <th>Departamento</th>
                                                 <th>Tipo Servicio</th>
                                                 <th>Alcanse</th>
-                                                <th>ID</th>
+                                                <th>Precio Extranjero</th>
+                                                <th hidden="">ID</th>
                                               </thead>
                                               <tbody>
                                                 <?php
@@ -163,7 +164,8 @@
                                                           <td><?php echo $servicio['departamento']?></td>
                                                           <td><?php echo $servicio['nombre_tipo_servicio']?></td>
                                                           <td><?php echo $servicio['alcance']?></td>
-                                                          <td class="id"><?php echo $servicio['id'] ?></td>
+                                                          <td><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
+                                                          <td class="id" hidden=""><?php echo $servicio['id'] ?></td>
                                                         </tr>
                                                         <?php $estado = true; break; }else{$estado = false;}}
                                                         if (!$estado) { ?>
@@ -172,7 +174,8 @@
                                                             <td><?php echo $servicio['departamento']?></td>
                                                             <td><?php echo $servicio['nombre_tipo_servicio']?></td>
                                                             <td><?php echo $servicio['alcance']?></td>
-                                                            <td class="id"><?php echo $servicio['id'] ?></td>
+                                                            <td><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
+                                                            <td class="id" hidden=""><?php echo $servicio['id'] ?></td>
                                                           </tr>
                                                         <?php  }}else{?>
                                                           <tr>
@@ -180,7 +183,8 @@
                                                             <td><?php echo $servicio['departamento']?></td>
                                                             <td><?php echo $servicio['nombre_tipo_servicio']?></td>
                                                             <td><?php echo $servicio['alcance']?></td>
-                                                            <td class="id"><?php echo $servicio['id'] ?></td>
+                                                            <td><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
+                                                            <td class="id" hidden=""><?php echo $servicio['id'] ?></td>
                                                           </tr>
                                                         <?php } $contador_table++;} ?>
                                                       </tbody>
@@ -200,7 +204,6 @@
                           </div>
                         </div>
                       </div>
-
                     </div>
                     <div class="tab-pane" id="tab3">
                       <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
@@ -253,14 +256,18 @@
                         </div>
                         <div class="tab-pane" id="tab4">
                           <h5 class="text-center">Ingrese las diferentes opciones de hoteles para el paquete.</h5>
-
                           <div class="row">
-                            <div class="col-xs-12 col-sm-7 col-md-7">
+                            <div class="col-md-12 text-left">
+                              <a class="btn btn-success btn-fill" style="cursor: pointer;" onclick="addHotelOpcion()">&nbsp;&nbsp;&nbsp;&nbsp;Agregar opción&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-7">
                               <h5>Seleccion las opciones de hoteles(Destino-estrellas-hotel-precio)</h5>
                               <div id="opciones_hoteles" class="form-group">
                               </div>
                             </div>
-                            <div class="col-xs-12 col-sm-5 col-md-5">
+                            <div class="col-xs-12 col-sm-12 col-md-5">
                               <h5>Lista de opciones de hoteles</h5>
                               <div id="lista_opciones_hoteles" class="form-group">
                                 <?php $itinerario_hoteles = $objPaquetes->getHotelesxOpcion($_GET['id']);
@@ -292,11 +299,6 @@
                                     </div>
                                   <?php endforeach; ?>
                                 </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-12 text-right">
-                                <a class="btn btn-info btn-fill" style="cursor: pointer;" onclick="addHotelOpcion()">&nbsp;&nbsp;&nbsp;&nbsp;Agregar opción&nbsp;&nbsp;&nbsp;&nbsp;</a>
                               </div>
                             </div>
                           </div>

@@ -176,20 +176,18 @@
               <div class="tab-pane" id="tab4">
                 <h5 class="text-center">Ingrese las diferentes opciones de hoteles para el paquete.</h5>
                 <div class="row">
-                  <div class="col-xs-12 col-sm-7 col-md-7">
-                    <h5>Seleccion las opciones de hoteles(Destino-estrellas-hotel-precio)</h5>
-                    <div id="opciones_hoteles" class="form-group">
-                    </div>
-                  </div>
-                  <div class="col-xs-12 col-sm-5 col-md-5">
-                    <h5>Lista de opciones de hoteles</h5>
-                    <div id="lista_opciones_hoteles" class="form-group">
-                    </div>
+                  <div class="col-md-12 text-left">
+                    <a class="btn btn-success btn-fill" style="cursor: pointer;" onclick="addHotelOpcion()">&nbsp;&nbsp;&nbsp;&nbsp;Agregar Opción&nbsp;&nbsp;&nbsp;&nbsp;</a>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-md-12 text-right">
-                    <a class="btn btn-info btn-fill" style="cursor: pointer;" onclick="addHotelOpcion()">&nbsp;&nbsp;&nbsp;&nbsp;Agregar dia&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                  <div class="col-xs-12 col-sm-12 col-md-7">
+                    <h5>Seleccion las opciones de hoteles(Destino-estrellas-hotel-precio)</h5>
+                    <div id="opciones_hoteles" class="form-group"></div>
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-5">
+                    <h5>Lista de opciones de hoteles</h5>
+                    <div id="lista_opciones_hoteles" class="form-group"></div>
                   </div>
                 </div>
               </div>

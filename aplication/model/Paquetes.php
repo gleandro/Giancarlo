@@ -52,7 +52,7 @@ class Paquetes{
 							LEFT JOIN hoteles h USING(id_hotel)
 							INNER JOIN paquetes p USING(id_paquete)
 							LEFT JOIN departamentos d USING(id_departamento)
-							where p.id_paquete =".$id ;
+							where p.id_paquete =".$id." ORDER BY opcion,dia asc" ;
 				$query = new Consulta($sql);
 				while($row = $query->VerRegistro()){
 					$datos[$row['opcion']][$row['dia']]['id_hotel']=$row['id_hotel'];
@@ -66,7 +66,7 @@ class Paquetes{
 			}
 
 			public function getInclusiones($id,$tipo){
-				$sql = "SELECT * FROM paquetes_inclusiones where id_paquete = '".$id."' and tipo_inclusion = '".$tipo."' " ;
+				$sql = "SELECT * FROM inclusiones where tipo_programa = 0 AND id_paquete = '".$id."' and tipo_inclusion = '".$tipo."' " ;
 				$query = new Consulta($sql);
 				while ($row = $query->VerRegistro()) {
 					$inclusiones[] =  $row['nombre_inclusion'];

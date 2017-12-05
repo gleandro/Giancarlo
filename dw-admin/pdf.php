@@ -372,12 +372,18 @@ hr {
 
 
         $html.='<td>'.$hotel["estrellas_hotel"].'</td>';
-        $html.='<td>$'.number_format($v_e1, 2, '.', '').'</td>';
-        $html.='<td>$'.number_format($v_e2, 2, '.', '').'</td>';
-        $html.='<td>$'.number_format($v_e3, 2, '.', '').'</td>';
-        $html.='<td>$'.number_format($v_n1, 2, '.', '').'</td>';
-        $html.='<td>$'.number_format($v_n2, 2, '.', '').'</td>';
-        $html.='<td>$'.number_format($v_n3, 2, '.', '').'</td>';
+        // $html.='<td>$'.number_format($v_e1, 2, '.', '').'</td>';
+        // $html.='<td>$'.number_format($v_e2, 2, '.', '').'</td>';
+        // $html.='<td>$'.number_format($v_e3, 2, '.', '').'</td>';
+        // $html.='<td>$'.number_format($v_n1, 2, '.', '').'</td>';
+        // $html.='<td>$'.number_format($v_n2, 2, '.', '').'</td>';
+        // $html.='<td>$'.number_format($v_n3, 2, '.', '').'</td>';
+        $html.='<td></td>';
+        $html.='<td></td>';
+        $html.='<td></td>';
+        $html.='<td></td>';
+        $html.='<td></td>';
+        $html.='<td></td>';
 
       }
           $html .='</tr>';

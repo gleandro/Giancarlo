@@ -24,7 +24,8 @@ class Hoteles{
 
 	static public function getHabitacionesHoteles($id)
 	{
-		$sql   = "SELECT * FROM hoteles_tarifas INNER JOIN habitaciones USING (id_habitacion) WHERE id_hotel = '".$id."' AND tipo_hotel_tarifa='1' ORDER BY precio_hotel_tarifa ASC";
+		$sql   = "SELECT * FROM hoteles_tarifas INNER JOIN habitaciones USING (id_habitacion)
+		WHERE id_hotel = '".$id."' ORDER BY precio_extranjero ASC";
 
 		$query = new Consulta($sql);
 		$datos = array();
@@ -34,7 +35,7 @@ class Hoteles{
 			 'id_habitacion' => $row['id_habitacion'] ,
 			 'id_hotel_tarifa' => $row['id_hotel_tarifa'] ,
 			 'id_hotel' => $row['id_hotel'] ,
-			 'precio_hotel_tarifa' => $row['precio_hotel_tarifa'] ,
+			 'precio_hotel_tarifa' => $row['precio_extranjero'] ,
 			 'nombre_habitacion' => $row['nombre_habitacion']
 			 );
 		}

@@ -13,7 +13,7 @@
 	                <span class="icon-bar bar2"></span>
 	                <span class="icon-bar bar3"></span>
 	            </button>
-	            <a class="navbar-brand" href="#datatable">Sistema de Cotización Rasgos del Perú</a>
+	            <a class="navbar-brand" href="#datatable"><?php echo $titlecontent; ?></a>
 	        </div>
 	        <div class="collapse navbar-collapse">
 				<!--<form class="navbar-form navbar-left navbar-search-form" role="search">

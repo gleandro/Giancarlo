@@ -65,20 +65,9 @@ function eliminar_opciones_hoteles(dato){
 function crear_table(){
   var dias_edit = $(".card-dia").val();
   for (var i = 0; i < dias_edit; i++) {
-      var table_h = $('#table_h_'+i).DataTable({
-        "paging":   false
-      });
       var table_s = $('#table_s_'+i).DataTable({
         "paging":   false
       });
-    $('#table_h_'+i+' tbody').on( 'click', 'tr', function () {
-      $(this).toggleClass('selected');
-    } );
-
-    $('#button').click( function () {
-      alert( table_h.rows('.selected').data().length +' row(s) selected' );
-    } );
-
     $('#table_s_'+i+' tbody').on( 'click', 'tr', function () {
       $(this).toggleClass('selected');
     } );
@@ -86,7 +75,6 @@ function crear_table(){
     $('#button').click( function () {
       alert( table_s.rows('.selected').data().length +' row(s) selected' );
     } );
-
   }
 }
 
@@ -96,6 +84,10 @@ $().ready(function(){
   $('#add_inclusion').click(function(){
     var nombre = $("#nombre_inclusion").val();
     var tipo = $("#inclusiones").val();
+    if (tipo == 0) {
+      swal('No puede continuar ', 'El campo search de servicios debe estar vacio.');
+      return;
+    }
     if (tipo == 1) {
       if ($("#incluye").find("#vacio").length > 0) {
         $("#incluye").find("#vacio").remove();
@@ -110,16 +102,16 @@ $().ready(function(){
     $("#nombre_inclusion").val('');
   });
 
-  $(".eliminar_inclusiones").on("click",function(){
-
-  });
-
   $('#wizardPaquete').bootstrapWizard({
     tabClass: 'nav nav-pills',
     nextSelector: '.btn-next',
     previousSelector: '.btn-back',
     onNext: function(tab, navigation, index) {
       var $valid = $('#wizardForm').valid();
+      if(!$valid) {
+        $validator.focusInvalid();
+        return false;
+      }
       if (index==3) {
         var dias = $(".card-dia").val();
           $.ajax({
@@ -137,8 +129,6 @@ $().ready(function(){
           });
 
       }
-
-
         var datos =$(".dataTables_filter").find("input");
         for (var i = 0; i < datos.length; i++) {
           if ($(datos[i]).val() != '') {
@@ -146,12 +136,6 @@ $().ready(function(){
             return false;
           };
         }
-
-      if(!$valid) {
-        $validator.focusInvalid();
-        return false;
-      }
-
     },
     onInit : function(tab, navigation, index){
 
@@ -199,6 +183,11 @@ $().ready(function(){
     nextSelector: '.btn-next',
     previousSelector: '.btn-back',
     onNext: function(tab, navigation, index) {
+      var $valid = $('#wizardFormEditarPaquete').valid();
+      if(!$valid) {
+        $validator.focusInvalid();
+        return false;
+      }
       if (index == 3) {
         var dias = $(".card-dia").val();
           $.ajax({
@@ -219,18 +208,24 @@ $().ready(function(){
         var datos =$(".dataTables_filter").find("input");
         for (var i = 0; i < datos.length; i++) {
           if ($(datos[i]).val() != '') {
-            swal('No puede continuar ', 'El campo search de servicios debe estar vacio.');
+            // swal('No puede continuar ', 'El campo search de servicios debe estar vacio.');
+            swal({
+              title: 'No puede continuar ',
+              text: "El campo search de servicios debe estar vacio.",
+              type: 'warning',
+              showCancelButton: false,
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              $(datos[i]).parents(".panel-collapse").collapse('show');
+              $(datos[i]).focus();
+              $(datos[i]).animate({ scrollTop: $(datos[i])[0].scrollHeight}, 1000);
+            })
             return false;
           };
         }
       }
 
-
-      var $valid = $('#wizardFormEditarPaquete').valid();
-      if(!$valid) {
-        $validator.focusInvalid();
-        return false;
-      }
       if (index == 1) {
         var dias = $(".card-dia").val();
         for (var i = 0; i < dias; i++) {
@@ -384,7 +379,6 @@ $().ready(function(){
   $(".btn-next-add").click(function(e){
     if (activar=='1') {
       addServicioPaquete(activar,'');
-
       window.setTimeout("crear_table()",1000);
     }
     activar++;
@@ -427,23 +421,11 @@ function addDiaServicioPaquete(dia,id){
     },
     success: function(datos){
       $(".panel-group").append(datos);
-      var dias_edit = $(".card-dia").val();
-      for (var i = 0; i < dias_edit; i++) {
-          var table_h = $('#table_edit_h_'+i).DataTable({
+      var dia_v = dia-1;
+          var table_s = $('#table_edit_s_'+dia_v).DataTable({
             "paging":   false
           });
-          var table_s = $('#table_edit_s_'+i).DataTable({
-            "paging":   false
-          });
-        $('#table_edit_h_'+i+' tbody').on( 'click', 'tr', function () {
-          $(this).toggleClass('selected');
-        } );
-
-        $('#button').click( function () {
-          alert( table_h.rows('.selected').data().length +' row(s) selected' );
-        } );
-
-        $('#table_edit_s_'+i+' tbody').on( 'click', 'tr', function () {
+        $('#table_edit_s_'+dia_v+' tbody').on( 'click', 'tr', function () {
           $(this).toggleClass('selected');
         } );
 
@@ -451,13 +433,8 @@ function addDiaServicioPaquete(dia,id){
           alert( table_s.rows('.selected').data().length +' row(s) selected' );
         } );
 
-      }
       if(id.length == 0){
         $(".card-dia").val(dia);
-        var hoteles = $(".card-1").find("#table_h_0 .selected");
-        for (var i = 0; i < hoteles.length; i++) {
-          $(".card-"+dia).find(".table_hotel").find("#"+$(hoteles[i]).attr("id")).addClass('selected');
-        }
       }
       $(".panel-default .text-danger").hide();
       $(".panel-default .text-danger").last().show();
@@ -492,7 +469,6 @@ function addHotelOpcion(){
     html +='<p>Dia '+(i+1)+':'+valor+'</p>';
   }
   html +='<input type="hidden" name="opciones_hoteles[]" value="'+ids+'">';
-  html +='</div><div>';
   $("#lista_opciones_hoteles").append(html);
 }
 function addPaquete(){
@@ -530,12 +506,6 @@ $("#wizardForm").submit(function(e) { //AGREGAR UN PAQUETE
 
   for (var i = 0; i < dias; i++) {
     var dia = $(".card-"+(i+1));
-
-    var hoteles = dia.find(".table_hotel").find(".selected .id");
-    for (var j = 0; j < hoteles.length; j++) {
-      formData.append('dias['+i+'][0]['+j+']', hoteles[j].innerHTML);
-    }
-
     var servicios = dia.find(".table_servicio").find(".selected .id");
     for (var k = 0; k < servicios.length; k++) {
       formData.append('dias['+i+'][1]['+k+']', servicios[k].innerHTML);
@@ -579,19 +549,10 @@ $("#wizardFormEditarPaquete").submit(function(e) {
 
   for (var i = 0; i < dias; i++) {
     var dia = $(".card-"+(i+1));
-
-    var hoteles = dia.find(".table_hotel").find(".selected .id");
-
-    for (var j = 0; j < hoteles.length; j++) {
-      formData.append('dias['+i+'][0]['+j+']', hoteles[j].innerHTML);
-    }
-
     var servicios = dia.find(".table_servicio").find(".selected .id");
-
     for (var k = 0; k < servicios.length; k++) {
       formData.append('dias['+i+'][1]['+k+']', servicios[k].innerHTML);
     }
-
   }
 
   var ruta = "ajax2.php";
