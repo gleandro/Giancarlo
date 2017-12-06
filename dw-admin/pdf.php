@@ -31,7 +31,6 @@ $h2_n;
 $h2_e;
 $h3_n;
 $h3_e;
-
 $contador =1;
 foreach ($hoteles as $key => $value) {
   if ($contador == 1) {
@@ -45,23 +44,54 @@ foreach ($hoteles as $key => $value) {
   if ($value['id_habitacion'] == 1) {
     $h1_n=$value['precio_nacional_persona'];
     $h1_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][1]=($h1_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][1]=($h1_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
+    if ($h1_n != 0) {
+      $precio_hotel_servicio_n = $h1_n+$precios_servicios['precio_nacional'];
+    }else {
+      $precio_hotel_servicio_n = 0;
+    }
+    if ($h1_e != 0) {
+      $precio_hotel_servicio_e = $h1_e+$precios_servicios['precio_extranjero'];
+    }else {
+      $precio_hotel_servicio_e = 0;
+    }
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][1]=$precio_hotel_servicio_n*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][1]=$precio_hotel_servicio_e*(($inclusion/100)+1);
   }
   if ($value['id_habitacion'] == 2) {
     $h2_n=$value['precio_nacional_persona'];
     $h2_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][2]=($h2_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][2]=($h2_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
+    if ($h2_n != 0) {
+      $precio_hotel_servicio_n = $h2_n+$precios_servicios['precio_nacional'];
+    }else {
+      $precio_hotel_servicio_n = 0;
+    }
+    if ($h2_e != 0) {
+      $precio_hotel_servicio_e = $h2_e+$precios_servicios['precio_extranjero'];
+    }else {
+      $precio_hotel_servicio_e = 0;
+    }
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][2]=$precio_hotel_servicio_n*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][2]=$precio_hotel_servicio_e*(($inclusion/100)+1);
   }
   if ($value['id_habitacion'] == 3) {
     $h3_n=$value['precio_nacional_persona'];
     $h3_e=$value['precio_extranjero_persona'];
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][3]=($h3_n+$precios_servicios['precio_nacional'])*(($inclusion/100)+1);
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][3]=($h3_e+$precios_servicios['precio_extranjero'])*(($inclusion/100)+1);
+    if ($h3_n != 0) {
+      $precio_hotel_servicio_n = $h3_n+$precios_servicios['precio_nacional'];
+    }else {
+      $precio_hotel_servicio_n = 0;
+    }
+    if ($h3_e != 0) {
+      $precio_hotel_servicio_e = $h3_e+$precios_servicios['precio_extranjero'];
+    }else {
+      $precio_hotel_servicio_e = 0;
+    }
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][3]=$precio_hotel_servicio_n*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][3]=$precio_hotel_servicio_e*(($inclusion/100)+1);
   }
   $contador++;
 }
+print_r($detalle_hoteles);
 $formato='<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
@@ -405,6 +435,8 @@ hr {
   '</table>
 </body>
 </html>';
+echo $formato;
+exit;
 use Dompdf\Dompdf;
 // Instanciamos un objeto de la clase DOMPDF.
 $pdf = new DOMPDF();
