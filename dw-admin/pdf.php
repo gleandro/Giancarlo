@@ -435,8 +435,6 @@ hr {
   '</table>
 </body>
 </html>';
-echo $formato;
-exit;
 use Dompdf\Dompdf;
 // Instanciamos un objeto de la clase DOMPDF.
 $pdf = new DOMPDF();
