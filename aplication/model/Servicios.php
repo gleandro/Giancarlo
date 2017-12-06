@@ -28,7 +28,7 @@ class Servicios{
 	public function getServiciosxDepartamentos($departamentos)
 	{
 		//$sql   = "SELECT * FROM servicios_ubicaciones INNER JOIN servicios USING(id_servicio) WHERE id_departamento IN ($departamentos) GROUP BY id_servicio ORDER BY id_departamento asc";
-		$sql = "SELECT * FROM servicios_ubicaciones INNER JOIN servicios s USING(id_servicio) INNER JOIN tipos_servicios USING(id_tipo_servicio) INNER JOIN departamentos d USING(id_departamento) WHERE id_departamento IN ($departamentos) ORDER BY id_departamento,s.precio_nacional_servicio asc";
+		$sql = "SELECT * FROM servicios_ubicaciones INNER JOIN servicios s USING(id_servicio) INNER JOIN tipos_servicios USING(id_tipo_servicio) INNER JOIN departamentos d USING(id_departamento) INNER JOIN empresas e USING(id_empresa) WHERE id_departamento IN ($departamentos) ORDER BY id_departamento,s.precio_nacional_servicio asc";
 
 		$query = new Consulta($sql);
 		$datos = array();

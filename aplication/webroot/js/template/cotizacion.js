@@ -109,7 +109,7 @@ function cargar_listas(){
                   '</div>'+
               	'</div>';
                 $("#accordion").append(html);
-                addServicioPaquete(for_itinerario["dia"],'');
+                addServicioPaquete(for_itinerario["dia"],'',for_itinerario["id"]);
                 addHotelPaquete(for_itinerario["dia"],'');
 
             }
@@ -168,6 +168,15 @@ function cargar_listas(){
       enableFiltering: true
     });
   }
+
+  var dias = $(".card-dia").val();
+
+  for (var i = 0; i < dias; i++) {
+    $('#list-hotel-'+(i+1)).multiselect({
+      enableFiltering: true
+    });
+  }
+
 }
 
 function agregarCliente(){
@@ -270,6 +279,14 @@ function eliminar_inclusiones(dato){
       $("#excluye").append('<li id="vacio" class="list-group-item list-group-item-danger"><p>No se ingresaron</p><p>Exclusiones</p></li>');
     }
   })
+}
+
+function habitacion_update(input){
+  if ($(input).val() != "") {
+    $(input).parents('tr').find(".checkbox").prop('checked', true);
+  }else {
+    $(input).parents('tr').find(".checkbox").prop('checked', false);
+  };
 }
 
 $().ready(function(){
@@ -534,11 +551,11 @@ function addHabitaciones(dia,item,id){
 }
 
 numeroDia=1;
-function addServicioPaquete(dia,id){
+function addServicioPaquete(dia,id,id_itinerario){
   $.ajax({
     type : "POST",
     url :"ajax2.php",
-    data: $("#wizardFormCotizacion").serialize()+"&action=agregarServicioCotizacion&dia="+dia+"&id="+id,
+    data: $("#wizardFormCotizacion").serialize()+"&action=agregarServicioCotizacion&dia="+dia+"&id="+id+"&id_itinerario="+id_itinerario,
     beforeSend: function(){
     },
     success: function(datos){
@@ -698,7 +715,15 @@ $("#wizardFormEditarCotizacion").submit(function(e) {
   var formData = new FormData($("#wizardFormEditarCotizacion")[0]);
   var ruta = "ajax2.php";
 
-  //alert('envio a ajax2');
+  var dias = $(".card-dia").val();
+
+  for (var i = 0; i < dias; i++) {
+    var dia = $(".card-"+(i+1));
+    var servicios = dia.find(".table_servicio").find(".selected .id");
+    for (var k = 0; k < servicios.length; k++) {
+      formData.append('servicios['+i+']['+k+']', servicios[k].innerHTML);
+    }
+  }
 
   $.ajax({
     url: ruta,
@@ -707,7 +732,6 @@ $("#wizardFormEditarCotizacion").submit(function(e) {
     contentType: false,
     processData: false,
     success: function(datos){
-      alert(datos);
       swal({
         title: 'Actualizado!',
         text: datos,

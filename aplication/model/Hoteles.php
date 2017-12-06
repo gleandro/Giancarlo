@@ -36,7 +36,8 @@ class Hoteles{
 			 'id_hotel_tarifa' => $row['id_hotel_tarifa'] ,
 			 'id_hotel' => $row['id_hotel'] ,
 			 'precio_hotel_tarifa' => $row['precio_extranjero'] ,
-			 'nombre_habitacion' => $row['nombre_habitacion']
+			 'nombre_habitacion' => $row['nombre_habitacion'],
+			 'cantidad_habitacion' => $row['cantidad_habitacion']
 			 );
 		}
 		return $datos;
@@ -132,5 +133,18 @@ class Hoteles{
 		}
 		return $datos;
 	}
+
+	public function getHoteles_Habitacion($id){
+
+		$sql = "SELECT id_hotel,id_habitacion,cantidad FROM cotizaciones_itinerarios_hoteles where id_cotizacion_itinerario = ".$id;
+		$query = new Consulta($sql);
+		while ($row = $query->VerRegistro()) {
+			$datos[] = array(
+			 'id_hotel' => $row['id_hotel'] ,
+			 'id_habitacion' => $row['id_habitacion'],
+	  	 'cantidad' => $row['cantidad'] );
+			}
+			return $datos;
+		}
 
 } ?>

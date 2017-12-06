@@ -3,6 +3,7 @@
 switch ($_GET['action']) {
     case 'edit':
         $template = 'cotizacion_edit.php';
+        $titlecontent = "Editar Cotización";
         break;
     case 'add':
         $template = 'cotizacion_add.php';
@@ -10,6 +11,7 @@ switch ($_GET['action']) {
         break;
     default:
         $template = 'cotizacion_list.php';
+        $titlecontent = "Lista de Cotizaciones";
         break;
 }
 
@@ -38,7 +40,8 @@ $nacionalidades = array(array('id' => '1','nombre' => 'Peruano'),array('id' => '
 
 if ($_GET['id']) {
     $objCotizacion= new Cotizacion($_GET['id']);
-
+    $cotizacion_cliente = $objCotizacion->__get('_cliente');
+    $cotizacion_itinerario = $objCotizacion->__get('_itinerario');
     //INICIO CARGAR UBICACIONES DE LOS SERVICIOS
     foreach ($objCotizacion->__get('_departamento') as $key => $value) {
        $ubicaciones_lista .= $value.',';
@@ -52,6 +55,8 @@ if ($_GET['id']) {
     $array_excluye = $objCotizaciones->getInclusiones($_GET['id'],2);
 
 }
+// print_r($cotizacion_itinerario);
+// exit;
 ?>
 <?php include 'menu.php'; ?>
     <?php include 'nav.php'; ?>

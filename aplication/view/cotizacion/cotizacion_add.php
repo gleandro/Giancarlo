@@ -8,7 +8,6 @@
 
 <div class="row">
   <div class="col-md-12">
-
     <div class="card card-wizard" id="wizardCotizacion">
       <form id="wizardFormCotizacion" method="post" novaelidate="" enctype="multipart/form-data">
         <input type="hidden" name="action" id="action" value="registrarCotizacion">
@@ -20,7 +19,6 @@
           </ul>
           <div class="tab-content">
             <div class="tab-pane" id="tab1">
-
               <h5 class="text-center">Datos del Cliente.</h5>
               <div class="row">
                 <div class="col-md-5 col-md-offset-1">
@@ -48,7 +46,6 @@
                         <option value="<?php echo $cliente['id'] ?>"><?php echo $cliente['nombre'] ?></option>
                       <?php endforeach; ?>
                     </select>
-
                   </div>
                 </div>
                 <div class="col-md-5 col-md-offset-1">
@@ -89,7 +86,6 @@
                   </div>
                 </div>
               </div>
-
               <h5 class="text-center">Datos del Programa.</h5>
               <div class="row">
                 <div class="col-md-10 col-md-offset-1">

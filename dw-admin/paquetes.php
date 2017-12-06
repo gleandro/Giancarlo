@@ -23,7 +23,6 @@ $listadoDepartamentos = $objServicios->getDepartamentos();
 $objHoteles = new Hoteles();
 $listadoHoteles = $objHoteles->getHoteles();
 
-$objServicios = new Servicios();
 $listadoServicios = $objServicios->getServicios();
 
 if ($_GET['id']) {

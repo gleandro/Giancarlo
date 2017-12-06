@@ -316,14 +316,13 @@ hr {
       </tr>';
 
       foreach ($opcion as $key2 => $dia) {
-        $html .='<tr style="text-align:right">
+        $html .='<tr style="text-align:left">
                   <td>Dia '.($key2+1).':</td>';
       foreach ($dia as $key3 => $hotel) {
         if ($hotel["nombre_hotel"]=='') {
           $hotel["nombre_hotel"] = "No se selecciono un hotel";
         }
-        $html.='<td>'.$hotel["nombre_hotel"].'</td>';
-        $html.='<td>Expedition</td>';
+        $html.='<td colspan="2" style="text-align:left">'.$hotel["nombre_hotel"].'</td>';
         //variables nacionales
         $v_n1=0.00;
         $v_n2=0.00;
@@ -391,12 +390,12 @@ hr {
       $html .='<tr style="text-align:right">
       <td colspan="3" style="color:red">Total</td>
       <td></td>
-      <td>$'.number_format($vt_e1, 2, '.', '').'</td>
-      <td>$'.number_format($vt_e2, 2, '.', '').'</td>
-      <td>$'.number_format($vt_e3, 2, '.', '').'</td>
-      <td>$'.number_format($vt_n1, 2, '.', '').'</td>
-      <td>$'.number_format($vt_n2, 2, '.', '').'</td>
-      <td>$'.number_format($vt_n3, 2, '.', '').'</td>
+      <td style="text-align:center">$'.number_format($vt_e1, 2, '.', '').'</td>
+      <td style="text-align:center">$'.number_format($vt_e2, 2, '.', '').'</td>
+      <td style="text-align:center">$'.number_format($vt_e3, 2, '.', '').'</td>
+      <td style="text-align:center">$'.number_format($vt_n1, 2, '.', '').'</td>
+      <td style="text-align:center">$'.number_format($vt_n2, 2, '.', '').'</td>
+      <td style="text-align:center">$'.number_format($vt_n3, 2, '.', '').'</td>
       </tr>';
 
       $formato .=$html;
