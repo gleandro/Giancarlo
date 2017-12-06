@@ -80,7 +80,7 @@ class Hoteles{
 	{
 		//$sql   = "SELECT * FROM hoteles INNER JOIN departamentos USING(id_departamento) INNER JOIN empresas USING(id_empresa) WHERE id_departamento IN ($departamentos) GROUP BY id_hotel ORDER BY id_hotel asc";
 		$sql   = "SELECT *,
-							(SELECT min(precio_extranjero) FROM hoteles_tarifas ht WHERE ht.id_hotel=h.id_hotel) as precio
+							(SELECT min(precio_extranjero) FROM hoteles_tarifas ht WHERE ht.id_habitacion IN(1,2,3) and ht.id_hotel=h.id_hotel) as precio
 							FROM hoteles h
 							INNER JOIN departamentos d USING(id_departamento)
 							INNER JOIN empresas e USING(id_empresa)

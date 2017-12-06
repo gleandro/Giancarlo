@@ -1277,16 +1277,17 @@ class Ajax{
 								$descripcion = $_POST['descripcion'];
 								$dias = $_POST['dias'];
 
-								foreach ($opciones as $key => $opcion) {
-									$hoteles_opcion = explode(",",$opcion);
-									foreach ($hoteles_opcion as $key2 => $opcion_h) {
-										if ($opcion_h == 0) {
-											$opcion_h="null";
+								if (is_array($opciones) || is_object($opciones)) {
+									foreach ($opciones as $key => $opcion) {
+										$hoteles_opcion = explode(",",$opcion);
+										foreach ($hoteles_opcion as $key2 => $opcion_h) {
+											if ($opcion_h == 0) {
+												$opcion_h="null";
+											}
+											$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $id_paquete ."',". $opcion_h .",'".$key."',".$key2.") ");
 										}
-										$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $id_paquete ."',". $opcion_h .",'".$key."',".$key2.") ");
 									}
 								}
-
 								foreach ($nombreDia as $key => $nombre) {
 									$query2 = new Consulta("INSERT INTO paquetes_itinerarios VALUES('','". $id_paquete ."',".($key+1).",'". $nombre['0'] ."','". $descripcion[$key]['0'] ."') ");
 									$nuevoid2 = $query2->nuevoid();

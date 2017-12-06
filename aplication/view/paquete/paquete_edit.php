@@ -271,6 +271,7 @@
                               <h5>Lista de opciones de hoteles</h5>
                               <div id="lista_opciones_hoteles" class="form-group">
                                 <?php $itinerario_hoteles = $objPaquetes->getHotelesxOpcion($_GET['id']);
+                                if (is_array($itinerario_hoteles) || is_object($itinerario_hoteles)) {
                                 foreach ($itinerario_hoteles as $key => $opciones):
                                   $id_hotel_opc="";
                                   ?>
@@ -297,7 +298,7 @@
                                         <input name="opciones_hoteles[]" value="<?php echo $id_hotel_opc ?>" type="hidden">
                                       </div>
                                     </div>
-                                  <?php endforeach; ?>
+                                  <?php endforeach;} ?>
                                 </div>
                               </div>
                             </div>
