@@ -1,9 +1,9 @@
-<?php 
+<?php
 class TipoServicios{
 
 	public function getTipoServicios($value='')
 	{
-		$sql   = "SELECT * FROM tipos_servicios";
+		$sql   = "SELECT * FROM tipos_servicios where bl_estado = 0";
 		$query = new Consulta($sql);
 		$datos = array();
 

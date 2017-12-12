@@ -3,7 +3,7 @@ class Servicios{
 
 	public function getServicios()
 	{
-		$sql   = "SELECT * FROM servicios s INNER JOIN tipos_servicios ts ON s.id_tipo_servicio = ts.id_tipo_servicio INNER JOIN empresas e ON s.id_empresa = e.id_empresa ORDER BY id_servicio ASC";
+		$sql   = "SELECT * FROM servicios s INNER JOIN tipos_servicios ts ON s.id_tipo_servicio = ts.id_tipo_servicio INNER JOIN empresas e ON s.id_empresa = e.id_empresa where s.bl_estado = 0 ORDER BY id_servicio ASC";
 		$query = new Consulta($sql);
 		$datos = array();
 
@@ -28,7 +28,7 @@ class Servicios{
 	public function getServiciosxDepartamentos($departamentos)
 	{
 		//$sql   = "SELECT * FROM servicios_ubicaciones INNER JOIN servicios USING(id_servicio) WHERE id_departamento IN ($departamentos) GROUP BY id_servicio ORDER BY id_departamento asc";
-		$sql = "SELECT * FROM servicios_ubicaciones INNER JOIN servicios s USING(id_servicio) INNER JOIN tipos_servicios USING(id_tipo_servicio) INNER JOIN departamentos d USING(id_departamento) INNER JOIN empresas e USING(id_empresa) WHERE id_departamento IN ($departamentos) ORDER BY id_departamento,s.precio_nacional_servicio asc";
+		$sql = "SELECT * FROM servicios_ubicaciones INNER JOIN servicios s USING(id_servicio) INNER JOIN tipos_servicios USING(id_tipo_servicio) INNER JOIN departamentos d USING(id_departamento) INNER JOIN empresas e USING(id_empresa) WHERE s.bl_estado = 0 and id_departamento IN ($departamentos) ORDER BY id_departamento,s.precio_nacional_servicio asc";
 
 		$query = new Consulta($sql);
 		$datos = array();
@@ -52,7 +52,7 @@ class Servicios{
 
 	public function getDepartamentos()
 	{
-		$sql = "SELECT * FROM departamentos";
+		$sql = "SELECT * FROM departamentos where bl_estado = 0";
 		$query = new Consulta($sql);
 		$datos = array();
 

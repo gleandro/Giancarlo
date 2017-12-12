@@ -2,38 +2,44 @@
 
 switch ($_GET['action']) {
 	case 'add':
-		$template = 'agencia_add.php';
-		$titlecontent = "Nueva Agencia";
+		$template = 'ventas_add.php';
+    $titlecontent = "Nueva Venta";
 		break;
 	case 'edit':
-		$template = 'agencia_edit.php';
-		$titlecontent = "Editar Agencia";
+		$template = 'ventas_edit.php';
+    $titlecontent = "Editar Venta";
 		break;
 
 	default:
-		$template = 'agencia_list.php';
-		$titlecontent = "Lista de Agencias";
+		$template = 'ventas_list.php';
+    $titlecontent = "Lista de Ventas";
 		break;
 }
 
 include (_includes_."admin/inc.header.php");
 
-$objAgencia = new Agencias();
-$listagencias = $objAgencia->getAgencias();
+$objVentas = new Ventas();
+$listVentas = $objVentas->getVentas();
 
 if ($_GET['id']) {
-    $objAgen= new Agencia($_GET['id']);
+    $objVent= new Venta($_GET['id']);
+
+		$cotizacion = $objVent->__get("_cotizacion");
+		$cliente = $objVent->__get("_cliente");
+		$ventas_itinerario = $objVent->__get("_itinerario");
+
+		$departamentos = $objVent->__get('_departamento');
+		$destinos = $objVentas->getDestinos($departamentos);
 }
 
 ?>
-
 <?php include 'menu.php'; ?>
     <?php include 'nav.php'; ?>
         <div class="content">
             <div class="container-fluid">
 
                 <!-- PINTA EL TEMPLATE -->
-                <?php include _view_agencia_.$template; ?>
+                <?php include _view_ventas_.$template; ?>
                 <!-- PINTA EL TEMPLATE -->
 
             </div>
@@ -55,7 +61,7 @@ if ($_GET['id']) {
         <!-- HOTELES -->
 
         <!-- LLAMO AL JS DEL TEMPLATE CORRESPONDIENTE AL MODULO -->
-        <script src="<?php echo _js_template_ ?>agencia.js" type="text/javascript"></script>
+        <script src="<?php echo _js_template_ ?>ventas.js" type="text/javascript"></script>
         <!-- LLAMO AL JS DEL TEMPLATE CORRESPONDIENTE AL MODULO -->
 
         <?php include 'footer.php'; ?> <!--EL FOOTER ES EL QUE CONTIENE LOS JS -->

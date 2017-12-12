@@ -1,9 +1,9 @@
-<?php 
+<?php
 class Empresas{
 
 	public function getEmpresas($value='')
 	{
-		$sql   = "SELECT * FROM empresas e INNER JOIN tipos_empresas te ON e.id_tipo_empresa=te.id_tipo_empresa";
+		$sql   = "SELECT * FROM empresas e INNER JOIN tipos_empresas te ON e.id_tipo_empresa=te.id_tipo_empresa where e.bl_estado = 0";
 		$query = new Consulta($sql);
 		$datos = array();
 

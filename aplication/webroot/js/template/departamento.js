@@ -46,7 +46,7 @@ $().ready(function(){
                 beforeSend: function(){
                 },
                 success: function(datos){
-                  
+
                   swal({
                     title:'Listo!',
                     text: 'El registro fué modificado.',
@@ -68,7 +68,7 @@ $().ready(function(){
 
             swal({
               title: '¿Estás Seguro?',
-              text: "No se pueden recuperar los registros!",
+              text: "Tambien borraras los paquetes, cotizaciones, hoteles y servicios asociados a este destino",
               type: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',

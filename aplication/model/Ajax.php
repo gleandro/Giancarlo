@@ -114,9 +114,8 @@ class Ajax{
 				$contacto_nombre = $_GET['contactoNombre'];
 				$contacto_numero = $_GET['contactoNumero'];
 
-				$query = new Consulta("INSERT INTO empresas values ('','1','$tipo','$razon','$ruc','$email','$telefono','$web','$direccion','$contacto_nombre','$contacto_numero')");
+				$query = new Consulta("INSERT INTO empresas values ('','1','$tipo','$razon','$ruc','$email','$telefono','$web','$direccion','$contacto_nombre','$contacto_numero',0)");
 				/*ESTE ECO ES PARA MOSTRAR EL RUC DE LA EMPRESA REGISTRADA*/
-				echo $razon;
 			}
 
 			function modificarEmpresaAjax()
@@ -152,7 +151,9 @@ class Ajax{
 				{
 					$id = $_GET['id'];
 
-					$query = new Consulta("DELETE FROM empresas WHERE id_empresa = '".$id."'");
+					$query = new Consulta("UPDATE empresas SET bl_estado = 1 WHERE id_empresa = '".$id."'");
+					$query = new Consulta("UPDATE hoteles SET bl_estado = 1 WHERE id_empresa = '".$id."'");
+					$query = new Consulta("UPDATE servicios SET bl_estado = 1 WHERE id_empresa = '".$id."'");
 				}
 				/* AJAX PARA TABLA EMPRESAS RASGOS */
 
@@ -161,25 +162,20 @@ class Ajax{
 				{
 					$nombre = $_GET['nombre'];
 
-					$query = new Consulta("INSERT INTO tipos_servicios values ('','".$nombre."')");
-
-					echo $razon;
+					$query = new Consulta("INSERT INTO tipos_servicios values ('','".$nombre."',0)");
 				}
 
 				function borrarTipoServicioAjax()
 				{
 					$id = $_GET['id'];
-
-					$query = new Consulta("DELETE FROM tipos_servicios WHERE id_tipo_servicio = '".$id."'");
+					$query = new Consulta("UPDATE tipos_servicios SET bl_estado = 1 WHERE id_tipo_servicio = '".$id."'");
+					$query = new Consulta("UPDATE servicios SET bl_estado = 1 WHERE id_tipo_servicio = '".$id."'");
 				}
 
 				function cambiarTipoServicioAjax()
 				{
 					$id = $_GET['id'];
 					$nombre = $_GET['nombre'];
-
-					echo var_dump($_GET);
-
 					$query = new Consulta("UPDATE tipos_servicios SET nombre_tipo_servicio = '".$nombre."' WHERE id_tipo_servicio = '".$id."' ");
 				}
 				/* AJAX PARA TABLA TIPO DE SERVICIO */
@@ -188,24 +184,25 @@ class Ajax{
 				{
 					$nombre = $_GET['nombre'];
 
-					$query = new Consulta("INSERT INTO departamentos values ('','".$nombre."')");
-
-					echo $nombre;
+					$query = new Consulta("INSERT INTO departamentos values ('','".$nombre."',0)");
 				}
 
 				function borrarDepartamentoAjax()
 				{
 					$id = $_GET['id'];
 
-					$query = new Consulta("DELETE FROM departamentos WHERE id_departamento = '".$id."'");
+					$query = new Consulta("UPDATE departamentos SET bl_estado = 1 WHERE id_departamento = '".$id."'");
+					$query = new Consulta("UPDATE hoteles SET bl_estado = 1 WHERE id_departamento = '".$id."'");
+					$query = new Consulta("SELECT id_servicio FROM servicios_ubicaciones WHERE id_departamento = '".$id."'");
+					while ($row = $query->VerRegistro()) {
+						$query = new Consulta("UPDATE servicios SET bl_estado = 1 WHERE id_servicio = '".$row['id_servicio']."'");
+					}
 				}
 
 				function cambiarDepartamentoAjax()
 				{
 					$id = $_GET['id'];
 					$nombre = $_GET['nombre'];
-
-					echo var_dump($_GET);
 
 					$query = new Consulta("UPDATE departamentos SET nombre_departamento = '".$nombre."' WHERE id_departamento = '".$id."' ");
 				}
@@ -214,7 +211,7 @@ class Ajax{
 
 				function registrarHabitacionAjax(){
 
-					$query = new Consulta("INSERT INTO habitaciones values ('','".$_POST['nombre_habitacion']."','".$_POST['cantidad_habitacion']."') ");
+					$query = new Consulta("INSERT INTO habitaciones values ('','".$_POST['nombre_habitacion']."','".$_POST['cantidad_habitacion']."',0) ");
 
 				}
 				function modificarHabitacionAjax()
@@ -224,7 +221,7 @@ class Ajax{
 				}
 				function borrarHabitacionAjax()
 				{
-					$query = new Consulta("DELETE FROM habitaciones WHERE id_habitacion = '".$_GET['id']."'");
+					$query = new Consulta("UPDATE habitaciones SET bl_estado = 1 WHERE id_habitacion = '".$_GET['id']."'");
 				}
 
 				/* AJAX PARA TABLA HABITACIONES */
@@ -253,16 +250,14 @@ class Ajax{
 						$obj->upload_imagen($name, $temp, $destino, $type, $size);
 					}
 
-					/*echo var_dump($_FILES);*/
-
-					$query = new Consulta("INSERT INTO hoteles values ('','".$departamento."','".$empresa."','".$nombre."','".$estrellas."','".$name."','".$nombre_contacto."','".$numero_contacto."')");
+					$query = new Consulta("INSERT INTO hoteles values ('','".$departamento."','".$empresa."','".$nombre."','".$estrellas."','".$name."','".$nombre_contacto."','".$numero_contacto."',0)");
 				}
 
 				function borrarHotelAjax()
 				{
 					$id = $_GET['id'];
 
-					$query = new Consulta("DELETE FROM hoteles WHERE id_hotel = '".$id."'");
+					$query = new Consulta("UPDATE hoteles SET bl_estado = 1 WHERE id_hotel = '".$id."'");
 				}
 
 				function modificarHotelAjax($value='')
@@ -350,7 +345,7 @@ class Ajax{
 					}
 					function borrarAgenciaAjax()
 					{
-						$query = new Consulta("DELETE FROM agencias WHERE id_agencia = '".$_GET['id']."'");
+						$query = new Consulta("UPDATE agencias SET bl_estado = 1 WHERE id_agencia = '".$_GET['id']."'");
 					}
 					//FIN AGENCIA
 
@@ -396,7 +391,7 @@ class Ajax{
 
 					function borrarCounterAjax()
 					{
-						$query = new Consulta("DELETE FROM usuarios WHERE id_usuario = '".$_GET['id']."'");
+						$query = new Consulta("UPDATE usuarios SET bl_estado = 1 WHERE id_usuario = '".$_GET['id']."'");
 					}
 					//FIN COUNTER
 
@@ -710,7 +705,7 @@ class Ajax{
 							$obj->upload_imagen($name, $temp, $destino, $type, $size);
 						}
 
-						$query_cotizacion = new Consulta("INSERT INTO cotizaciones values('','".$_POST['id_cliente']."','".$_POST['numero_pasajeros']."','".$_POST['nombre_paquete']."','".$_POST['descripcion_paquete']."','".$name."','".date('Y-m-d')."')");
+						$query_cotizacion = new Consulta("INSERT INTO cotizaciones values('','".$_POST['id_cliente']."','".$_POST['numero_pasajeros']."','".$_POST['nombre_paquete']."','".$_POST['descripcion_paquete']."','".$name."','".date('Y-m-d')."',0,0)");
 						$nuevoIdCotizacion = $query_cotizacion->nuevoid();
 
 						$departamento = $_POST['departamento'];
@@ -932,16 +927,7 @@ class Ajax{
 
 						function borrarCotizacionAjax(){
 							$id = $_GET['id'];
-							$query_cotizaciones_itinerarios = new Consulta("SELECT id_cotizacion_itinerario FROM cotizaciones_itinerarios WHERE id_cotizacion = '".$id."' ");
-
-							while($row = $query_cotizaciones_itinerarios->VerRegistro()) {
-								$query = new Consulta("DELETE FROM cotizaciones_itinerarios_detalles WHERE id_cotizacion_itinerario = '".$row['id_cotizacion_itinerario']."' ");
-								$query = new Consulta("DELETE FROM cotizaciones_itinerarios_hoteles WHERE id_cotizacion_itinerario = '".$row['id_cotizacion_itinerario']."' ");
-							}
-							$query = new Consulta("DELETE FROM cotizaciones_itinerarios WHERE id_cotizacion = '".$id."' ");
-							$query = new Consulta("DELETE FROM cotizaciones_destinos WHERE id_cotizacion = '".$id."' ");
-							$query = new Consulta("DELETE FROM inclusiones WHERE tipo_programa = 1 AND id_cotizacion = '".$id."' ");
-							$query = new Consulta("DELETE FROM cotizaciones WHERE id_cotizacion = '".$id."' ");
+							$query_cotizaciones_itinerarios = new Consulta("UPDATE cotizaciones SET bl_estado = 1 WHERE id_cotizacion = '".$id."' ");
 
 						}
 
@@ -991,7 +977,50 @@ class Ajax{
 							echo json_encode($paquete);
 						}
 
+						function VenderCotizacionAjax(){
+							$objCotizacion= new Cotizacion($_POST['id']);
 
+							$id_cotizacion = $objCotizacion->__get("_id");
+							$id_cliente = $objCotizacion->__get("_cliente")->__get("_id");
+							$fecha_actual = date("Y-m-d");
+							$cantidad = $objCotizacion->__get("_cantidad");
+							$nombre_venta = $objCotizacion->__get("_nombre");
+							$descripcion_venta = $objCotizacion->__get("_descripcion");
+							$observacion = $_POST['observacion'];
+							$precio_venta=0;
+							$query_ventas = new Consulta("INSERT INTO ventas values(null,".$id_cotizacion.",".$id_cliente.",'".$fecha_actual."',0,".$cantidad.",'".$nombre_venta."','".$descripcion_venta."','".$observacion."')");
+							$id_venta = $query_ventas->nuevoid();
+
+							$lista_itinerario = $objCotizacion->__get("_itinerario");
+
+							foreach ($lista_itinerario as $key => $itinerario) {
+
+								$nombre_itinerario = $itinerario['nombre'];
+								$descripcion_itinerario = $itinerario['descripcion'];
+								$id_itinerario = $itinerario['id_itinerario'];
+
+								$query_ventas_itinerario = new Consulta("INSERT INTO ventas_itinerarios values(null,".$id_venta.",".$key.",'".$nombre_itinerario."','".$descripcion_itinerario."')");
+								$id_venta_itinerario = $query_ventas_itinerario->nuevoid();
+
+								$consulta_hoteles = new Consulta("SELECT cih.id_hotel,cih.id_habitacion,cih.cantidad,ht.precio_nacional,ht.precio_extranjero
+									FROM cotizaciones_itinerarios_hoteles cih inner join hoteles_tarifas ht using(id_hotel,id_habitacion)
+									WHERE cih.id_cotizacion_itinerario = ".$id_itinerario);
+									while ($row = $consulta_hoteles->VerRegistro()) {
+										$query_ventas_itinerario_hoteles = new Consulta("INSERT INTO ventas_itinerarios_hoteles values(null,".$id_venta_itinerario.",".$row['id_hotel'].",".$row['id_habitacion'].",".$row['cantidad'].",".$row['precio_extranjero'].")");
+										$precio_venta+=$row['precio_extranjero'];
+									}
+
+									$consulta_servicios = new Consulta("SELECT cid.id_servicio,s.alcance_servicio,s.precio_extranjero_servicio,s.precio_nacional_servicio
+										FROM cotizaciones_itinerarios_detalles cid inner join servicios s using(id_servicio)
+										WHERE id_cotizacion_itinerario = ".$id_itinerario);
+										while ($row = $consulta_servicios->VerRegistro()) {
+											$query_ventas_itinerario_servicios = new Consulta("INSERT INTO ventas_itinerarios_servicios values(null,".$id_venta_itinerario.",".$row['id_servicio'].",".$row['alcance_servicio'].",".$row['precio_extranjero_servicio'].")");
+											$precio_venta+=$row['precio_extranjero_servicio'];
+										}
+									}
+								$query_update_venta = new Consulta("UPDATE ventas SET precio_venta = ".$precio_venta." WHERE id_venta = ".$id_venta);
+								$query_update_cotizacion = new Consulta("UPDATE cotizaciones SET estado_cotizacion = 1 WHERE id_cotizacion = ".$id_cotizacion);
+								}
 
 						//FIN COTIZACIONES
 
@@ -1175,7 +1204,7 @@ class Ajax{
 								$obj->upload_imagen($name, $temp, $destino, $type, $size);
 							}
 
-							$query = new Consulta("INSERT INTO paquetes values('','".$_POST['nombre_paquete']."','".$_POST['descripcion_paquete']."','".$name."','','".$_POST['utilidad_paquete']."')");
+							$query = new Consulta("INSERT INTO paquetes values('','".$_POST['nombre_paquete']."','".$_POST['descripcion_paquete']."','".$name."','','".$_POST['utilidad_paquete']."',0)");
 							$nuevoid = $query->nuevoid();
 
 							$departamento = $_POST['departamento'];
@@ -1191,13 +1220,15 @@ class Ajax{
 							$opciones = $_POST['opciones_hoteles'];
 							$dias = $_POST['dias'];
 
-							foreach ($opciones as $key => $opcion) {
-								$hoteles_opcion = explode(",",$opcion);
-								foreach ($hoteles_opcion as $key2 => $opcion_h) {
-									if ($opcion_h == 0) {
-										$opcion_h="null";
+							if (is_array($opciones) || is_object($opciones)) {
+								foreach ($opciones as $key => $opcion) {
+									$hoteles_opcion = explode(",",$opcion);
+									foreach ($hoteles_opcion as $key2 => $opcion_h) {
+										if ($opcion_h == 0) {
+											$opcion_h="null";
+										}
+										$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $nuevoid ."',". $opcion_h .",'".$key."',".$key2.") ");
 									}
-									$query3 = new Consulta("INSERT INTO paquetes_itinerarios_hoteles VALUES('','". $nuevoid ."',". $opcion_h .",'".$key."',".$key2.") ");
 								}
 							}
 
@@ -1317,18 +1348,7 @@ class Ajax{
 							function borrarPaqueteAjax(){
 								$id = $_GET['id'];
 
-								$query_paquetes_itinerarios = new Consulta("SELECT id_paquete_itinerario FROM paquetes_itinerarios WHERE id_paquete = '".$id."' ");
-
-								while($row = $query_paquetes_itinerarios->VerRegistro()) {
-									$query = new Consulta("DELETE FROM paquetes_itinerarios_detalles WHERE id_paquete_itinerario = '".$row['id_paquete_itinerario']."' ");
-									$query = new Consulta("DELETE FROM paquetes_itinerarios_hoteles WHERE id_paquete = '".$id."' ");
-								}
-								$query = new Consulta("DELETE FROM paquetes_destinos WHERE id_paquete = '".$id."' ");
-								$query = new Consulta("DELETE FROM paquetes_itinerarios WHERE id_paquete = '".$id."' ");
-								$query = new Consulta("DELETE FROM paquetes_destinos WHERE id_paquete = '".$id."' ");
-								$query = new Consulta("DELETE FROM inclusiones WHERE tipo_programa = 0 AND id_paquete = '".$id."' ");
-								$query = new Consulta("DELETE FROM paquetes WHERE id_paquete = '".$id."' ");
-
+								$query_paquetes_itinerarios = new Consulta("UPDATE paquetes SET bl_estado = 1 WHERE id_paquete = '".$id."' ");
 							}
 
 							function deleteDiaPaqueteAjax(){
@@ -1336,6 +1356,47 @@ class Ajax{
 								if ($id!='') {
 									$query = new Consulta("DELETE FROM paquetes_itinerarios WHERE id_paquete_itinerario = '".$id."' ");
 								}
+							}
+
+							function paqueteCopyAjax(){
+								$id = $_POST['id'];
+
+								$consulta_paquete = new Consulta("INSERT INTO paquetes SELECT '',nombre_paquete,descripcion_paquete,imagen_paquete,pdf_paquete,utilidad_paquete,bl_estado FROM paquetes WHERE id_paquete=".$id);
+								$nuevoid = $consulta_paquete->nuevoid();
+
+								$update_paquete = new Consulta("UPDATE paquetes SET nombre_paquete = CONCAT(nombre_paquete,' copy') where id_paquete=".$nuevoid);
+
+								$consulta_paquete_destinos = new Consulta("INSERT INTO paquetes_destinos SELECT '','".$nuevoid."',id_departamento FROM paquetes_destinos WHERE id_paquete=".$id);
+
+								$consulta_paquetes_itinerarios_hoteles = new Consulta("INSERT INTO paquetes_itinerarios_hoteles SELECT '','".$nuevoid."',id_hotel,opcion,dia FROM paquetes_itinerarios_hoteles WHERE id_paquete=".$id);
+
+								$consulta_paquetes_itinerarios = new Consulta("INSERT INTO paquetes_itinerarios SELECT '','".$nuevoid."',dia_paquete,nombre_paquete_itinerario,descripcion_paquete_itinerario FROM paquetes_itinerarios WHERE id_paquete=".$id);
+
+								$query_itinerario = new Consulta("SELECT id_paquete_itinerario from paquetes_itinerarios where id_paquete =".$nuevoid);
+								while ($row1 = $query_itinerario->VerRegistro()) {
+									$datos_itinerario[] = array(
+									 'id_paquete_itinerario' => $row1['id_paquete_itinerario']
+								 );
+							 }
+								$query_servicios = new Consulta("SELECT dia_paquete,id_servicio FROM paquetes_itinerarios inner join paquetes_itinerarios_detalles pid USING(id_paquete_itinerario) where id_paquete =".$id);
+								while ($row2 = $query_servicios->VerRegistro()) {
+									$datos_servicios[] = array(
+									 'dia_paquete' => $row2['dia_paquete'] ,
+									 'id_servicio' => $row2['id_servicio']
+								 );
+								}
+								for ($i=0; $i < count($datos_itinerario); $i++) {
+									foreach ($datos_servicios as $key => $servicio) {
+										if (($i+1)==$servicio['dia_paquete']) {
+											$id_paquete_itinerario = $datos_itinerario[$i]['id_paquete_itinerario'];
+											$id_servicio = $servicio['id_servicio'];
+											$consulta_paquetes_itinerarios_detalles = new Consulta("INSERT INTO paquetes_itinerarios_detalles values('',".$id_paquete_itinerario.",".$id_servicio.")");
+										}
+									}
+								}
+
+								$consulta_inclusiones = new Consulta("INSERT INTO inclusiones SELECT '',".$nuevoid.",null,nombre_inclusion,tipo_inclusion,tipo_programa from inclusiones where id_paquete =".$id);
+
 							}
 							//FIN PAQUETES
 
@@ -1352,7 +1413,7 @@ class Ajax{
 								$contacto_nombre = $_GET['contacto_nombre'];
 								$contacto_numero = $_GET['contacto_numero'];
 
-								$query = new Consulta("INSERT INTO servicios values('','".$tipo."','".$empresa."','".$nombre."','".$precio_nacional."','".$precio_extranjero."','".$alcance."','".$descripcion."','".$contacto_nombre."','".$contacto_numero."')");
+								$query = new Consulta("INSERT INTO servicios values('','".$tipo."','".$empresa."','".$nombre."','".$precio_nacional."','".$precio_extranjero."','".$alcance."','".$descripcion."','".$contacto_nombre."','".$contacto_numero."',0)");
 								$nuevoid = $query->nuevoid();
 
 								$departamento = $_GET['departamento'];
@@ -1366,9 +1427,7 @@ class Ajax{
 							function borrarServicioAjax()
 							{
 								$id = $_GET['id'];
-								$query = new Consulta("DELETE FROM servicios_ubicaciones WHERE id_servicio = '".$id."' ");
-
-								$query2 = new Consulta("DELETE FROM servicios WHERE id_servicio = '".$id."' ");
+								$query2 = new Consulta("UPDATE servicios SET bl_estado = 1 WHERE id_servicio = '".$id."' ");
 							}
 							function cambiarServicioAjax()
 							{
@@ -1417,7 +1476,7 @@ class Ajax{
 									for ($i=0; $i <$dias ; $i++) {
 									?>
 
-									<div class="row">
+									<div class="row" style="margin-bottom: 1%;">
 									<div class="col-xs-2 col-sm-2 col-md-2">
 										<h6>Dia <?php echo (int)$i+1; ?>:</h6>
 									</div>

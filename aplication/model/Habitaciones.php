@@ -3,7 +3,7 @@ class Habitaciones{
 
 	public function getHabitaciones()
 	{
-		$sql   = "SELECT * FROM habitaciones ORDER BY id_habitacion ASC";
+		$sql   = "SELECT * FROM habitaciones where bl_estado = 0 ORDER BY id_habitacion ASC";
 		$query = new Consulta($sql);
 
 		$datos = array();

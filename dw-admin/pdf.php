@@ -13,7 +13,7 @@ $imagen_paquete = $paquete->__get('_imagen');
 $descripcion_paquete = $paquete->__get('_descripcion');
 $itinerarios = $paquete->__get('_itinerario');
 $cantidad_itinerario = count($paquete->__get('_itinerario'));
-$inclusion = $paquete->__get('_utilidad');
+$utilidad = $paquete->__get('_utilidad');
 $paquetes = new Paquetes();
 
 $array_itinerario = array();
@@ -45,53 +45,53 @@ foreach ($hoteles as $key => $value) {
     $h1_n=$value['precio_nacional_persona'];
     $h1_e=$value['precio_extranjero_persona'];
     if ($h1_n != 0) {
-      $precio_hotel_servicio_n = $h1_n+$precios_servicios['precio_nacional'];
+      $precio_hotel_servicio_n = $h1_n;
     }else {
       $precio_hotel_servicio_n = 0;
     }
     if ($h1_e != 0) {
-      $precio_hotel_servicio_e = $h1_e+$precios_servicios['precio_extranjero'];
+      $precio_hotel_servicio_e = $h1_e;
     }else {
       $precio_hotel_servicio_e = 0;
     }
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][1]=$precio_hotel_servicio_n*(($inclusion/100)+1);
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][1]=$precio_hotel_servicio_e*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][1]=$precio_hotel_servicio_n;
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][1]=$precio_hotel_servicio_e;
   }
   if ($value['id_habitacion'] == 2) {
     $h2_n=$value['precio_nacional_persona'];
     $h2_e=$value['precio_extranjero_persona'];
     if ($h2_n != 0) {
-      $precio_hotel_servicio_n = $h2_n+$precios_servicios['precio_nacional'];
+      $precio_hotel_servicio_n = $h2_n;
     }else {
       $precio_hotel_servicio_n = 0;
     }
     if ($h2_e != 0) {
-      $precio_hotel_servicio_e = $h2_e+$precios_servicios['precio_extranjero'];
+      $precio_hotel_servicio_e = $h2_e;
     }else {
       $precio_hotel_servicio_e = 0;
     }
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][2]=$precio_hotel_servicio_n*(($inclusion/100)+1);
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][2]=$precio_hotel_servicio_e*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][2]=$precio_hotel_servicio_n;
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][2]=$precio_hotel_servicio_e;
   }
   if ($value['id_habitacion'] == 3) {
     $h3_n=$value['precio_nacional_persona'];
     $h3_e=$value['precio_extranjero_persona'];
     if ($h3_n != 0) {
-      $precio_hotel_servicio_n = $h3_n+$precios_servicios['precio_nacional'];
+      $precio_hotel_servicio_n = $h3_n;
     }else {
       $precio_hotel_servicio_n = 0;
     }
     if ($h3_e != 0) {
-      $precio_hotel_servicio_e = $h3_e+$precios_servicios['precio_extranjero'];
+      $precio_hotel_servicio_e = $h3_e;
     }else {
       $precio_hotel_servicio_e = 0;
     }
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][3]=$precio_hotel_servicio_n*(($inclusion/100)+1);
-    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][3]=$precio_hotel_servicio_e*(($inclusion/100)+1);
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['nacional'][3]=$precio_hotel_servicio_n;
+
+    $detalle_hoteles[$value['opcion']][$value['dia']][$id]['extranjero'][3]=$precio_hotel_servicio_e;
   }
   $contador++;
 }
-print_r($detalle_hoteles);
 $formato='<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
@@ -420,12 +420,12 @@ hr {
       $html .='<tr style="text-align:right">
       <td colspan="3" style="color:red">Total</td>
       <td></td>
-      <td style="text-align:center">$'.number_format($vt_e1, 2, '.', '').'</td>
-      <td style="text-align:center">$'.number_format($vt_e2, 2, '.', '').'</td>
-      <td style="text-align:center">$'.number_format($vt_e3, 2, '.', '').'</td>
-      <td style="text-align:center">$'.number_format($vt_n1, 2, '.', '').'</td>
-      <td style="text-align:center">$'.number_format($vt_n2, 2, '.', '').'</td>
-      <td style="text-align:center">$'.number_format($vt_n3, 2, '.', '').'</td>
+      <td style="text-align:center">$'.(number_format($vt_e1, 2, '.', '')+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1).'</td>
+      <td style="text-align:center">$'.(number_format($vt_e2, 2, '.', '')+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1).'</td>
+      <td style="text-align:center">$'.(number_format($vt_e3, 2, '.', '')+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1).'</td>
+      <td style="text-align:center">$'.(number_format($vt_n1, 2, '.', '')+$precios_servicios['precio_nacional'])*(($utilidad/100)+1).'</td>
+      <td style="text-align:center">$'.(number_format($vt_n2, 2, '.', '')+$precios_servicios['precio_nacional'])*(($utilidad/100)+1).'</td>
+      <td style="text-align:center">$'.(number_format($vt_n3, 2, '.', '')+$precios_servicios['precio_nacional'])*(($utilidad/100)+1).'</td>
       </tr>';
 
       $formato .=$html;

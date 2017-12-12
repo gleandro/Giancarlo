@@ -4,6 +4,9 @@ var $tableCotizacion = $('#bootstrap-table-cotizaciones');
 function operateFormatter(value, row, index) {
   return [
     '<div class="table-icons">',
+    '<a rel="tooltip" title="Cotizar" class="btn btn-simple btn-success btn-icon table-action cotizar" href="javascript:void(0)">',
+    '<i class="ti-money"></i>',
+    '</a>',
     '<a rel="tooltip" title="View" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
     '<i class="ti-image"></i>',
     '</a>',
@@ -444,6 +447,41 @@ $().ready(function(){
       info = JSON.stringify(row);
       location.href="cotizaciones.php?action=edit&id="+row.id;
     },
+    'click .cotizar': function (e, value, row, index) {
+      if ($($(this).parents("tr").children("td")[6]).html() == "Vendido") {
+        swal('Lo sentimos', 'Esta cotizacion ya fue Vendida');
+      }else {
+        swal({
+            title: 'Observaciones:',
+            input: 'textarea',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            showLoaderOnConfirm: false,
+            allowOutsideClick: false
+          }).then((result) => {
+            $.ajax({
+              url: 'ajax2.php',
+              type: 'POST',
+              data: '&action=VenderCotizacion&observacion='+result+'&id='+row.id,
+              beforeSend: function(){
+              },
+              success: function(datos){
+                swal({
+                  title: 'Vendido!',
+                  text: "Cotizacion Vendida",
+                  type: 'success',
+                  confirmButtonText: 'Ok!',
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  onClose: function(){
+                    location.href="cotizaciones.php";
+                  }
+                })
+              }
+            })
+          })
+      }
+    },
     'click .remove': function (e, value, row, index) {
 
       swal({
@@ -751,8 +789,6 @@ $("#wizardFormEditarCotizacion").submit(function(e) {
 
 function onFinishWizardPaquetes(){
   //CUANDO FINALIZA EL FORM WIZARD GUARDAMOS LOS DATOS Y MOSTRAMOS ALERTA
-
-  alert('hola');
 
   $.ajax({
     type : "GET",

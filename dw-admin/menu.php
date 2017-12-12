@@ -103,6 +103,12 @@
                                         <span class="sidebar-normal">Cotizaciones</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="ventas.php">
+                                        <span class="sidebar-mini"><i class="ti-money"></i></span>
+                                        <span class="sidebar-normal">Ventas</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>

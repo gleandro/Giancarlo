@@ -135,35 +135,43 @@
                 </div>
               </div>
               <div class="tab-pane" id="tab3">
-                <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
                 <div class="row">
-                  <div class="col-sm-12 col-md-5 col-md-offset-1">
-                    <div class="form-group">
-                      <input class="form-control" type="text" id="nombre_inclusion" placeholder="descripcion de inclusion " value=""/>
-                    </div>
+                  <div class="col-sm-12 col-md-6" id="lista_servicios_dia">
                   </div>
-                  <div class="col-sm-9 col-md-4">
-                    <div class="form-group">
-                      <select class="selectpicker" Title=".::.Seleccione Tipo de inclusion.::." id="inclusiones">
-                        <option value="1">Incluye</option>
-                        <option value="2">No Incluye</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-sm-3 col-md-1">
-                    <div class="form-group text-right">
-                      <button type="button" class="btn btn-info" id="add_inclusion">Ingresar inclusion</button>
-                    </div>
-                  </div>
-                  <div class="col-sm-12 col-md-10 col-md-offset-1">
+                  <div class="col-sm-12 col-md-6">
                     <div class="row">
-                      <div class="col-md-6 text-center">
+                      <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
+                      <div class="col-sm-12 col-md-12">
+                        <div class="form-group">
+                          <input class="form-control" type="text" id="nombre_inclusion" placeholder="descripcion de inclusion " value=""/>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-9 col-md-9">
+                        <div class="form-group">
+                          <select class="selectpicker" Title=".::.Seleccione Tipo de inclusion.::." id="inclusiones">
+                            <option value="1">Incluye</option>
+                            <option value="2">No Incluye</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 col-md-3">
+                        <div class="form-group text-right">
+                          <button type="button" class="btn btn-info" id="add_inclusion">Ingresar inclusion</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12 text-center">
                         <h3>Incluye</h3>
                         <ul class="list-group" id="incluye">
                           <li id="vacio" class="list-group-item list-group-item-success"><p>No se ingresaron</p><p>Inclusiones</p></li>
                         </ul>
                       </div>
-                      <div class="col-md-6 text-center">
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12 text-center">
                         <h3>No Incluye</h3>
                         <ul class="list-group" id="excluye">
                           <li id="vacio" class="list-group-item list-group-item-danger"><p>No se ingresaron</p><p>Exclusiones</p></li>
@@ -172,35 +180,30 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="tab-pane" id="tab4">
-                <h5 class="text-center">Ingrese las diferentes opciones de hoteles para el paquete.</h5>
-                <div class="row">
-                  <div class="col-md-12 text-left">
-                    <a class="btn btn-success btn-fill" style="cursor: pointer;" onclick="addHotelOpcion()">&nbsp;&nbsp;&nbsp;&nbsp;Agregar Opción&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                  </div>
                 </div>
-                <div class="row">
-                  <div class="col-xs-12 col-sm-12 col-md-7">
-                    <h5>Seleccion las opciones de hoteles(Destino-estrellas-hotel-precio)</h5>
-                    <div id="opciones_hoteles" class="form-group"></div>
-                  </div>
-                  <div class="col-xs-12 col-sm-12 col-md-5">
-                    <h5>Lista de opciones de hoteles</h5>
-                    <div id="lista_opciones_hoteles" class="form-group"></div>
+                <div class="tab-pane" id="tab4">
+                  <h5 class="text-center">Ingrese las diferentes opciones de hoteles para el paquete.</h5>
+                  <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-7">
+                      <h5>Seleccion las opciones de hoteles(Destino-estrellas-hotel-precio)</h5>
+                      <div id="opciones_hoteles" class="form-group"></div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-5">
+                      <h5>Lista de opciones de hoteles</h5>
+                      <div id="lista_opciones_hoteles" class="form-group"></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="card-footer">
-            <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
-            <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right btn-next-add">Next</button>
-            <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Registrar</button>
-            <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish</button>-->
-            <div class="clearfix"></div>
-          </div>
-        </form>
+            <div class="card-footer">
+              <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
+              <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right btn-next-add">Next</button>
+              <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Registrar</button>
+              <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish</button>-->
+              <div class="clearfix"></div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-  </div>

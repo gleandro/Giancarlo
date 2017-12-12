@@ -164,7 +164,7 @@
                                                           <td><?php echo $servicio['departamento']?></td>
                                                           <td><?php echo $servicio['nombre_tipo_servicio']?></td>
                                                           <td><?php echo $servicio['alcance']?></td>
-                                                          <td><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
+                                                          <td><?php echo "$".number_format($servicio['precio_e'], 2, '.', ''); ?></td>
                                                           <td class="id" hidden=""><?php echo $servicio['id'] ?></td>
                                                         </tr>
                                                         <?php $estado = true; break; }else{$estado = false;}}
@@ -174,7 +174,7 @@
                                                             <td><?php echo $servicio['departamento']?></td>
                                                             <td><?php echo $servicio['nombre_tipo_servicio']?></td>
                                                             <td><?php echo $servicio['alcance']?></td>
-                                                            <td><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
+                                                            <td><?php echo "$".number_format($servicio['precio_e'], 2, '.', ''); ?></td>
                                                             <td class="id" hidden=""><?php echo $servicio['id'] ?></td>
                                                           </tr>
                                                         <?php  }}else{?>
@@ -183,7 +183,7 @@
                                                             <td><?php echo $servicio['departamento']?></td>
                                                             <td><?php echo $servicio['nombre_tipo_servicio']?></td>
                                                             <td><?php echo $servicio['alcance']?></td>
-                                                            <td><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
+                                                            <td><?php echo "$".number_format($servicio['precio_e'], 2, '.', ''); ?></td>
                                                             <td class="id" hidden=""><?php echo $servicio['id'] ?></td>
                                                           </tr>
                                                         <?php } $contador_table++;} ?>
@@ -206,29 +206,35 @@
                       </div>
                     </div>
                     <div class="tab-pane" id="tab3">
-                      <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
                       <div class="row">
-                        <div class="col-sm-12 col-md-5 col-md-offset-1">
-                          <div class="form-group">
-                            <input class="form-control" type="text" id="nombre_inclusion" placeholder="descripcion de inclusion " value=""/>
-                          </div>
+                        <div class="col-sm-12 col-md-6" id="lista_servicios_dia">
                         </div>
-                        <div class="col-sm-9 col-md-4">
-                          <div class="form-group">
-                            <select class="selectpicker" Title=".::.Seleccione Tipo de inclusion.::." id="inclusiones">
-                              <option value="1">Incluye</option>
-                              <option value="2">No Incluye</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="col-sm-3 col-md-1">
-                          <div class="form-group text-right">
-                            <button type="button" class="btn btn-info" id="add_inclusion">Ingresar inclusion</button>
-                          </div>
-                        </div>
-                        <div class="col-sm-12 col-md-10 col-md-offset-1">
+                        <div class="col-sm-12 col-md-6">
                           <div class="row">
-                            <div class="col-md-6 text-center">
+                            <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
+                            <div class="col-sm-12 col-md-12">
+                              <div class="form-group">
+                                <textarea class="form-control" type="text" id="nombre_inclusion" placeholder="descripcion de inclusion " value=""></textarea>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-9 col-md-9">
+                              <div class="form-group">
+                                <select class="selectpicker" Title=".::.Seleccione Tipo de inclusion.::." id="inclusiones">
+                                  <option value="1">Incluye</option>
+                                  <option value="2">No Incluye</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-sm-3 col-md-3">
+                              <div class="form-group text-right">
+                                <button type="button" class="btn btn-info" id="add_inclusion">Ingresar inclusion</button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12 text-center">
                               <h3>Incluye</h3>
                               <ul class="list-group" id="incluye">
                                 <?php if (is_array($array_incluye) || is_object($array_incluye)) {
@@ -239,7 +245,9 @@
                                   <?php }?>
                                 </ul>
                               </div>
-                              <div class="col-md-6 text-center">
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12 text-center">
                                 <h3>No Incluye</h3>
                                 <ul class="list-group" id="excluye">
                                   <?php if (is_array($array_excluye) || is_object($array_excluye)) {
@@ -257,11 +265,6 @@
                         <div class="tab-pane" id="tab4">
                           <h5 class="text-center">Ingrese las diferentes opciones de hoteles para el paquete.</h5>
                           <div class="row">
-                            <div class="col-md-12 text-left">
-                              <a class="btn btn-success btn-fill" style="cursor: pointer;" onclick="addHotelOpcion()">&nbsp;&nbsp;&nbsp;&nbsp;Agregar opción&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                            </div>
-                          </div>
-                          <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-7">
                               <h5>Seleccion las opciones de hoteles(Destino-estrellas-hotel-precio)</h5>
                               <div id="opciones_hoteles" class="form-group">
@@ -272,50 +275,59 @@
                               <div id="lista_opciones_hoteles" class="form-group">
                                 <?php $itinerario_hoteles = $objPaquetes->getHotelesxOpcion($_GET['id']);
                                 if (is_array($itinerario_hoteles) || is_object($itinerario_hoteles)) {
-                                foreach ($itinerario_hoteles as $key => $opciones):
-                                  $id_hotel_opc="";
-                                  ?>
-                                  <div class="panel panel-default">
-                                    <button type="button" class="close eliminar_opciones_hoteles" onclick="javascript:eliminar_opciones_hoteles(this)" aria-label="Close">
-                                      <span aria-hidden="true">×</span>
-                                    </button>
-                                    <div class="panel-body">
-                                      <?php foreach ($opciones as $key => $hotel_ops):
-                                        if (is_null($hotel_ops['id_hotel'])) {
-                                          $hotel_ops['id_hotel']=0;
-                                        }
-                                        if ($key !=0) {
-                                          $id_hotel_opc .= ",".$hotel_ops['id_hotel'];
-                                        }else {
-                                          $id_hotel_opc .= $hotel_ops['id_hotel'];
-                                        }
-                                        ?>
-                                        <?php if ($hotel_ops['id_hotel'] ==0){ ?>
-                                          <p>Dia <?php echo $key+1; ?> : - sin Hotel - </p>
-                                        <?php }else{ ?>
-                                          <p>Dia <?php echo $key+1; ?> :<?php echo $hotel_ops['nombre_departamento']?> - <?php echo $hotel_ops['estrellas_hotel'] ?> - <?php echo $hotel_ops['nombre_hotel'] ?> - $<?php echo number_format($hotel_ops['precio_e'], 2, '.', '')?> </p>
-                                        <?php } endforeach; ?>
-                                        <input name="opciones_hoteles[]" value="<?php echo $id_hotel_opc ?>" type="hidden">
+                                  foreach ($itinerario_hoteles as $key => $opciones):
+                                    $id_hotel_opc="";
+                                    ?>
+                                    <div class="panel panel-default">
+                                      <button type="button" class="close eliminar_opciones_hoteles" onclick="javascript:eliminar_opciones_hoteles(this)" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                      </button>
+                                      <div class="panel-body">
+                                        <?php foreach ($opciones as $key => $hotel_ops):
+                                          if (!in_array($hotel_ops['id_hotel'],$listadoHotelesxDepartamentosId) && $hotel_ops['id_hotel']) {
+                                            $bl_opcion=true;
+                                          }
+                                          if (is_null($hotel_ops['id_hotel'])) {
+                                            $hotel_ops['id_hotel']=0;
+                                          }
+                                          if ($key !=0) {
+                                            $id_hotel_opc .= ",".$hotel_ops['id_hotel'];
+                                          }else {
+                                            $id_hotel_opc .= $hotel_ops['id_hotel'];
+                                          }
+                                          ?>
+                                          <?php if ($hotel_ops['id_hotel'] ==0){ ?>
+                                            <p>Dia <?php echo $key+1; ?> : - sin Hotel - </p>
+                                          <?php }else{ ?>
+                                            <p>Dia <?php echo $key+1; ?> :<?php echo $hotel_ops['nombre_departamento']?> - <?php echo $hotel_ops['estrellas_hotel'] ?> - <?php echo $hotel_ops['nombre_hotel'] ?> - $<?php echo number_format($hotel_ops['precio_e'], 2, '.', '')?> </p>
+                                          <?php } endforeach; ?>
+                                          <input name="opciones_hoteles[]" value="<?php echo $id_hotel_opc ?>" type="hidden">
+                                        </div>
                                       </div>
-                                    </div>
-                                  <?php endforeach;} ?>
+                                    <?php endforeach;} ?>
+                                  </div>
                                 </div>
                               </div>
+                              <?php if ($bl_opcion): ?>
+                                <div class="alert btn-info alert-dismissable">
+                                  <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                                  <strong>Informe! </strong>Algunos hoteles Fueron eliminados, Verifique su lista.
+                                </div>
+                              <?php endif; ?>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div class="card-footer">
-                        <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
-                        <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right">Next</button>
-                        <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Finalizar</button>
-                        <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish click</button>-->
+                        <div class="card-footer">
+                          <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
+                          <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right">Next</button>
+                          <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Finalizar</button>
+                          <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish click</button>-->
 
-                        <div class="clearfix"></div>
-                      </div>
+                          <div class="clearfix"></div>
+                        </div>
 
-                    </form>
+                      </form>
+                    </div>
+
                   </div>
-
                 </div>
-              </div>

@@ -26,8 +26,8 @@
                             <td><?php echo($Servicio['id']) ?></td>
                             <td><?php echo($Servicio['nombre']) ?></td>
                             <td><?php echo($Servicio['tipo_servicio']) ?></td>
-                            <td><?php echo($Servicio['precio_nacional']) ?></td>
-                            <td><?php echo($Servicio['precio_extranjero']) ?></td>
+                            <td><?php echo "$".($Servicio['precio_nacional']) ?></td>
+                            <td><?php echo "$".($Servicio['precio_extranjero']) ?></td>
                             <td><?php echo($Servicio['alcance']) ?></td>
                             <td><?php echo($Servicio['empresa']) ?></td>
                             <td></td>

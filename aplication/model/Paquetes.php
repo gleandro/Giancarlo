@@ -3,7 +3,7 @@ class Paquetes{
 
 	public function getPaquetes()
 	{
-		$sql   = "SELECT * FROM paquetes";
+		$sql   = "SELECT * FROM paquetes where bl_estado = 0";
 		$query = new Consulta($sql);
 		$datos = array();
 

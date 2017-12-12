@@ -3,7 +3,7 @@ class Cotizaciones{
 
 	public function getCotizaciones()
 	{
-		$sql   = "SELECT * FROM cotizaciones ORDER BY fecha_cotizacion DESC";
+		$sql   = "SELECT * FROM cotizaciones ORDER BY id_cotizacion DESC";
 		$query = new Consulta($sql);
 		$datos = array();
 
@@ -13,6 +13,7 @@ class Cotizaciones{
 		 'nombre' => $row['nombre_cotizacion'],
 		 'descripcion' => $row['descripcion_cotizacion'],
 		 'cantidad' => $row['numero_pasajeros'],
+		 'estado' => $row['estado_cotizacion'],
 		 'fecha' => $row['fecha_cotizacion']  );
 		}
 		return $datos;

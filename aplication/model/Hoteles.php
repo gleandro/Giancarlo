@@ -3,7 +3,7 @@ class Hoteles{
 
 	public function getHoteles($value='')
 	{
-		$sql   = "SELECT * FROM hoteles h INNER JOIN departamentos d ON h.id_departamento=d.id_departamento INNER JOIN empresas e ON h.id_empresa=e.id_empresa ORDER BY id_hotel ASC";
+		$sql   = "SELECT * FROM hoteles h INNER JOIN departamentos d ON h.id_departamento=d.id_departamento INNER JOIN empresas e ON h.id_empresa=e.id_empresa where h.bl_estado = 0 ORDER BY id_hotel ASC";
 		$query = new Consulta($sql);
 		$datos = array();
 
@@ -70,7 +70,7 @@ class Hoteles{
 
 	static public function getTotalHoteles()
 	{
-		$sql   = "SELECT count(*) as total from hoteles";
+		$sql   = "SELECT count(*) as total from hoteles where bl_estado = 0";
 		$query = new Consulta($sql);
 		$row = $query->VerRegistro();
 		return $row['total'];
@@ -84,7 +84,7 @@ class Hoteles{
 							FROM hoteles h
 							INNER JOIN departamentos d USING(id_departamento)
 							INNER JOIN empresas e USING(id_empresa)
-							WHERE h.id_departamento IN ($departamentos)
+							WHERE h.id_departamento IN ($departamentos) and h.bl_estado = 0
 							ORDER BY h.id_departamento,precio asc";
 
 		$query = new Consulta($sql);
@@ -106,9 +106,28 @@ class Hoteles{
 		return $datos;
 	}
 
+	public function getHotelesxDepartamentosId($departamentos)
+	{
+		//$sql   = "SELECT * FROM hoteles INNER JOIN departamentos USING(id_departamento) INNER JOIN empresas USING(id_empresa) WHERE id_departamento IN ($departamentos) GROUP BY id_hotel ORDER BY id_hotel asc";
+		$sql   = "SELECT h.id_hotel
+							FROM hoteles h
+							INNER JOIN departamentos d USING(id_departamento)
+							INNER JOIN empresas e USING(id_empresa)
+							WHERE h.id_departamento IN ($departamentos) and h.bl_estado = 0
+							ORDER BY h.id_departamento asc";
+
+		$query = new Consulta($sql);
+		$datos = array();
+
+		while($row = $query->VerRegistro()){
+		$datos[] = $row['id_hotel'];
+	}
+		return $datos;
+	}
+
 	public function getDepartamentos($value='')
 	{
-		$sql   = "SELECT * FROM departamentos";
+		$sql   = "SELECT * FROM departamentos where bl_estado = 0";
 		$query = new Consulta($sql);
 		$datos = array();
 
@@ -122,7 +141,7 @@ class Hoteles{
 
 	public function getHabitaciones()
 	{
-		$sql   = "SELECT * FROM habitaciones";
+		$sql   = "SELECT * FROM habitaciones where bl_estado = 0";
 		$query = new Consulta($sql);
 		$datos = array();
 

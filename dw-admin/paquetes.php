@@ -3,12 +3,15 @@
 switch ($_GET['action']) {
     case 'edit':
         $template = 'paquete_edit.php';
+        $titlecontent = "Editar Paquete";
         break;
     case 'add':
         $template = 'paquete_add.php';
+        $titlecontent = "Nuevo Paquete";
         break;
     default:
         $template = 'paquete_list.php';
+        $titlecontent = "Lista de Paquetes";
         break;
 }
 
@@ -36,6 +39,7 @@ if ($_GET['id']) {
     $listadoServiciosxDepartamentos = $objServicios->getServiciosxDepartamentos($ubicaciones);
 
     $listadoHotelesxDepartamentos = $objHoteles->getHotelesxDepartamentos($ubicaciones);
+    $listadoHotelesxDepartamentosId = $objHoteles->getHotelesxDepartamentosId($ubicaciones);
 
     $array_incluye = $objPaquetes->getInclusiones($_GET['id'],1);
     $array_excluye = $objPaquetes->getInclusiones($_GET['id'],2);

@@ -285,7 +285,7 @@
                                                           <td><?php echo $servicio['departamento']?></td>
                                                           <td><?php echo $servicio['nombre_tipo_servicio']?></td>
                                                           <td><?php echo $servicio['alcance']?></td>
-                                                          <td><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
+                                                          <td><?php echo "$".number_format($servicio['precio_e'], 2, '.', ''); ?></td>
                                                           <td class="id" hidden=""><?php echo $servicio['id'] ?></td>
                                                         </tr>
                                                         <?php $estado = true; break; }else{$estado = false;}}
@@ -295,7 +295,7 @@
                                                             <td><?php echo $servicio['departamento']?></td>
                                                             <td><?php echo $servicio['nombre_tipo_servicio']?></td>
                                                             <td><?php echo $servicio['alcance']?></td>
-                                                            <td><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
+                                                            <td><?php echo "$".number_format($servicio['precio_e'], 2, '.', ''); ?></td>
                                                             <td class="id" hidden=""><?php echo $servicio['id'] ?></td>
                                                           </tr>
                                                         <?php  }}else{?>
