@@ -3,10 +3,13 @@ class Cotizacion{
 
 	private $_id,
 	$_cliente,
-	$_cantidad,
+	$_pasajeros,
 	$_cotizacion_paquete,
 	$_departamento,
 	$_itinerario,
+	$_fecha_cotizacion,
+	$_fecha_venta,
+	$_precio,
 	$_fecha;
 
 	public function __construct($id = 0, Idioma $idioma = Null){
@@ -21,7 +24,10 @@ class Cotizacion{
 
 			if($row = $query->VerRegistro()){
 				$this->_cliente =  new Cliente ($row['id_cliente']);
-				$this->_cantidad =  $row['numero_pasajeros'];
+				$this->_pasajeros =  $row['numero_pasajeros'];
+				$this->_fecha_cotizacion =  $row['fecha_cotizacion'];
+				$this->_fecha_reserva =  $row['fecha_reserva'];
+				$this->_precio =  $row['precio_cotizacion'];
 				$this->_nombre =  $row['nombre_cotizacion'];
 				$this->_descripcion =  $row['descripcion_cotizacion'];
 				$this->_imagen =  $row['imagen_cotizacion'];

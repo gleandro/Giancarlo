@@ -1,5 +1,7 @@
-/*SERVICIO*/
+  /*SERVICIO*/
 var $tableCotizacion = $('#bootstrap-table-cotizaciones');
+var nacionalidad_cliente = 1;
+var tr_global;
 
 function operateFormatter(value, row, index) {
   return [
@@ -10,9 +12,9 @@ function operateFormatter(value, row, index) {
     '<a rel="tooltip" title="View" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
     '<i class="ti-image"></i>',
     '</a>',
-    '<a rel="tooltip" title="Edit" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
-    '<i class="ti-pencil-alt"></i>',
-    '</a>',
+    // '<a rel="tooltip" title="Edit" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
+    // '<i class="ti-pencil-alt"></i>',
+    // '</a>',
     '<a rel="tooltip" title="Eliminar" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
     '<i class="ti-close"></i>',
     '</a>',
@@ -39,8 +41,9 @@ function crear_table(){
 function cargar_listas(){
   if ($('#list_paquetes').length > 0) {
     $('#list_paquetes').multiselect({
-      enableFiltering: true
+      enableFiltering: true,
     });
+    $('#list_paquetes').multiselect('disable');
 
     $('#list_paquetes').change(function(event) {
       var id = $(this).val();
@@ -71,7 +74,7 @@ function cargar_listas(){
                 '<div class="panel panel-default" style="border: 1px;border-color: #0003;border-style: solid;background-color:white">'+
                   '<div class="panel-heading" style="background-color:white" role="tab" id="heading'+for_itinerario["dia"]+'">'+
                 		'<h4 class="panel-title">'+
-                			'<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse'+for_itinerario["dia"]+'" aria-expanded="false" aria-controls="collapseOne">'+
+                			'<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse'+for_itinerario["dia"]+'" aria-expanded="false" aria-controls="collapseOne"> '+
                 				'<h4 class="card-title">Día '+for_itinerario["dia"];
                           if (for_itinerario["dia"]!=1) {
                             html +='<span><a class="text-danger" onclick="eliminarPaquete('+for_itinerario["dia"]+',);" style=""><i class="fa fa-trash-o"></i></a></span>';
@@ -160,6 +163,13 @@ function cargar_listas(){
             $("#ajax_Telefono").val(datos.telefono);
             $("#ajax_Email").val(datos.email);
             $('#list_fuentes').multiselect('select', [datos.id_fuente], true);
+            if (datos.nacionalidad == 1) {
+              $("#ajax_Nacionalidad").val("Nacional");
+            }else {
+              $("#ajax_Nacionalidad").val("Extranjera");
+            }
+            nacionalidad_cliente = datos.nacionalidad;
+            $('#list_paquetes').multiselect('enable');
           }
         });
       }
@@ -240,22 +250,30 @@ function agregarCliente(){
       data: $("#sweelFormCliente").serialize(),
       beforeSend: function(){
       },
+      error: function (error) {
+        swal({
+          type: 'error',
+          title: 'No se registro el cliente!',
+          html: 'Ingresar todos los datos solicitados.'
+        });
+      },
       success: function(datos){
         $("#ajax_Documento").val(datos.documento);
         $("#ajax_Telefono").val(datos.telefono);
         $("#ajax_Email").val(datos.email);
         $('#list_fuentes').multiselect('select', [datos.id_fuente], true);
+        nacionalidad_cliente = datos.nacionalidad;
         $('#list_clientes').append('<option value="'+datos.id_cliente+'">'+datos.nombres+'</option>');
         $('#list_clientes').multiselect('rebuild');
         $('#list_clientes').multiselect('select', [datos.id_cliente]);
+        swal({
+          type: 'success',
+          title: 'Excelente!',
+          html: 'Cliente registrado correctamente.'
+        });
+        $('#list_paquetes').multiselect('enable');
       }
     });
-    swal({
-      type: 'success',
-      title: 'Ajax request finished!',
-      html: 'Submitted email: ' + result
-    });
-
   });
 }
 
@@ -285,16 +303,113 @@ function eliminar_inclusiones(dato){
 }
 
 function habitacion_update(input){
-  if ($(input).val() != "") {
+  if ($(input).val() != "" && $(input).val() > 0) {
     $(input).parents('tr').find(".checkbox").prop('checked', true);
   }else {
     $(input).parents('tr').find(".checkbox").prop('checked', false);
+    $(input).val('');
+    $(input).parents('tr').find("a").css("color","#66615b");
   };
 }
 
-$().ready(function(){
+function valida_pasajero(element){
+  var contenedor = $(element).parents(".panel");
+  var Nombres_pasajero = contenedor.find(".Nombres_pasajero").val();
+  var Documento_pasajero = contenedor.find(".Documento_pasajero").val();
+  var WhatsApp_pasajero = contenedor.find(".WhatsApp_pasajero").val();
+  var email_pasajero = contenedor.find(".email_pasajero").val();
+
+  if (contenedor.find(".collapsed").length == 0) {
+    if (Nombres_pasajero=="") {
+
+    }
+  }
+
+}
+
+function viewpasajero(element,id){
+  var tr = $(element).parents("tr");
+  tr_global = tr;
+  var bl_pasajero = tr.find("#bl_pasajero").val();
+  var html_swel = tr.find(".detalle_pasajeros").html();
+  var cantidad = parseInt(tr.find("#cantidad_habitacion").val());
+  var tr_cantidad_habitacion = parseInt(tr.find("#bl_cantidad").val());
+  var html = '';
+
+  if (bl_pasajero == 1) {
+    if (tr_cantidad_habitacion < cantidad) {
+      //Se tiene que agregar habitaciones
+      var select_pasajeros = tr.find(".detalle_pasajeros");
+      var get_html = select_pasajeros.children().first().html();
+      for (var i = tr_cantidad_habitacion; i < cantidad; i++) {
+        var html_insert = '<div class="list_pasajeros_'+i+'">'+get_html+'</div>';
+        html_insert = html_insert.replace("Habitación 1","Habitación "+(i+1));
+        // html_insert = html_insert.replace("id_pasajero_hotel[1][36][0]","id_pasajero_hotel[1][36][0]");
+        html_swel +=html_insert;
+        html = html_swel;
+      }
+    }
+    else if (tr_cantidad_habitacion > cantidad) {
+      //Se tiene que quitar habitaciones
+      var select_pasajeros = tr.find(".detalle_pasajeros");
+      for (var i = tr_cantidad_habitacion; i > cantidad; i--) {
+        select_pasajeros.children().last().remove();
+      }
+      html = select_pasajeros.html();
+    }
+    else {
+      //Se usa las habitaciones ocultas
+      html = html_swel;
+    }
+  }else{
+    for (var i = 0; i < cantidad; i++) {
+      // html_swel = html_insert.replace("id_pasajero_hotel[1][36][0]","id_pasajero_hotel[1][36][0]");
+      html += '<div class="list_pasajeros_'+i+'"><h3>Habitación '+(i+1)+'</h3>'+html_swel+'</div>';
+    }
+  }
+  swal({
+    title: 'Habitación x Pasajero',
+    showCancelButton: true,
+    confirmButtonText: 'Registrar',
+    showLoaderOnConfirm: false,
+    allowOutsideClick: false,
+    html: html,
+    preConfirm: () => {
+      var get_html_register = $(".swal2-content").html();
+      var cant_habitacion = tr_global.find("#cantidad_habitacion").val();
+      tr_global.find(".detalle_pasajeros").html(get_html_register);
+      tr_global.find("#bl_pasajero").val(1);
+      tr_global.find("#bl_cantidad").val(cant_habitacion);
+      tr_global.find("a").css("color","limegreen");
+      tr_global = "";
+      swal.close();
+    },
+    onClose: function(){
+      var bl_pasajero = tr_global.find("#bl_pasajero").val();
+      var cantidad = tr_global.find("#bl_cantidad").val();
+      if (bl_pasajero == 1) {
+        tr_global.find("#cantidad_habitacion").val(cantidad);
+      }
+      tr_global = "";
+    }
+  })
+}
+
+function select_simple(element){
+  var valor = element.value;
+  $(element).find("option").removeAttr('selected');
+  $(element).find('option[value="'+valor+'"]').attr("selected",true);
+}
+
+$(document).ready(function(){
   crear_table();
   cargar_listas();
+
+  $('#ajax_Fecha').datetimepicker({
+    format: 'YYYY-MM-DD'
+});
+
+  //1->nacional  2->extranjero
 
   $('#add_inclusion').click(function(){
     var nombre = $("#nombre_inclusion").val();
@@ -324,17 +439,148 @@ $().ready(function(){
         return false;
       }
 
-      if (index == 1 && $("#editarpaquete").val() == '1') {
+      if (index == 1) {
+        var pasajeros = $("#pasajeros").val();
+        var lista_pasajeros = $("#lista_pasajeros");
+        lista_pasajeros.html("");
+        for (var i = 0; i < pasajeros; i++) {
+        var html =
+          '<div class="panel panel-default" style="border: 1px;border-color: #0003;border-style: solid;">'+
+            '<div class="panel-heading" role="tab" id="heading_p'+i+'">'+
+              '<h4 class="panel-title" onclick="valida_pasajero(this)">'+
+                '<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_p'+i+'" aria-expanded="false" aria-controls="collapseOne">'+
+                  '<h4 class="card-title">Pasajero '+(i+1)+'</h4>'+
+                '</a>'+
+              '</h4>'+
+            '</div>'+
+            '<div id="collapse_p'+i+'" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading_p'+i+'">'+
+              '<div class="panel-body">'+
+                '<input class="form-control pasajero" type="hidden" value="'+i+'"/>'+
+                '<div class="card card-p-'+i+'">'+
+                  '<div class="card-content">'+
+                  	'<div class="row">'+
+                  	  '<div class="col-md-5">'+
+                    		'<div class="form-group">'+
+                    		  '<label class="control-label">Nombres</label>'+
+                    		  '<input class="form-control Nombres_pasajero" name="list_pasajeros['+i+'][Nombres]" type="text" placeholder="Nombres" required="required"/>'+
+                    		'</div>'+
+                  	  '</div>'+
+                  	  '<div class="col-md-5">'+
+                    		'<div class="form-group">'+
+                    		  '<label class="control-label">Documento (DNI/Pasaporte)</label>'+
+                    		  '<input class="form-control Documento_pasajero" name="list_pasajeros['+i+'][Documento]" type="text" placeholder="Documento (DNI/Pasaporte)" required="required"/>'+
+                    		'</div>'+
+                  	  '</div>'+
+                  	  '<div class="col-md-5">'+
+                    		'<div class="form-group">'+
+                    		  '<label class="control-label">WhatsApp</label>'+
+                    		  '<input class="form-control WhatsApp_pasajero" name="list_pasajeros['+i+'][WhatsApp]" type="text" placeholder="WhatsApp" required="required"/>'+
+                    		'</div>'+
+                  	  '</div>'+
+                  	  '<div class="col-md-5">'+
+                    		'<div class="form-group">'+
+                    		  '<label class="control-label">email</label>'+
+                    		  '<input class="form-control email_pasajero" name="list_pasajeros['+i+'][email]" type="text" placeholder="email" required="required"/>'+
+                    		'</div>'+
+                  	  '</div>'+
+                  	'</div>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>';
+          lista_pasajeros.append(html);
+          $("#collapse_p"+(i)).collapse('toggle');
+          }
+      }
+
+      // if (index == 1 && $("#editarpaquete").val() == '1') {
+      //   var dias = $(".card-dia").val();
+      //   for (var i = 0; i < dias; i++) {
+      //     $("#collapse"+(i+1)).collapse('toggle');
+      //   }
+      // }
+      // if (index == 1 && $("#editarpaquete").val() != '1') {
+      //   addServicioPaquete(1,'');
+      //   addHotelPaquete(1,'');
+      //   window.setTimeout("crear_table()",1000);
+      // }
+      if (index == 3) {
+        var datos =$(".dataTables_filter").find("input");
+        for (var i = 0; i < datos.length; i++) {
+          if ($(datos[i]).val() != '') {
+            // swal('No puede continuar ', 'El campo search de servicios debe estar vacio.');
+            swal({
+              title: 'No puede continuar ',
+              text: "El campo search de servicios debe estar vacio.",
+              type: 'warning',
+              showCancelButton: false,
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              $(datos[i]).parents(".panel-collapse").collapse('show');
+              $(datos[i]).focus();
+              $(datos[i]).animate({ scrollTop: $(datos[i])[0].scrollHeight}, 1000);
+            })
+            return false;
+          };
+        }
         var dias = $(".card-dia").val();
+        var html_servicio = '<h5 class="text-center">Lista de Servicios seleccionados por dia.</h5>'+
+        '<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">';
         for (var i = 0; i < dias; i++) {
-          $("#collapse"+(i+1)).collapse('toggle');
+          html_servicio +='<div class="panel panel-default" style="border: 1px;border-color: #0003;border-style: solid">'+
+                            '<div class="panel-heading" role="tab" id="heading_s'+i+'">'+
+                              '<h4 class="panel-title">'+
+                                '<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_s'+i+'" aria-expanded="false" aria-controls="collapse_s'+i+'">'+
+                                  '<h4 class="card-title">Lista de Servicios -> Dia '+(i+1)+"</h4>"+
+                                '</a>'+
+                              '</h4>'+
+                            '</div>'+
+                            '<div id="collapse_s'+i+'" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading_s'+i+'">'+
+                              '<div class="panel-body">'+
+                              '<table id="lista_servicios_'+i+'" class="display" width="100%" cellspacing="0">'+
+                              '<thead>'+
+                                '<tr>'+
+                                    '<th>Nombre</th>'+
+                                    '<th>Departamento</th>'+
+                                    '<th>Tipo Servicio</th>'+
+                                    '<th>Alcance</th>'+
+                                    '<th>Precio</th>'+
+                                '</tr>'+
+                              '</thead>'+
+                              '<tbody>';
+          var dia = $(".card-"+(i+1));
+          var servicios = dia.find(".table_servicio").find(".selected");
+          for (var k = 0; k < servicios.length; k++) {
+            var nombre = $(servicios[k]).find("td")[0].innerHTML;
+            var departamento = $(servicios[k]).find("td")[1].innerHTML;
+            var tipo_servicio = $(servicios[k]).find("td")[2].innerHTML;
+            var alcance = $(servicios[k]).find("td")[3].innerHTML;
+            var precio = $(servicios[k]).find("td")[4].innerHTML;
+            html_servicio += '<tr>';
+            html_servicio += '<td>'+nombre+'</td>';
+            html_servicio += '<td>'+departamento+'</td>';
+            html_servicio += '<td>'+tipo_servicio+'</td>';
+            html_servicio += '<td>'+alcance+'</td>';
+            html_servicio += '<td>'+precio+'</td>';
+            html_servicio += '</tr>';
+          }
+          html_servicio += '</tbody></table></div></div></div>';
+        }
+        html_servicio += '</div>';
+        $("#lista_servicios_dia").html(html_servicio);
+        for (var i = 0; i < dias; i++) {
+          $("#collapse_s"+i).collapse('toggle');
+          $('#lista_servicios_'+i).DataTable( {
+            "paging":   false,
+            "ordering": false,
+            "info":     false,
+            "searching": false
+            } );
         }
       }
-      if (index == 1 && $("#editarpaquete").val() != '1') {
-        addServicioPaquete(1,'');
-        addHotelPaquete(1,'');
-        window.setTimeout("crear_table()",1000);
-      }
+
     },
     onInit : function(tab, navigation, index){
 
@@ -440,7 +686,36 @@ $().ready(function(){
     'click .view': function (e, value, row, index) {
       info = JSON.stringify(row);
 
-      swal('You click view icon, row: ', 'vista no disponible');
+      var html = '<h4>Selecciona un Tipo de Documento</4>'+
+                  '<select class="tipo_documento">'+
+                    '<option value ="0">PDF</option>'+
+                    '<option value ="1">WORD</option>'+
+                  '</select>';
+      swal({
+        type: 'info',
+        html: html,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Descargar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        buttonsStyling: false,
+        preConfirm: () => {
+          var dato = $("select.tipo_documento").val();
+          if (dato == 0) {
+            swal('', 'Se descargo el archivo pdf','success');
+          }else {
+            swal('', 'Se descargo el archivo word','success');
+          }
+          location.href="pdf_cotizacion.php?id="+row.id+"&tipo="+dato;
+        }
+      })
+
+      $(".tipo_documento").selectpicker();
 
     },
     'click .edit': function (e, value, row, index) {
@@ -455,7 +730,7 @@ $().ready(function(){
             title: 'Observaciones:',
             input: 'textarea',
             showCancelButton: true,
-            confirmButtonText: 'Submit',
+            confirmButtonText: 'Vender',
             showLoaderOnConfirm: false,
             allowOutsideClick: false
           }).then((result) => {
@@ -572,12 +847,21 @@ $().ready(function(){
 
 //INICIO AGREGAR DIAS Y SERVICIOS
 function addHabitaciones(dia,item,id){
-  // alert('dia: '+dia+' id: '+id);
+  var panel_pasajeros = $("#lista_pasajeros").find(".panel-body");
+
+  var pasajeros = [];
+
+  for (var i = 0; i < panel_pasajeros.length; i++) {
+    var id_pasajero = $(panel_pasajeros[i]).find(".pasajero").val();
+    var nombre = $(panel_pasajeros[i]).find(".Nombres_pasajero").val();
+    var documento = $(panel_pasajeros[i]).find(".Documento_pasajero").val();
+    pasajeros[id_pasajero] = nombre;
+  }
 
   $.ajax({
     type : "POST",
     url :"ajax2.php",
-    data: $("#wizardFormCotizacion").serialize()+"&action=agregarHabitaciones&dia="+dia+"&id="+id+"&item="+item,
+    data: "&action=agregarHabitaciones&dia="+dia+"&id="+id+"&item="+item+"&pasajero="+pasajeros+"&id_nacionalidad="+nacionalidad_cliente,
     beforeSend: function(){
     },
     success: function(datos){
@@ -593,7 +877,7 @@ function addServicioPaquete(dia,id,id_itinerario){
   $.ajax({
     type : "POST",
     url :"ajax2.php",
-    data: $("#wizardFormCotizacion").serialize()+"&action=agregarServicioCotizacion&dia="+dia+"&id="+id+"&id_itinerario="+id_itinerario,
+    data: $("#wizardFormCotizacion").serialize()+"&action=agregarServicioCotizacion&dia="+dia+"&id="+id+"&id_itinerario="+id_itinerario+"&id_nacionalidad="+nacionalidad_cliente,
     beforeSend: function(){
     },
     success: function(datos){
@@ -612,7 +896,7 @@ function addHotelPaquete(dia,id){
   $.ajax({
     type : "POST",
     url :"ajax2.php",
-    data: $("#wizardFormCotizacion").serialize()+"&action=agregarHotelCotizacion&dia="+dia+"&id="+id+"&itemhotel="+listahotel,
+    data: $("#wizardFormCotizacion").serialize()+"&action=agregarHotelCotizacion&dia="+dia+"&id="+id+"&itemhotel="+listahotel+"&id_nacionalidad="+nacionalidad_cliente,
     beforeSend: function(){
     },
     success: function(datos){
@@ -631,7 +915,7 @@ function addDiaServicioPaquete(dia,id){
     beforeSend: function(){
     },
     success: function(datos){
-      $(".contenedor-card-apend-container").append(datos);
+      $(".contenedor-card-apend-container .panel-group").append(datos);
 
       var dia_v = dia-1;
           var table_s = $('#table_edit_s_'+dia_v).DataTable({
@@ -652,22 +936,6 @@ function addDiaServicioPaquete(dia,id){
         $('#list-hotel-'+dia).multiselect({
           enableFiltering: true
         });
-
-      $(".panel-default .text-danger").hide();
-      $(".panel-default .text-danger").last().show();
-    }
-  });
-}
-function deletePaqueteItinerario(id){
-  $.ajax({
-    type : "POST",
-    url :"ajax2.php",
-    data: $("#wizardFormCotizacion").serialize()+"&action=deleteDiaPaquete&id="+id,
-    beforeSend: function(){
-    },
-    success: function(datos){
-      var dias = parseInt($(".card-dia").val());
-      $(".card-dia").val(dias-1);
     }
   });
 }
@@ -699,8 +967,18 @@ function addOneMoreHotel(dia,id){
   addHotelPaquete(dia,id);
 }
 function eliminarPaquete(dia,id) {
-  $(".card-"+dia).parents(".panel-default").remove();
-  deletePaqueteItinerario(id);
+  var dia_maximo = $(".card-dia").val();
+  if (dia == dia_maximo) {
+    $(".card-"+dia).parents(".panel-default").remove();
+    var dias = parseInt($(".card-dia").val());
+    $(".card-dia").val(dias-1);
+  }else {
+    swal(
+      'No se pudo eliminar el día '+dia,
+      'No debe tener dias superiores a el que se desea eliminar',
+      'info'
+    )
+  }
 }
 $("#wizardFormCotizacion").submit(function(e) { //AGREGAR UN PAQUETE
   e.preventDefault();
@@ -713,9 +991,11 @@ $("#wizardFormCotizacion").submit(function(e) { //AGREGAR UN PAQUETE
 
   for (var i = 0; i < dias; i++) {
     var dia = $(".card-"+(i+1));
-    var servicios = dia.find(".table_servicio").find(".selected .id");
+    var servicios = dia.find(".table_servicio").find(".selected");
     for (var k = 0; k < servicios.length; k++) {
-      formData.append('servicios['+i+']['+k+']', servicios[k].innerHTML);
+      formData.append('servicios['+i+']['+k+'][id]', servicios[k].children[5].innerHTML);
+      var precio = parseFloat(servicios[k].children[4].innerHTML.substr(1));
+      formData.append('servicios['+i+']['+k+'][precio]', precio);
     }
   }
 
@@ -736,7 +1016,7 @@ $("#wizardFormCotizacion").submit(function(e) { //AGREGAR UN PAQUETE
         allowOutsideClick: false,
         allowEscapeKey: false,
         onClose: function(){
-          location.href="cotizaciones.php";
+          // location.href="cotizaciones.php";
         }
       })
     }

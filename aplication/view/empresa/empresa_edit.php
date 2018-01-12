@@ -6,7 +6,7 @@
                     <h4 class="card-title">Complete los datos para registrar la nueva empresa</h4>
                     <!--<h6>(Por el momento la sección contacto se encuentra deshabilitada)</h6>-->
                     <fieldset>
-                      <div class="form-group"> 
+                      <div class="form-group">
                         <input type="hidden" name="id" value="<?php echo $objEmpresa->__get('_id'); ?>">
                       </div>
                     </fieldset>
@@ -16,12 +16,7 @@
                                 Razon Social
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="razon"
-                                       required="required"
-                                       value="<?php echo $objEmpresa->__get('_razon'); ?>" 
-                                />
+                                <input class="form-control" type="text" name="razon" required="required" value="<?php echo $objEmpresa->__get('_razon'); ?>"/>
                             </div>
                         </div>
                     </fieldset>
@@ -32,12 +27,7 @@
                                 RUC
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="ruc"
-                                       required="required"
-                                       value="<?php echo $objEmpresa->__get('_ruc'); ?>" 
-                                />
+                                <input class="form-control" type="text" name="ruc" required="required" value="<?php echo $objEmpresa->__get('_ruc'); ?>" />
                             </div>
                         </div>
                     </fieldset>
@@ -48,12 +38,7 @@
                                 Correo Electrónico
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="email"
-                                       email="true"
-                                       value="<?php echo $objEmpresa->__get('_email'); ?>"
-                                />
+                                <input class="form-control" type="text" name="email" email="true" value="<?php echo $objEmpresa->__get('_email'); ?>"/>
                             </div>
                         </div>
                     </fieldset>
@@ -64,13 +49,7 @@
                                 Pagina Web
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="web"
-                                       url="true"
-                                       placeholder="http:\\www.google.com" 
-                                       value="<?php echo $objEmpresa->__get('_pagina_web'); ?>"
-                                />
+                                <input class="form-control" type="text" name="web" url="true" placeholder="http:\\www.google.com" value="<?php echo $objEmpresa->__get('_pagina_web'); ?>"/>
                             </div>
                         </div>
                     </fieldset>
@@ -81,24 +60,15 @@
                                 Teléfono
                             </label>
                             <div class="col-sm-4">
-                                <input class="form-control"
-                                       type="text"
-                                       name="telefono"
-                                       value="<?php echo $objEmpresa->__get('_telefono'); ?>"
-                                />
+                                <input class="form-control" type="text" name="telefono" value="<?php echo $objEmpresa->__get('_telefono'); ?>"/>
                             </div>
                             <label class="col-sm-1 control-label">
                                 Tipo
                             </label>
                             <div class="col-sm-4">
-                                <select class="selectpicker" 
-                                        name="tipo" 
-                                        data-style="btn btn-default btn-block" 
-                                        title="Tipo Empresa" 
-                                        data-size="7" 
-                                        required="required">
+                                <select class="selectpicker" name="tipo" data-style="btn btn-default btn-block" title="Tipo Empresa" data-size="7" required="required">
                                     <?php foreach ($listaTipoEmpresa as $tipo) { ?>
-                                        <option 
+                                        <option
                                         value="<?php echo $tipo['id'] ?>"
                                         <?php echo ($tipo['nombre']==$objEmpresa->__get('_tipo')) ? "selected":"";  ?>  >
                                           <?php echo $tipo['nombre']; ?>
@@ -115,12 +85,7 @@
                                 Dirección
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="direccion"
-                                       required="required"
-                                       value="<?php echo $objEmpresa->__get('_direccion'); ?>" 
-                                />
+                                <input class="form-control" type="text" name="direccion" required="required" value="<?php echo $objEmpresa->__get('_direccion'); ?>" />
                             </div>
                         </div>
                     </fieldset>
@@ -131,15 +96,10 @@
                                 Contacto
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="contactoNombre"
-                                       value="<?php echo $objEmpresa->__get('_nombre_contacto'); ?>" 
-                                />
+                                <input class="form-control" type="text" name="contactoNombre" value="<?php echo $objEmpresa->__get('_nombre_contacto'); ?>" />
                             </div>
                         </div>
                     </fieldset>
-
 
                     <fieldset>
                         <div class="form-group">
@@ -147,34 +107,22 @@
                                 Número de Contacto
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="contactoNumero"
-                                       value="<?php echo $objEmpresa->__get('_numero_contacto'); ?>" 
-                                />
+                                <input class="form-control" type="text" name="contactoNumero" value="<?php echo $objEmpresa->__get('_numero_contacto'); ?>" />
                             </div>
                         </div>
                     </fieldset>
 
-                    <!--<fieldset>
+                    <fieldset>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">
-                                Contacto
+                                Número de Cuenta
                             </label>
-                            <div class="col-sm-2">
-                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">Seleccionar</button>
-                            </div>
-                            <div class="col-sm-7">
-                                <input class="form-control"
-                                       type="text"
-                                       name="contacto" 
-                                       disabled="disabled">
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="cuentaNumero" value="<?php echo $objEmpresa->__get('_numero_cuenta'); ?>" />
                             </div>
                         </div>
-                    </fieldset>-->
+                    </fieldset>
 
-
-                    
                 </div>
                 <div class="card-footer text-center">
                     <button type="button" class="btn btn-danger btn-fill" onclick="cancelarRegistro('empresas')">Cancelar</button>

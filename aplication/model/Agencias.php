@@ -3,7 +3,7 @@
 
  	public function getAgencias(){
 
- 		$sql = "SELECT * FROM agencias ORDER BY razon_social_empresa ASC";
+ 		$sql = "SELECT * FROM agencias WHERE bl_estado = 0 ORDER BY razon_social_empresa ASC";
  		$query = new consulta($sql);
 
  		$datos = array();

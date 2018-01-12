@@ -21,6 +21,9 @@ include (_includes_."admin/inc.header.php");
 $objAgencia = new Agencias();
 $listagencias = $objAgencia->getAgencias();
 
+$objSede = new Sedes();
+$listsedes = $objSede->getSedes();
+
 if ($_GET['id']) {
     $objAgen= new Agencia($_GET['id']);
 }

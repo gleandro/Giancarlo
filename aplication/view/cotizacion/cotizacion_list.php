@@ -12,8 +12,10 @@
             <th data-field="id" class="text-center">ID</th>
             <th data-field="nombre" data-sortable="true">Nombre</th>
             <th data-field="descripcion" data-sortable="true">Descripción</th>
-            <th data-field="cantidad" data-sortable="true">Cantidad</th>
-            <th data-field="fecha" data-sortable="true">Fecha</th>
+            <th data-field="cantidad" data-sortable="true">Pasajeros</th>
+            <th data-field="fecha" data-sortable="true">Fecha Cotización</th>
+            <th data-field="fecha_reserva" data-sortable="true">Fecha Reserva</th>
+            <th data-field="precio" data-sortable="true">Precio</th>
             <th data-field="estado" data-sortable="true">Estado</th>
             <th data-field="actions" class="td-actions text-right" data-events="operateEvents" data-formatter="operateFormatter">Actions</th>
           </thead>
@@ -26,7 +28,10 @@
                 <td><?php echo $cotizacion['nombre'] ?></td>
                 <td><?php echo $cotizacion['descripcion'] ?></td>
                 <td><?php echo $cotizacion['cantidad'] ?></td>
-                <td><?php echo fecha_long($cotizacion['fecha']) ?></td>
+                <!-- <td><?php echo fecha_long($cotizacion['fecha']) ?></td> -->
+                <td><?php echo $cotizacion['fecha'] ?></td>
+                <td><?php echo $cotizacion['fecha_reserva'] ?></td>
+                <td><?php echo "$".$cotizacion['precio'] ?></td>
                 <?php
                 if($cotizacion['estado'] == 1){
                   echo "<td class='text-info'>Vendido</td>";

@@ -1,14 +1,19 @@
 var $table = $('#bootstrap-table-ventas');
 
+var estados = new Array('En espera', 'Reservado', 'Reservado 2', 'Cancelar', 'Vender');
+
   function operateFormatter(value, row, index) {
       return [
   '<div class="table-icons">',
+            '<a rel="tooltip" title="Descargar" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
+            '<i class="ti-image"></i>',
+            '</a>',
             '<a rel="tooltip" title="Editar" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
-                '<i class="ti-pencil-alt"></i>',
+                '<i class="ti-more-alt"></i>',
             '</a>',
-            '<a rel="tooltip" title="Eliminar" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
-                '<i class="ti-close"></i>',
-            '</a>',
+            // '<a rel="tooltip" title="Eliminar" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
+            //     '<i class="ti-close"></i>',
+            // '</a>',
   '</div>',
       ].join('');
   }
@@ -78,61 +83,86 @@ $("#formEditAgencia").submit(function(e) {
   $().ready(function(){
       window.operateEvents = {
           'click .view': function (e, value, row, index) {
-              info = JSON.stringify(row);
+            info = JSON.stringify(row);
+            var html = '<h4>Selecciona un Tipo de Documento</4>'+
+                        '<select class="tipo_documento">'+
+                          '<option value ="0">PDF</option>'+
+                          '<option value ="1">WORD</option>'+
+                        '</select>';
+            swal({
+              type: 'info',
+              html: html,
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Descargar',
+              cancelButtonText: 'Cancelar',
+              confirmButtonClass: 'btn btn-success',
+              cancelButtonClass: 'btn btn-danger',
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              buttonsStyling: false,
+              preConfirm: () => {
+                var dato = $("select.tipo_documento").val();
+                if (dato == 0) {
+                  swal('', 'Se descargo el archivo pdf','success');
+                }else {
+                  swal('', 'Se descargo el archivo word','success');
+                }
+                $.ajax({
+                  url: 'ajax2.php',
+                  type: 'POST',
+                  data: '&action=getIdCotizacion&id='+row.id,
+                  success: function(datos){
+                    var id_cotizacion = datos.replace("	","");
+                    location.href="pdf_cotizacion.php?id="+id_cotizacion+"&tipo="+dato;
 
-              swal('You click view icon, row: ', 'vista no disponible');
-              console.log(info);
+                  }
+                });
+
+              }
+            })
+
+            $(".tipo_documento").selectpicker();
+
           },
           'click .edit': function (e, value, row, index) {
               info = JSON.stringify(row);
-
-              location.href="ventas.php?action=edit&id="+row.id;
-          },
-          'click .remove': function (e, value, row, index) {
+              var estado = parseInt(row.id_estado);
+              var html = '<h4>Selecciona una acción</4>'+
+                          '<select class="tipo_action" data-size="5">';
+              for (var i = estado+1 ; i < estados.length; i++) {
+                html += '<option value ="'+i+'">'+estados[i]+'</option>';
+              }
+              html +='</select>';
               swal({
-                  title: '¿Estás Seguro?',
-                  text: "No se pueden recuperar los registros!",
-                  type: 'warning',
-                  showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
-                  confirmButtonText: 'Si, Borralo!',
-                  cancelButtonText: 'No, Cancelar!',
-                  confirmButtonClass: 'btn btn-success',
-                  cancelButtonClass: 'btn btn-danger',
-                  allowOutsideClick: false,
-                  allowEscapeKey: false,
-                  buttonsStyling: false
-                }).then(function () {
+                type: 'info',
+                html: html,
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Seleccionar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                buttonsStyling: false,
+                preConfirm: () => {
+                  var dato = $("select.tipo_action").val();
+                  var id_venta = parseInt(row.id);
                   $.ajax({
-                    type : "GET",
-                    url :"ajax.php",
-                    data: "&action=borrarVenta&id="+row.id,
-                    beforeSend: function(){
-                    },
+                    url: 'ajax2.php',
+                    type: 'POST',
+                    data: '&action=updateEstadoCotizacion&id='+id_venta+'&estado='+dato,
                     success: function(datos){
-                      swal(
-                        'Listo!',
-                        'El registro fué borrado.',
-                        'success'
-                      )
+                      location.href="ventas.php";
                     }
                   });
-                  $table.bootstrapTable('remove', {
-                    field: 'id',
-                    values: [row.id]
-                  });
-                }, function (dismiss) {
-                  // dismiss can be 'cancel', 'overlay',
-                  // 'close', and 'timer'
-                  if (dismiss === 'cancel') {
-                    swal(
-                      'Cancelado',
-                      'La eliminación fué cancelada',
-                      'error'
-                    )
-                  }
-                })
+                }
+              })
+              $(".tipo_action").selectpicker();
+              // location.href="ventas.php?action=edit&id="+row.id;
           }
       };
 

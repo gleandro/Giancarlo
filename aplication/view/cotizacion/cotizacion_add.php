@@ -14,27 +14,15 @@
         <div class="card-content">
           <ul class="nav">
             <li><a href="#tab1" data-toggle="tab">Datos</a></li>
-            <li><a href="#tab2" data-toggle="tab">Itinerario</a></li>
-            <li><a href="#tab3" data-toggle="tab">Inclusiones</a></li>
+            <li><a href="#tab2" data-toggle="tab">Pasajeros</a></li>
+            <li><a href="#tab3" data-toggle="tab">Itinerario</a></li>
+            <li><a href="#tab4" data-toggle="tab">Inclusiones</a></li>
           </ul>
           <div class="tab-content">
             <div class="tab-pane" id="tab1">
               <h5 class="text-center">Datos del Cliente.</h5>
               <div class="row">
                 <div class="col-md-5 col-md-offset-1">
-                  <div class="form-group">
-                    <label class="control-label">
-                      Paquete
-                    </label>
-                    <select id="list_paquetes">
-                      <option value="0"> - seleccione un paquete - </option>
-                      <?php foreach ($listaPaquetes as $key => $value): ?>
-                        <option value="<?php echo $value['id'] ?>"><?php echo $value['nombre'] ?></option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-5">
                   <div class="form-group">
                     <a href="#" onclick="agregarCliente();"><i class="ti-user"></i></a>
                     <label class="control-label">
@@ -44,6 +32,19 @@
                       <option value="0"> - seleccione un cliente - </option>
                       <?php foreach ($listadoClientes as $key => $cliente): ?>
                         <option value="<?php echo $cliente['id'] ?>"><?php echo $cliente['nombre'] ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <label class="control-label">
+                      Paquete
+                    </label>
+                    <select id="list_paquetes">
+                      <option value="0"> - seleccione un paquete - </option>
+                      <?php foreach ($listaPaquetes as $key => $value): ?>
+                        <option value="<?php echo $value['id'] ?>"><?php echo $value['nombre'] ?></option>
                       <?php endforeach; ?>
                     </select>
                   </div>
@@ -80,9 +81,25 @@
                 <div class="col-md-5">
                   <div class="form-group">
                     <label class="control-label">
+                      Nacionalidad
+                    </label>
+                    <input disabled class="form-control" type="text" placeholder="Nacionalidad" required="required" id="ajax_Nacionalidad"/>
+                  </div>
+                </div>
+                <div class="col-md-5 col-md-offset-1">
+                  <div class="form-group">
+                    <label class="control-label">
                       Email
                     </label>
                     <input disabled class="form-control" type="email" placeholder="Email" required="required" id="ajax_Email"/>
+                  </div>
+                </div>
+                <div class="col-md-5 ">
+                  <div class="form-group">
+                    <label class="control-label">
+                      Fecha Reserva
+                    </label>
+                    <input type='text' class="form-control" name="fecha_reserva" required="required" id='ajax_Fecha' />
                   </div>
                 </div>
               </div>
@@ -124,7 +141,7 @@
                     <label class="control-label">
                       Nro de Pasajeros
                     </label>
-                    <input class="form-control" type="text" name="numero_pasajeros" placeholder="numero de pasajeros" required="required"/>
+                    <input class="form-control" id="pasajeros" type="number" name="numero_pasajeros" placeholder="numero de pasajeros" required="required"/>
                   </div>
                 </div>
 
@@ -142,6 +159,14 @@
               </div>
             </div>
             <div class="tab-pane" id="tab2">
+              <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                  <h5 class="text-center">Datos de los Pasajeros.</h5>
+                  <div class="panel-group" id="lista_pasajeros" role="tablist" aria-multiselectable="true"></div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="tab3">
               <div class="row">
                 <div class="col-md-10 col-md-offset-1 text-right" style="padding-top:2%">
                   <a class="btn btn-info btn-fill" style="cursor: pointer;" onclick="addOneMoreDay()">&nbsp;&nbsp;&nbsp;&nbsp;Agregar dia&nbsp;&nbsp;&nbsp;&nbsp;</a>
@@ -196,36 +221,44 @@
                 </div>
               </div>
             </div>
-            <div class="tab-pane" id="tab3">
-              <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
+            <div class="tab-pane" id="tab4">
               <div class="row">
-                <div class="col-sm-12 col-md-5 col-md-offset-1">
-                  <div class="form-group">
-                    <input class="form-control" type="text" id="nombre_inclusion" placeholder="descripcion de inclusion " value=""/>
-                  </div>
+                <div class="col-sm-12 col-md-6" id="lista_servicios_dia">
                 </div>
-                <div class="col-sm-9 col-md-4">
-                  <div class="form-group">
-                    <select class="selectpicker" Title=".::.Seleccione Tipo de inclusion.::." id="inclusiones">
-                      <option value="1">Incluye</option>
-                      <option value="2">No Incluye</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-sm-3 col-md-1">
-                  <div class="form-group text-right">
-                    <button type="button" class="btn btn-info" id="add_inclusion">Ingresar inclusion</button>
-                  </div>
-                </div>
-                <div class="col-sm-12 col-md-10 col-md-offset-1">
+                <div class="col-sm-12 col-md-6">
                   <div class="row">
-                    <div class="col-md-6 text-center">
+                    <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
+                    <div class="col-sm-12 col-md-12">
+                      <div class="form-group">
+                        <input class="form-control" type="text" id="nombre_inclusion" placeholder="descripcion de inclusion " value=""/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-9 col-md-9">
+                      <div class="form-group">
+                        <select class="selectpicker" Title=".::.Seleccione Tipo de inclusion.::." id="inclusiones">
+                          <option value="1">Incluye</option>
+                          <option value="2">No Incluye</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 col-md-3">
+                      <div class="form-group text-right">
+                        <button type="button" class="btn btn-info" id="add_inclusion">Ingresar inclusion</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 text-center">
                       <h3>Incluye</h3>
                       <ul class="list-group" id="incluye">
                         <li id="vacio" class="list-group-item list-group-item-success"><p>No se ingresaron</p><p>Inclusiones</p></li>
                       </ul>
                     </div>
-                    <div class="col-md-6 text-center">
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 text-center">
                       <h3>No Incluye</h3>
                       <ul class="list-group" id="excluye">
                         <li id="vacio" class="list-group-item list-group-item-danger"><p>No se ingresaron</p><p>Exclusiones</p></li>

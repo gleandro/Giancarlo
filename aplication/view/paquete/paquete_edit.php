@@ -91,6 +91,7 @@
             <div class="tab-pane" id="tab2">
               <div class="row">
                 <div class="col-md-10 col-md-offset-1 text-right" style="padding-top:2%">
+                  <!-- <input style="width:10%;float:right" class="form-control" type="number" placeholder="numero dias" value="" id=""/> -->
                   <a class="btn btn-info btn-fill" style="cursor: pointer;" onclick="addOneMoreDayEdit(<?php echo $_GET['id'] ?>)">&nbsp;&nbsp;&nbsp;&nbsp;Agregar dia&nbsp;&nbsp;&nbsp;&nbsp;</a>
                 </div>
               </div>
@@ -282,6 +283,23 @@
                                       <button type="button" class="close eliminar_opciones_hoteles" onclick="javascript:eliminar_opciones_hoteles(this)" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                       </button>
+                                      <div>
+                                        <div>
+                                          <select class="select_hoteles_inline">
+                                            <option value="0"> - sin Hotel - </option>
+                                            <?php foreach ($listadoHotelesxDepartamentos as $key => $value): ?>
+                                              <option value="<?php echo $value['id'] ?>"><?php echo $value['departamento']?> - <?php echo $value['estrellas'] ?> - <?php echo $value['nombre'] ?> - $<?php echo number_format($value['precio_e'], 2, '.', '') ?></option>
+                                            <?php endforeach; ?>
+                                          </select>
+                                        </div>
+                                        <div class="form-group">
+                                          <div class="input-group col-xs-7 col-sm-4 col-md-8">
+                                            <input type="number" class="form-control index_dia_inline" placeholder="dia">
+                                            <div class="input-group-addon"><a style="width:auto;display: inline;" rel="tooltip" title="" class="btn btn-simple btn-danger btn-icon table-action eliminar_opcion_inline"  data-original-title="Delete"><i class="ti-minus"></i></a></div>
+                                            <div class="input-group-addon"><a style="width:auto;display: inline;" rel="tooltip" title="" class="btn btn-simple btn-success btn-icon table-action agregar_opcion_inline"  data-original-title="Add"><i class="ti-plus"></i></a></div>
+                                          </div>
+                                        </div>
+                                      </div>
                                       <div class="panel-body">
                                         <?php foreach ($opciones as $key => $hotel_ops):
                                           if (!in_array($hotel_ops['id_hotel'],$listadoHotelesxDepartamentosId) && $hotel_ops['id_hotel']) {
@@ -297,12 +315,12 @@
                                           }
                                           ?>
                                           <?php if ($hotel_ops['id_hotel'] ==0){ ?>
-                                            <p>Dia <?php echo $key+1; ?> : - sin Hotel - </p>
+                                            <p>Dia <span class="dia_inline"><?php echo $key+1; ?></span> : - sin Hotel - </p>
                                           <?php }else{ ?>
-                                            <p>Dia <?php echo $key+1; ?> :<?php echo $hotel_ops['nombre_departamento']?> - <?php echo $hotel_ops['estrellas_hotel'] ?> - <?php echo $hotel_ops['nombre_hotel'] ?> - $<?php echo number_format($hotel_ops['precio_e'], 2, '.', '')?> </p>
+                                            <p>Dia <span class="dia_inline"><?php echo $key+1; ?></span> :<?php echo $hotel_ops['nombre_departamento']?> - <?php echo $hotel_ops['estrellas_hotel'] ?> - <?php echo $hotel_ops['nombre_hotel'] ?> - $<?php echo number_format($hotel_ops['precio_e'], 2, '.', '')?> </p>
                                           <?php } endforeach; ?>
-                                          <input name="opciones_hoteles[]" value="<?php echo $id_hotel_opc ?>" type="hidden">
                                         </div>
+                                        <input name="opciones_hoteles[]" value="<?php echo $id_hotel_opc ?>" type="hidden">
                                       </div>
                                     <?php endforeach;} ?>
                                   </div>

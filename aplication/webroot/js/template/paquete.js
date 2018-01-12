@@ -81,8 +81,156 @@ function crear_table(){
   }
 }
 
+
 $().ready(function(){
   crear_table();
+
+  if ($(".select_hoteles_inline").length>0) {
+    $('.select_hoteles_inline').multiselect({
+      enableFiltering: true
+    });
+  }
+
+  $(".agregar_opcion_inline").click(function(event) {
+    var input_dia = $(this).parents(".input-group").children(".index_dia_inline");
+    var dia = input_dia.val();
+
+    var hotel = $(this).parents(".panel").find(".select_hoteles_inline option:selected").html();
+    var id_hotel = $(this).parents(".panel").find(".select_hoteles_inline option:selected").val();
+    var contenedor_p = $(this).parents(".panel").find(".panel-body");
+    var list_p = contenedor_p.find("p");
+    var cantidad = list_p.length;
+    var input_id = $(this).parents(".panel").children("input");
+    var valor = input_id.val();
+
+    if (dia > cantidad) {
+      dia = "";
+    }
+
+    if (dia == "") {
+      input_id.val(valor+","+id_hotel);
+      contenedor_p.append('<p> Dia <span class="dia_inline">'+(cantidad+1)+'</span> :'+hotel+'</p>');
+    }else if(dia<=0){
+      swal({
+        title: 'No se puede continuar ',
+        text: "Ingrese un dia valido.",
+        type: 'warning'
+      });
+      input_dia.val("");
+      return false;
+    }else{
+
+      var array_id = valor.split(",");
+      for (var i = 0; i < array_id.length; i++) {
+        if (i == 0) {
+          if ((i+1)==dia) {
+            var dato_id = id_hotel;
+            dato_id += ","+array_id[i];
+          }else {
+            var dato_id = array_id[i];
+          }
+        }else {
+          if ((i+1)==dia) {
+            dato_id += ","+id_hotel;
+            dato_id += ","+array_id[i];
+          }else {
+            dato_id += ","+array_id[i];
+          }
+        }
+      }
+      input_id.val(dato_id);
+
+      var list_p_dia = contenedor_p.find("p .dia_inline");
+      var html_p_inline = '<p>Dia <span class="dia_inline">'+dia+'</span> :'+hotel+'</p>';
+
+      for (var i = cantidad; i > 0; i--) {
+        var dia_inline = list_p_dia[i-1];
+        var valor_dia = dia_inline.innerHTML;
+        dia_inline.innerHTML = parseInt(valor_dia)+1;
+        if(valor_dia==dia){
+          $(dia_inline).parents("p").before(html_p_inline);
+          break;
+        }
+      }
+    }
+    swal({
+      title: 'Listo!',
+      text: "Se ingreso el dia correctamente.",
+      type: 'success',
+      onClose: function(){
+        input_dia.val("");
+      }
+    });
+  });
+
+  $(".eliminar_opcion_inline").click(function(event) {
+    var input_dia = $(this).parents(".input-group").children(".index_dia_inline");
+    var dia = input_dia.val();
+    var contenedor_p = $(this).parents(".panel").find(".panel-body");
+    var list_p = contenedor_p.find("p");
+    var cantidad = list_p.length;
+    var input_id = $(this).parents(".panel").children("input");
+    var valor = input_id.val();
+
+    if (dia == "") {
+      swal({
+        title: 'No puede continuar ',
+        text: "Debe ingresar el dia a eliminar.",
+        type: 'warning'
+      });
+    }
+    else if(dia > cantidad || dia<=0){
+      swal({
+        title: 'No se puede continuar ',
+        text: "Ingrese un dia valido.",
+        type: 'warning'
+      });
+      input_dia.val("");
+    }else{
+      var bl_estado =false;
+      var array_id = valor.split(",");
+      for (var i = 0; i < array_id.length; i++) {
+        if (i == 0) {
+          if ((i+1)==dia) {
+            bl_estado = true;
+          }else {
+            var dato_id = array_id[i];
+          }
+        }else {
+          if (bl_estado) {
+              var dato_id = array_id[i];
+              bl_estado=false;
+          }else {
+            if ((i+1)!=dia) {
+              dato_id += ","+array_id[i];
+            }
+          }
+        }
+      }
+      input_id.val(dato_id);
+
+      var list_p_dia = contenedor_p.find("p .dia_inline");
+
+      for (var i = cantidad; i > 0; i--) {
+        var dia_inline = list_p_dia[i-1];
+        var valor_dia = dia_inline.innerHTML;
+
+        if(valor_dia==dia){
+          $(dia_inline).parents("p").remove();
+          break;
+        }
+        dia_inline.innerHTML = parseInt(valor_dia)-1;
+      }
+      swal({
+        title: 'Listo!',
+        text: "Se elimino el dia correctamente.",
+        type: 'success',
+        onClose: function(){
+          input_dia.val("");
+        }
+      });
+    }
+  });
 
   $('#add_inclusion').click(function(){
     var nombre_v = $("#nombre_inclusion").val();
@@ -481,8 +629,39 @@ $().ready(function(){
     'click .view': function (e, value, row, index) {
       info = JSON.stringify(row);
       // location.href="paquetes.php?action=edit&id="+row.id;
-      location.href="pdf.php?id="+row.id;
-      swal('Espere un momento: ', 'Descargar o abrir el archivo .pdf');
+
+      var html = '<h4>Selecciona un Tipo de Documento</4>'+
+                  '<select class="tipo_documento">'+
+                    '<option value ="0">PDF</option>'+
+                    '<option value ="1">WORD</option>'+
+                  '</select>';
+      swal({
+        type: 'info',
+        html: html,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Descargar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        buttonsStyling: false,
+        preConfirm: () => {
+          var dato = $("select.tipo_documento").val();
+          if (dato == 0) {
+            swal('', 'Se descargo el archivo pdf','success');
+          }else {
+            swal('', 'Se descargo el archivo word','success');
+          }
+          location.href="pdf.php?id="+row.id+"&tipo="+dato;
+        }
+      })
+
+      $(".tipo_documento").selectpicker();
+
+
 
     },
     'click .edit': function (e, value, row, index) {
@@ -639,19 +818,6 @@ function addDiaServicioPaquete(dia,id){
     }
   });
 }
-function deletePaqueteItinerario(id){
-  $.ajax({
-    type : "POST",
-    url :"ajax2.php",
-    data: $("#wizardForm").serialize()+"&action=deleteDiaPaquete&id="+id,
-    beforeSend: function(){
-    },
-    success: function(datos){
-      var dias = parseInt($(".card-dia").val());
-      $(".card-dia").val(dias-1);
-    }
-  });
-}
 function addHotelOpcion(){
   var selected = $(".select_hoteles option:selected");
   var html = '<div class="panel panel-default"><button type="button" class="close eliminar_opciones_hoteles" onclick="javascript:eliminar_opciones_hoteles(this)" aria-label="Close"><span aria-hidden="true">×</span></button><div class="panel-body">';
@@ -714,7 +880,10 @@ function addOneMoreService(dia,id){
 }
 function eliminarPaquete(dia,id) {
   $(".card-"+dia).parents(".panel-default").remove();
-  deletePaqueteItinerario(id);
+  var dias = parseInt($(".card-dia").val());
+  $(".card-dia").val(dias-1);
+  $(".panel-default .text-danger").hide();
+  $(".panel-default .text-danger").last().show();
 }
 $("#wizardForm").submit(function(e) { //AGREGAR UN PAQUETE
   e.preventDefault();

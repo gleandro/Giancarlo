@@ -14,9 +14,10 @@
         <input type="hidden" value="<?php echo $objCotizacion->__get('_id') ?>" name="id">
         <div class="card-content">
           <ul class="nav">
-            <li><a href="#tab1" data-toggle="tab">Datos del Programa</a></li>
-            <li><a href="#tab2" data-toggle="tab">Itinerario del Programa</a></li>
-            <li><a href="#tab3" data-toggle="tab">Inclusiones del Programa</a></li>
+            <li><a href="#tab1" data-toggle="tab">Datos</a></li>
+            <li><a href="#tab2" data-toggle="tab">Pasajeros</a></li>
+            <li><a href="#tab3" data-toggle="tab">Itinerario</a></li>
+            <li><a href="#tab4" data-toggle="tab">Inclusiones</a></li>
           </ul>
           <div class="tab-content">
             <div class="tab-pane" id="tab1">
@@ -129,7 +130,7 @@
                     <label class="control-label">
                       Nro de Pasajeros
                     </label>
-                    <input class="form-control" value="<?php echo $objCotizacion->__get('_cantidad') ?>" type="text" name="numero_pasajeros" placeholder="numero de pasajeros" required="required"/>
+                    <input class="form-control" value="<?php echo $objCotizacion->__get('_cantidad') ?>" type="number" name="numero_pasajeros" placeholder="numero de pasajeros" required="required"/>
                   </div>
                 </div>
                   <div class="col-md-10 col-md-offset-1">
@@ -149,6 +150,12 @@
                 </div>
               </div>
               <div class="tab-pane" id="tab2">
+                <div class="row">
+
+
+                </div>
+              </div>
+              <div class="tab-pane" id="tab3">
                 <div class="row">
                   <div class="col-md-10 col-md-offset-1 text-right" style="padding-top:2%">
                     <a class="btn btn-info btn-fill" style="cursor: pointer;" onclick="addOneMoreDayEdit(<?php echo $_GET['id'] ?>)">&nbsp;&nbsp;&nbsp;&nbsp;Agregar dia&nbsp;&nbsp;&nbsp;&nbsp;</a>
@@ -325,7 +332,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="tab-pane" id="tab3">
+                      <div class="tab-pane" id="tab4">
                         <h5 class="text-center">Ingrese las Inclusiones y exclusiones del Programa.</h5>
                         <div class="row">
                           <div class="col-sm-12 col-md-5 col-md-offset-1">

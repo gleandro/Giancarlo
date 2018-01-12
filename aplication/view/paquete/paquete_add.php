@@ -61,7 +61,7 @@
                       <label class="control-label">
                         Utilidad
                       </label>
-                      <input class="form-control" required="required" type="number" min="0" max="100" name="utilidad_paquete" id="" value="0"></input>
+                      <input class="form-control" required="required" type="number" min="0" max="100" name="utilidad_paquete" id="" value="<?php echo ($_SESSION['sede']->__get('_id') != 0) ? $_SESSION['sede']->__get("_utilidad") : 0 ?>"></input>
                     </div>
                   </div>
                   <div class="col-md-10 col-md-offset-1">
@@ -180,30 +180,30 @@
                     </div>
                   </div>
                 </div>
-                </div>
-                <div class="tab-pane" id="tab4">
-                  <h5 class="text-center">Ingrese las diferentes opciones de hoteles para el paquete.</h5>
-                  <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-7">
-                      <h5>Seleccion las opciones de hoteles(Destino-estrellas-hotel-precio)</h5>
-                      <div id="opciones_hoteles" class="form-group"></div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-5">
-                      <h5>Lista de opciones de hoteles</h5>
-                      <div id="lista_opciones_hoteles" class="form-group"></div>
-                    </div>
+              </div>
+              <div class="tab-pane" id="tab4">
+                <h5 class="text-center">Ingrese las diferentes opciones de hoteles para el paquete.</h5>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 col-md-7">
+                    <h5>Seleccion las opciones de hoteles(Destino-estrellas-hotel-precio)</h5>
+                    <div id="opciones_hoteles" class="form-group"></div>
+                  </div>
+                  <div class="col-xs-12 col-sm-12 col-md-5">
+                    <h5>Lista de opciones de hoteles</h5>
+                    <div id="lista_opciones_hoteles" class="form-group"></div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="card-footer">
-              <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
-              <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right btn-next-add">Next</button>
-              <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Registrar</button>
-              <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish</button>-->
-              <div class="clearfix"></div>
-            </div>
-          </form>
-        </div>
+          </div>
+          <div class="card-footer">
+            <button type="button" class="btn btn-default btn-fill btn-wd btn-back pull-left">Back</button>
+            <button type="button" class="btn btn-info btn-fill btn-wd btn-next pull-right btn-next-add">Next</button>
+            <button type="submit" class="btn btn-info btn-fill btn-wd btn-finish pull-right">Registrar</button>
+            <!--<button type="button" class="btn btn-info btn-fill btn-wd btn-finish pull-right" onclick="onFinishWizardPaquetes()">Finish</button>-->
+            <div class="clearfix"></div>
+          </div>
+        </form>
       </div>
     </div>
+  </div>

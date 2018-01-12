@@ -9,7 +9,8 @@
  	$_telefono,
  	$_direccion,
  	$_contacto,
- 	$_comision;
+ 	$_comision,
+  $_sede;
 
 	public function __construct($id = 0, Idioma $idioma = Null){
 		$this->_id = $id;
@@ -26,6 +27,7 @@
 				$this->_telefono =  $row['telefono_empresa'];
 				$this->_direccion =  $row['direccion_empresa'];
 				$this->_contacto =  $row['contacto_empresa'];
+        $this->_sede =  new Sede($row['id_sede']);
 				$this->_comision =  $row['comision_empresa'];
 			}
 

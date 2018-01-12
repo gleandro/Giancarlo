@@ -3,7 +3,7 @@ class Cotizaciones{
 
 	public function getCotizaciones()
 	{
-		$sql   = "SELECT * FROM cotizaciones ORDER BY id_cotizacion DESC";
+		$sql   = "SELECT * FROM cotizaciones WHERE bl_estado = 0 ORDER BY id_cotizacion DESC";
 		$query = new Consulta($sql);
 		$datos = array();
 
@@ -14,7 +14,9 @@ class Cotizaciones{
 		 'descripcion' => $row['descripcion_cotizacion'],
 		 'cantidad' => $row['numero_pasajeros'],
 		 'estado' => $row['estado_cotizacion'],
-		 'fecha' => $row['fecha_cotizacion']  );
+		 'fecha' => $row['fecha_cotizacion'],
+		 'fecha_reserva' => $row['fecha_reserva'],
+	   'precio' => $row['precio_cotizacion']  );
 		}
 		return $datos;
 	}
@@ -32,6 +34,44 @@ class Cotizaciones{
 		return $datos;
 
 	}
+
+	static public function updatePrecioCotizacion($precio,$id_cotizacion){
+
+		$query = new Consulta("UPDATE cotizaciones SET precio_cotizacion = $precio WHERE id_cotizacion = $id_cotizacion");
+
+	}
+
+	static public function GetListaPasajeros($lista_pasajeros){
+		foreach ($lista_pasajeros as $key => $pasajero) {
+			$nombre = $pasajero['Nombres'];
+			$documento = $pasajero['Documento'];
+			$whatsapp = $pasajero['WhatsApp'];
+			$email = $pasajero['email'];
+			$sql_pasajero = "INSERT INTO pasajeros(id_pasajero,nombres_pasajero,documento_pasajero,whatsapp_pasajero,email_pasajero)
+											VALUES(null,'$nombre','$documento','$whatsapp','$email')";
+			$query_pasajero = new Consulta($sql_pasajero);
+			$nuevo_id_pasajero = $query_pasajero->nuevoid();
+			$lista_pasajeros_salida[$key] = $nuevo_id_pasajero;
+		}
+		return $lista_pasajeros_salida;
+	}
+
+	static public function InsertInclusion($array,$id_cotizacion,$bl_tipo){
+		if ($bl_tipo == 1) {
+			if (is_array($array) || is_object($array)) {
+				foreach ($array as $key => $value) {
+					$query = new Consulta("INSERT INTO inclusiones values(null,null,".$id_cotizacion.",'".$value."',$bl_tipo,1)");
+				}
+			}
+		}else {
+			if (is_array($array) || is_object($array)) {
+				foreach ($array as $key => $value) {
+					$query = new Consulta("INSERT INTO inclusiones values(null,null,".$id_cotizacion.",'".$value."',$bl_tipo,1)");
+				}
+			}
+		}
+	}
+
 	/*
 
 	static public function getTotalPaquetes()
@@ -118,6 +158,51 @@ class Cotizaciones{
 			$inclusiones[] =  $row['nombre_inclusion'];
 		}
 		return $inclusiones;
+	}
+
+	public function getServiciosxCotizacion($id){
+		$sql = "SELECT s.* from cotizaciones_itinerarios ci
+					inner join cotizaciones_itinerarios_detalles cid using(id_cotizacion_itinerario)
+					inner join servicios s using(id_servicio)
+					where ci.id_cotizacion =".$id;
+		$query = new Consulta($sql);
+		$result['precio_nacional']=0;
+		$result['precio_extranjero']=0;
+		while ($row = $query->VerRegistro()) {
+			$result['precio_nacional'] += (int)$row['precio_nacional_servicio'];
+			$result['precio_extranjero'] += (int)$row['precio_extranjero_servicio'];
+		}
+		return $result;
+
+	}
+
+	public function getHotelesxPasajeros($id){
+		$sql = "SELECT ci.id_cotizacion_itinerario,h.nombre_hotel,ha.id_habitacion,ha.nombre_habitacion,ha.cantidad_habitacion,cih.cantidad,h.estrellas_hotel,cih.precio,ht.precio_extranjero,ht.precio_nacional,p.nombres_pasajero,p.documento_pasajero
+					FROM cotizaciones_itinerarios ci
+					INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
+					INNER JOIN cotizaciones_itinerarios_hoteles_pasajeros cihp USING(id_cotizacion_itinerario_hotel)
+					INNER JOIN pasajeros p USING(id_pasajero)
+					INNER JOIN hoteles h USING(id_hotel)
+					INNER JOIN habitaciones ha USING(id_habitacion)
+					INNER JOIN hoteles_tarifas ht USING(id_hotel,id_habitacion)
+ 					WHERE id_cotizacion = $id
+					ORDER BY ci.id_cotizacion_itinerario,cihp.id_cotizacion_itinerario_hotel_pasajero";
+		$resultado = new Consulta($sql);
+		while ($row = $resultado->VerRegistro()) {
+			$datos[] = array(
+				'id_cotizacion_itinerario' => $row['id_cotizacion_itinerario'],
+				'nombre_hotel' => $row['nombre_hotel'],
+				'id_habitacion' => $row['id_habitacion'],
+				'nombre_habitacion' => $row['nombre_habitacion'],
+				'cantidad' => $row['cantidad'],
+				'cantidad_habitacion' => $row['cantidad_habitacion'],
+				'estrellas_hotel' => $row['estrellas_hotel'],
+				'precio' => $row['precio'],
+				'nombres_pasajero' => $row['nombres_pasajero'],
+				'documento_pasajero' => $row['documento_pasajero']
+			);
+		}
+		return $datos;
 	}
 
 }

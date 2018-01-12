@@ -40,7 +40,6 @@ if ($_GET['id']) {
 
     $listadoHotelesxDepartamentos = $objHoteles->getHotelesxDepartamentos($ubicaciones);
     $listadoHotelesxDepartamentosId = $objHoteles->getHotelesxDepartamentosId($ubicaciones);
-
     $array_incluye = $objPaquetes->getInclusiones($_GET['id'],1);
     $array_excluye = $objPaquetes->getInclusiones($_GET['id'],2);
 

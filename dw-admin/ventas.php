@@ -21,6 +21,8 @@ include (_includes_."admin/inc.header.php");
 $objVentas = new Ventas();
 $listVentas = $objVentas->getVentas();
 
+$estados = array('En espera', 'Reservado', 'Reservado 2', 'Cancelar', 'Vender');
+
 if ($_GET['id']) {
     $objVent= new Venta($_GET['id']);
 

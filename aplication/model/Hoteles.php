@@ -35,7 +35,8 @@ class Hoteles{
 			 'id_habitacion' => $row['id_habitacion'] ,
 			 'id_hotel_tarifa' => $row['id_hotel_tarifa'] ,
 			 'id_hotel' => $row['id_hotel'] ,
-			 'precio_hotel_tarifa' => $row['precio_extranjero'] ,
+			 'precio_hotel_tarifa_n' => $row['precio_nacional'] ,
+			 'precio_hotel_tarifa_e' => $row['precio_extranjero'] ,
 			 'nombre_habitacion' => $row['nombre_habitacion'],
 			 'cantidad_habitacion' => $row['cantidad_habitacion']
 			 );

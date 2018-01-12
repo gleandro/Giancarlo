@@ -16,12 +16,7 @@
                                 Razon Social
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="razon"
-                                       required="required"
-                                       value="<?php echo $objAgen->__get('_razon'); ?>"
-                                />
+                                <input class="form-control" type="text" name="razon" required="required" value="<?php echo $objAgen->__get('_razon'); ?>" />
                             </div>
                         </div>
                     </fieldset>
@@ -32,12 +27,7 @@
                                 RUC
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="number"
-                                       name="ruc"
-                                       required="required"
-                                       value="<?php echo $objAgen->__get('_ruc'); ?>"
-                                />
+                                <input class="form-control" type="number" name="ruc" required="required" value="<?php echo $objAgen->__get('_ruc'); ?>" />
                             </div>
                         </div>
                     </fieldset>
@@ -48,13 +38,7 @@
                                 Correo Electrónico
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="email"
-                                       email="true"
-                                       value="<?php echo $objAgen->__get('_email'); ?>"
-                                       required="required"
-                                />
+                                <input class="form-control" type="text" name="email" email="true" value="<?php echo $objAgen->__get('_email'); ?>" required="required" />
                             </div>
                         </div>
                     </fieldset>
@@ -65,12 +49,7 @@
                                 Teléfono
                             </label>
                             <div class="col-sm-4">
-                                <input class="form-control"
-                                       type="text"
-                                       name="telefono"
-                                       value="<?php echo $objAgen->__get('_telefono'); ?>"
-                                       required="required"
-                                />
+                                <input class="form-control" type="text" name="telefono" value="<?php echo $objAgen->__get('_telefono'); ?>" required="required" />
                             </div>
                         </div>
                     </fieldset>
@@ -81,28 +60,27 @@
                                 Dirección
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="direccion"
-                                       required="required"
-                                       value="<?php echo $objAgen->__get('_direccion'); ?>"
-                                />
+                                <input class="form-control" type="text" name="direccion" required="required" value="<?php echo $objAgen->__get('_direccion'); ?>" />
                             </div>
                         </div>
                     </fieldset>
-
                     <fieldset>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">
                                 Contacto
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="contacto"
-                                       value="<?php echo $objAgen->__get('_contacto'); ?>"
-                                       required="required"
-                                />
+                                <input class="form-control" type="text" name="contacto" value="<?php echo $objAgen->__get('_contacto'); ?>" required="required" />
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">
+                                Sede
+                            </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" value="<?php echo $objAgen->__get('_sede')->__get('_nombre'); ?>" disabled />
                             </div>
                         </div>
                     </fieldset>
@@ -112,12 +90,7 @@
                                 Comision
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="comision"
-                                       value="<?php echo $objAgen->__get('_comision'); ?>"
-                                />
-                            </div>
+                                <input class="form-control" type="text" name="comision" value="<?php echo $objAgen->__get('_comision'); ?>" /> </div>
                         </div>
                     </fieldset>
 

@@ -11,11 +11,7 @@
                                 Razon Social
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="razon"
-                                       required="required"
-                                />
+                                <input class="form-control" type="text" name="razon" required="required"/>
                             </div>
                         </div>
                     </fieldset>
@@ -26,11 +22,7 @@
                                 RUC
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="ruc"
-                                       required="required"
-                                />
+                                <input class="form-control" type="text" name="ruc" required="required"/>
                             </div>
                         </div>
                     </fieldset>
@@ -41,11 +33,7 @@
                                 Correo Electrónico
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="email"
-                                       email="true"
-                                />
+                                <input class="form-control" type="text" name="email" email="true"/>
                             </div>
                         </div>
                     </fieldset>
@@ -56,12 +44,7 @@
                                 Pagina Web
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="web"
-                                       url="true"
-                                       placeholder="http:\\www.google.com" 
-                                />
+                                <input class="form-control" type="text" name="web" url="true" placeholder="http:\\www.google.com" />
                             </div>
                         </div>
                     </fieldset>
@@ -72,10 +55,7 @@
                                 Teléfono
                             </label>
                             <div class="col-sm-4">
-                                <input class="form-control"
-                                       type="text"
-                                       name="telefono"
-                                />
+                                <input class="form-control" type="text" name="telefono"/>
                             </div>
                             <label class="col-sm-1 control-label">
                                 Tipo
@@ -96,11 +76,7 @@
                                 Dirección
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="direccion"
-                                       required="required" 
-                                />
+                                <input class="form-control" type="text" name="direccion" required="required" />
                             </div>
                         </div>
                     </fieldset>
@@ -111,14 +87,10 @@
                                 Contacto
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="contactoNombre"
-                                />
+                                <input class="form-control" type="text" name="contactoNombre"/>
                             </div>
                         </div>
                     </fieldset>
-
 
                     <fieldset>
                         <div class="form-group">
@@ -126,33 +98,22 @@
                                 Número de Contacto
                             </label>
                             <div class="col-sm-9">
-                                <input class="form-control"
-                                       type="text"
-                                       name="contactoNumero"
-                                />
+                                <input class="form-control" type="text" name="contactoNumero"/>
                             </div>
                         </div>
                     </fieldset>
 
-                    <!--<fieldset>
+                    <fieldset>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">
-                                Contacto
+                                Número de Cuenta
                             </label>
-                            <div class="col-sm-2">
-                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">Seleccionar</button>
-                            </div>
-                            <div class="col-sm-7">
-                                <input class="form-control"
-                                       type="text"
-                                       name="contacto" 
-                                       disabled="disabled">
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" name="cuentaNumero"/>
                             </div>
                         </div>
-                    </fieldset>-->
+                    </fieldset>
 
-
-                    
                 </div>
                 <div class="card-footer text-center">
                     <button type="button" class="btn btn-danger btn-fill" onclick="cancelarRegistro('empresas')">Cancelar</button>

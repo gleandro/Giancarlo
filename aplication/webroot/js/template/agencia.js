@@ -76,6 +76,13 @@ $("#formEditAgencia").submit(function(e) {
 
 
   $().ready(function(){
+
+    if ($('#list_sedes').length > 0) {
+      $('#list_sedes').multiselect({
+        enableFiltering: false
+      });
+    }
+
       window.operateEvents = {
           'click .money': function (e, value, row, index) {
               info = JSON.stringify(row);

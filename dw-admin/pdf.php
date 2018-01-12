@@ -2,21 +2,19 @@
 
 include("inc.aplication_top.php");
 require_once(_ruta_.'dompdf/autoload.inc.php');
-header("Content-Type: text/html;charset=utf-8");
 
 // Introducimos HTML de prueba
 $id = $_GET['id'];
-
+$tipo= $_GET['tipo'];
 $paquete = new Paquete($id);
 $nombre_paquete = $paquete->__get('_nombre');
 $imagen_paquete = $paquete->__get('_imagen');
 $descripcion_paquete = $paquete->__get('_descripcion');
 $itinerarios = $paquete->__get('_itinerario');
 $cantidad_itinerario = count($paquete->__get('_itinerario'));
-$utilidad = $paquete->__get('_utilidad');
 $paquetes = new Paquetes();
 
-$array_itinerario = array();
+$utilidad = $paquete->__get('_utilidad');
 
 $array_inclusiones = $paquetes->getInclusiones($id,1);
 $array_exclusiones = $paquetes->getInclusiones($id,2);
@@ -92,6 +90,12 @@ foreach ($hoteles as $key => $value) {
   }
   $contador++;
 }
+header("Content-Type: text/html;charset=utf-8");
+if ($tipo == 1) {
+  header("Content-type: application/vnd.ms-word");
+  header("Content-Disposition: attachment;Filename=".$nombre_paquete.".doc");
+}
+
 $formato='<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
@@ -227,7 +231,7 @@ hr {
     <tbody>
       <tr>
         <td>
-          <img src="logo.jpg" alt="">
+          <img src="'.$_config['server']['host'].'dw-admin/logo.jpg" alt="">
         </td>
         <td style="text-align: center;">
           <p> <span style="font-weight: 600">CENTRAL TELEFÓNICA </span> <br>
@@ -347,10 +351,10 @@ hr {
 
       foreach ($opcion as $key2 => $dia) {
         $html .='<tr style="text-align:left">
-                  <td>Dia '.($key2+1).':</td>';
+                  <td></td>';
       foreach ($dia as $key3 => $hotel) {
         if ($hotel["nombre_hotel"]=='') {
-          $hotel["nombre_hotel"] = "No se selecciono un hotel";
+          $hotel["nombre_hotel"] = "";
         }
         $html.='<td colspan="2" style="text-align:left">'.$hotel["nombre_hotel"].'</td>';
         //variables nacionales
@@ -420,12 +424,12 @@ hr {
       $html .='<tr style="text-align:right">
       <td colspan="3" style="color:red">Total</td>
       <td></td>
-      <td style="text-align:center">$'.(number_format($vt_e1, 2, '.', '')+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1).'</td>
-      <td style="text-align:center">$'.(number_format($vt_e2, 2, '.', '')+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1).'</td>
-      <td style="text-align:center">$'.(number_format($vt_e3, 2, '.', '')+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1).'</td>
-      <td style="text-align:center">$'.(number_format($vt_n1, 2, '.', '')+$precios_servicios['precio_nacional'])*(($utilidad/100)+1).'</td>
-      <td style="text-align:center">$'.(number_format($vt_n2, 2, '.', '')+$precios_servicios['precio_nacional'])*(($utilidad/100)+1).'</td>
-      <td style="text-align:center">$'.(number_format($vt_n3, 2, '.', '')+$precios_servicios['precio_nacional'])*(($utilidad/100)+1).'</td>
+      <td style="text-align:center">$'.ceil(($vt_e1+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1)).'</td>
+      <td style="text-align:center">$'.ceil(($vt_e2+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1)).'</td>
+      <td style="text-align:center">$'.ceil(($vt_e3+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1)).'</td>
+      <td style="text-align:center">$'.ceil(($vt_n1+$precios_servicios['precio_nacional'])*(($utilidad/100)+1)).'</td>
+      <td style="text-align:center">$'.ceil(($vt_n2+$precios_servicios['precio_nacional'])*(($utilidad/100)+1)).'</td>
+      <td style="text-align:center">$'.ceil(($vt_n3+$precios_servicios['precio_nacional'])*(($utilidad/100)+1)).'</td>
       </tr>';
 
       $formato .=$html;
@@ -435,6 +439,10 @@ hr {
   '</table>
 </body>
 </html>';
+if ($tipo == 1) {
+  echo $formato;
+}
+
 use Dompdf\Dompdf;
 // Instanciamos un objeto de la clase DOMPDF.
 $pdf = new DOMPDF();
@@ -450,7 +458,6 @@ $pdf->set_paper("A4", "portrait");
 $pdf->render();
 
 // Enviamos el fichero PDF al navegador.
-$pdf->stream();
-
-
+$pdf->stream($nombre_paquete);
+// echo $formato;
 ?>

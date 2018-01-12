@@ -3,7 +3,10 @@
 
  	public function getVentas(){
 
- 		$sql = "SELECT v.*,c.nombres_cliente FROM ventas v INNER JOIN clientes c using(id_cliente) ORDER BY id_venta DESC";
+ 		$sql = "SELECT v.*,cot.fecha_reserva,c.nombres_cliente FROM ventas v
+            INNER JOIN clientes c using(id_cliente)
+            INNER JOIN cotizaciones cot USING(id_cotizacion)
+            ORDER BY id_venta DESC";
  		$query = new consulta($sql);
 
  		$datos = array();
@@ -11,18 +14,30 @@
     		$datos[] = array(
     		 'id' => $row['id_venta'] ,
     		 'fecha' => $row['fecha_venta'],
+         'fecha_reserva' => $row['fecha_reserva'],
     		 'precio' => $row['precio_venta'] ,
     		 'pasajeros' => $row['pasajeros_venta'],
     		 'nombre' => $row['nombre_venta'] ,
     		 'descripcion' => $row['descripcion_venta'],
     		 'observacion' => $row['observacion_venta'],
+         'estado' => $row['bl_estado_venta'],
          'cliente' => $row['nombres_cliente']
        );
 		}
 		return $datos;
  	}
 
-  function getDestinos($departamentos){
+  public function getEstado($bl_estado,$array){
+    if ($bl_estado == 0) {
+      return '<p class="text-success">'.$array[$bl_estado].'</p>';
+    }
+    else if ($_estado == 1) {
+      return '<p class="text-error">'.$array[$bl_estado].'</p>';
+    }
+
+  }
+
+  public function getDestinos($departamentos){
 
     foreach ($departamentos as $key => $value) {
       if ($key == 0) {

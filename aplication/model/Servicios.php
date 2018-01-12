@@ -42,6 +42,7 @@ class Servicios{
 		 'nombre_tipo_servicio' => $row['nombre_tipo_servicio'] ,
 		 'departamento' => $row['nombre_departamento'] ,
 		 'precio_e' => $row['precio_extranjero_servicio'] ,
+		 'precio_n' => $row['precio_nacional_servicio'] ,
 		 'alcance' => $row['alcance_servicio'] ,
 		 'descipcion' => $row['descripcion_servicio'] ,
 		 'contacto_nombre' => $row['contacto_nombre_servicio'] ,
