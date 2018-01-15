@@ -1,6 +1,5 @@
   /*SERVICIO*/
 var $tableCotizacion = $('#bootstrap-table-cotizaciones');
-var nacionalidad_cliente = 1;
 var tr_global;
 
 function operateFormatter(value, row, index) {
@@ -168,7 +167,6 @@ function cargar_listas(){
             }else {
               $("#ajax_Nacionalidad").val("Extranjera");
             }
-            nacionalidad_cliente = datos.nacionalidad;
             $('#list_paquetes').multiselect('enable');
           }
         });
@@ -262,7 +260,6 @@ function agregarCliente(){
         $("#ajax_Telefono").val(datos.telefono);
         $("#ajax_Email").val(datos.email);
         $('#list_fuentes').multiselect('select', [datos.id_fuente], true);
-        nacionalidad_cliente = datos.nacionalidad;
         $('#list_clientes').append('<option value="'+datos.id_cliente+'">'+datos.nombres+'</option>');
         $('#list_clientes').multiselect('rebuild');
         $('#list_clientes').multiselect('select', [datos.id_cliente]);
@@ -331,6 +328,7 @@ function viewpasajero(element,id){
   var tr = $(element).parents("tr");
   tr_global = tr;
   var bl_pasajero = tr.find("#bl_pasajero").val();
+  var alcanse = parseInt(tr[0].children[2].innerHTML);
   var html_swel = tr.find(".detalle_pasajeros").html();
   var cantidad = parseInt(tr.find("#cantidad_habitacion").val());
   var tr_cantidad_habitacion = parseInt(tr.find("#bl_cantidad").val());
@@ -364,7 +362,11 @@ function viewpasajero(element,id){
   }else{
     for (var i = 0; i < cantidad; i++) {
       // html_swel = html_insert.replace("id_pasajero_hotel[1][36][0]","id_pasajero_hotel[1][36][0]");
-      html += '<div class="list_pasajeros_'+i+'"><h3>Habitación '+(i+1)+'</h3>'+html_swel+'</div>';
+      var html_alterado = html_swel;
+      for (var j = 0; j < alcanse ;j++) {
+        html_alterado = html_alterado.replace("[0][]","["+i+"][]");
+      }
+      html += '<div class="list_pasajeros_'+i+'"><h3>Habitación '+(i+1)+'</h3>'+html_alterado+'</div>';
     }
   }
   swal({
@@ -438,7 +440,6 @@ $(document).ready(function(){
         $validator.focusInvalid();
         return false;
       }
-
       if (index == 1) {
         var pasajeros = $("#pasajeros").val();
         var lista_pasajeros = $("#lista_pasajeros");
@@ -459,30 +460,39 @@ $(document).ready(function(){
                 '<div class="card card-p-'+i+'">'+
                   '<div class="card-content">'+
                   	'<div class="row">'+
-                  	  '<div class="col-md-5">'+
+                  	  '<div class="col-md-6">'+
                     		'<div class="form-group">'+
                     		  '<label class="control-label">Nombres</label>'+
                     		  '<input class="form-control Nombres_pasajero" name="list_pasajeros['+i+'][Nombres]" type="text" placeholder="Nombres" required="required"/>'+
                     		'</div>'+
                   	  '</div>'+
-                  	  '<div class="col-md-5">'+
+                  	  '<div class="col-md-6">'+
                     		'<div class="form-group">'+
                     		  '<label class="control-label">Documento (DNI/Pasaporte)</label>'+
                     		  '<input class="form-control Documento_pasajero" name="list_pasajeros['+i+'][Documento]" type="text" placeholder="Documento (DNI/Pasaporte)" required="required"/>'+
                     		'</div>'+
                   	  '</div>'+
-                  	  '<div class="col-md-5">'+
+                  	  '<div class="col-md-6">'+
                     		'<div class="form-group">'+
                     		  '<label class="control-label">WhatsApp</label>'+
                     		  '<input class="form-control WhatsApp_pasajero" name="list_pasajeros['+i+'][WhatsApp]" type="text" placeholder="WhatsApp" required="required"/>'+
                     		'</div>'+
                   	  '</div>'+
-                  	  '<div class="col-md-5">'+
+                  	  '<div class="col-md-6">'+
                     		'<div class="form-group">'+
                     		  '<label class="control-label">email</label>'+
                     		  '<input class="form-control email_pasajero" name="list_pasajeros['+i+'][email]" type="text" placeholder="email" required="required"/>'+
                     		'</div>'+
                   	  '</div>'+
+                      '<div class="col-md-6 col-md-offset-3">'+
+                        '<div class="form-group">'+
+                          '<label class="control-label">Nacionalidad</label>'+
+                          '<select class="tipo_nacionalidad" name="list_pasajeros['+i+'][nacionalidad]">'+
+                            '<option value="0">Nacional</option>'+
+                            '<option value="1">Extranjero</option>'+
+                          '</select>'+
+                        '</div>'+
+                      '</div>'+
                   	'</div>'+
                   '</div>'+
                 '</div>'+
@@ -490,6 +500,7 @@ $(document).ready(function(){
             '</div>'+
           '</div>';
           lista_pasajeros.append(html);
+          $(".tipo_nacionalidad").selectpicker();
           $("#collapse_p"+(i)).collapse('toggle');
           }
       }
@@ -605,7 +616,6 @@ $(document).ready(function(){
       var $current = index+1;
 
       var wizard = navigation.closest('.card-wizard');
-
       // If it's the last tab then hide the last button and show the finish instead
       if($current >= $total) {
         $(wizard).find('.btn-next').hide();
@@ -620,6 +630,7 @@ $(document).ready(function(){
         $(wizard).find('.btn-next').show();
         $(wizard).find('.btn-finish').hide();
       }
+      $('.navbar-default').get(0).scrollIntoView();
     }
   });
 
@@ -840,7 +851,7 @@ $(document).ready(function(){
   $('[rel="tooltip"]').tooltip();
 
   $(window).resize(function () {
-    $tableEmpresa.bootstrapTable('resetView');
+    $tableCotizacion.bootstrapTable('resetView');
   });
 
 });
@@ -861,7 +872,7 @@ function addHabitaciones(dia,item,id){
   $.ajax({
     type : "POST",
     url :"ajax2.php",
-    data: "&action=agregarHabitaciones&dia="+dia+"&id="+id+"&item="+item+"&pasajero="+pasajeros+"&id_nacionalidad="+nacionalidad_cliente,
+    data: "&action=agregarHabitaciones&dia="+dia+"&id="+id+"&item="+item+"&pasajero="+pasajeros,
     beforeSend: function(){
     },
     success: function(datos){
@@ -877,7 +888,7 @@ function addServicioPaquete(dia,id,id_itinerario){
   $.ajax({
     type : "POST",
     url :"ajax2.php",
-    data: $("#wizardFormCotizacion").serialize()+"&action=agregarServicioCotizacion&dia="+dia+"&id="+id+"&id_itinerario="+id_itinerario+"&id_nacionalidad="+nacionalidad_cliente,
+    data: $("#wizardFormCotizacion").serialize()+"&action=agregarServicioCotizacion&dia="+dia+"&id="+id+"&id_itinerario="+id_itinerario,
     beforeSend: function(){
     },
     success: function(datos){
@@ -896,7 +907,7 @@ function addHotelPaquete(dia,id){
   $.ajax({
     type : "POST",
     url :"ajax2.php",
-    data: $("#wizardFormCotizacion").serialize()+"&action=agregarHotelCotizacion&dia="+dia+"&id="+id+"&itemhotel="+listahotel+"&id_nacionalidad="+nacionalidad_cliente,
+    data: $("#wizardFormCotizacion").serialize()+"&action=agregarHotelCotizacion&dia="+dia+"&id="+id+"&itemhotel="+listahotel,
     beforeSend: function(){
     },
     success: function(datos){
@@ -993,9 +1004,11 @@ $("#wizardFormCotizacion").submit(function(e) { //AGREGAR UN PAQUETE
     var dia = $(".card-"+(i+1));
     var servicios = dia.find(".table_servicio").find(".selected");
     for (var k = 0; k < servicios.length; k++) {
-      formData.append('servicios['+i+']['+k+'][id]', servicios[k].children[5].innerHTML);
-      var precio = parseFloat(servicios[k].children[4].innerHTML.substr(1));
-      formData.append('servicios['+i+']['+k+'][precio]', precio);
+      formData.append('servicios['+i+']['+k+'][id]', servicios[k].children[6].innerHTML);
+      var precio_n = parseFloat(servicios[k].children[4].innerHTML.substr(1));
+      var precio_e = parseFloat(servicios[k].children[5].innerHTML.substr(1));
+      formData.append('servicios['+i+']['+k+'][precio_n]', precio_n);
+      formData.append('servicios['+i+']['+k+'][precio_e]', precio_e);
     }
   }
 

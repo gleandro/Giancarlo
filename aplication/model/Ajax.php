@@ -409,7 +409,6 @@ class Ajax{
 
 						$objHoteles = new Hoteles();
 						$departamentos = $_POST['departamento'];
-						$id_nacionalidad = $_POST['id_nacionalidad'];
 						if (count($departamentos)>0 || $_POST['id']!='') {
 							if (count($departamentos)>0 && $_POST['id']=='') {
 								foreach ($departamentos as $key => $value) {
@@ -455,7 +454,6 @@ class Ajax{
 
 					function agregarHabitacionesAjax(){
 						$pasajeros = $_POST['pasajero'];
-						$id_nacionalidad = $_POST['id_nacionalidad'];
 						$pasajeros = explode(",",$pasajeros);
 						$dia = (int)$_POST['dia']-1;
 						$habitaciones = Hoteles::getHabitacionesHoteles($_POST['id']);
@@ -467,29 +465,29 @@ class Ajax{
 									<th class="text-center">Habitación</th>
 									<th class="text-center">Personas</th>
 									<th class="text-center">Cantidad</th>
-									<th class="text-center">Precio</th>
+									<th class="text-center">Precio Nacional</th>
+									<th class="text-center">Precio Extranjero</th>
 									<th class="text-center">View</th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php foreach ($habitaciones as $key => $habitacion) {
 									$cantidad = $habitacion['cantidad_habitacion'];
-									if ($id_nacionalidad == 1) {
-										$precio = $habitacion['precio_hotel_tarifa_n'];
-									}else {
-										$precio = $habitacion['precio_hotel_tarifa_e'];
-									}
+									$precio_n = $habitacion['precio_hotel_tarifa_n'];
+									$precio_e = $habitacion['precio_hotel_tarifa_e'];
 									?>
 									<tr>
 										<td class="text-center">
 											<input type="checkbox" class="checkbox" name="habitaciones[<?php echo $dia ?>][<?php echo $habitacion['id_habitacion'] ?>][checked]" value="1"/>
-											<input type="hidden" name="habitaciones[<?php echo $dia ?>][<?php echo $habitacion['id_habitacion'] ?>][precio_habitacion]" value="<?php echo $precio ?>"/>
+											<input type="hidden" name="habitaciones[<?php echo $dia ?>][<?php echo $habitacion['id_habitacion'] ?>][precio_n]" value="<?php echo $precio_n ?>"/>
+											<input type="hidden" name="habitaciones[<?php echo $dia ?>][<?php echo $habitacion['id_habitacion'] ?>][precio_e]" value="<?php echo $precio_e ?>"/>
+											<input type="hidden" name="habitaciones[<?php echo $dia ?>][<?php echo $habitacion['id_habitacion'] ?>][alcanse_habitacion]" value="<?php echo $cantidad ?>"/>
 											<input type="hidden" id="bl_pasajero" value="0">
 											<input type="hidden" id="bl_cantidad" value="0">
 											<div class="detalle_pasajeros" hidden>
 												<?php for ($i=0; $i < $cantidad; $i++) { ?>
 													<div class="contenedor">
-														<select name="habitaciones[<?php echo $dia ?>][<?php echo $habitacion['id_habitacion'] ?>][id_pasajero_hotel][]" style="border: thin solid white;width:100%;border-radius: 4px;background-color:#F3F2EE;margin-bottom:2%"
+														<select name="habitaciones[<?php echo $dia ?>][<?php echo $habitacion['id_habitacion'] ?>][id_pasajero_hotel][0][]" style="border: thin solid white;width:100%;border-radius: 4px;background-color:#F3F2EE;margin-bottom:2%"
 														onchange="select_simple(this)" class="lista_pasajeros_habitacion<?php echo $key ?>" id="lista_pasajeros_habitacion<?php echo $i ?>">
 															<?php foreach ($pasajeros as $key2 => $pasajero){ ?>
 																<option value="<?php echo $key2 ?>"><?php echo $pasajero ?></option>
@@ -502,7 +500,8 @@ class Ajax{
 										<td class="text-left"><?php echo $habitacion['nombre_habitacion'] ?></td>
 										<td class="text-center"><?php echo $cantidad ?></td>
 										<td class="text-center"><input type="number" onchange="habitacion_update(this)" id="cantidad_habitacion" name="habitaciones[<?php echo $dia ?>][<?php echo $habitacion['id_habitacion'] ?>][cantidad_habitacion]" /></td>
-										<td class="text-center"><?php echo "$".$precio ?></td>
+										<td class="text-center"><?php echo "$".$precio_n ?></td>
+										<td class="text-center"><?php echo "$".$precio_e ?></td>
 										<td class="text-center"><a style="font-size: 25px;" href="#" onclick="viewpasajero(this,<?php echo $key ?>);"><i class="ti-user"></i></a></td>
 									</tr>
 								<?php } ?>
@@ -517,7 +516,6 @@ class Ajax{
 						$listadoServicios = $objServicios->getServicios();
 						$departamentos = $_POST['departamento'];
 						$id_itinerario = $_POST['id_itinerario'];
-						$id_nacionalidad = $_POST['id_nacionalidad'];
 						$servicios;
 						if ($id_itinerario != 'undefined') {
 							$servicios = Paquetes::getPaquetesItinerarioDetalle($id_itinerario);
@@ -554,6 +552,7 @@ class Ajax{
 												<th>Departamento</th>
 												<th>Tipo Servicio</th>
 												<th>Alcanse</th>
+												<th>Precio Nacional</th>
 												<th>Precio Extranjero</th>
 												<th hidden="">ID</th>
 											</thead>
@@ -570,12 +569,8 @@ class Ajax{
 														<td><?php echo $Servicio['departamento']?></td>
 														<td><?php echo $Servicio['nombre_tipo_servicio']?></td>
 														<td><?php echo $Servicio['alcance']?></td>
-														<?php if ($id_nacionalidad == 1): ?>
-															<td class="precio"><?php echo "$".number_format($Servicio['precio_n'], 2, '.', ''); ?></td>
-														<?php else: ?>
-															<td class="precio"><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
-														<?php endif; ?>
-
+														<td class="precio_n"><?php echo "$".number_format($Servicio['precio_n'], 2, '.', ''); ?></td>
+														<td class="precio_e"><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
 														<td class="id" hidden=""><?php echo $Servicio['id'] ?></td>
 													</tr>
 													<?php $estado = true; break; }else{$estado = false;}}
@@ -585,11 +580,8 @@ class Ajax{
 															<td><?php echo $Servicio['departamento']?></td>
 															<td><?php echo $Servicio['nombre_tipo_servicio']?></td>
 															<td><?php echo $Servicio['alcance']?></td>
-															<?php if ($id_nacionalidad == 1): ?>
-																<td class="precio"><?php echo "$".number_format($Servicio['precio_n'], 2, '.', ''); ?></td>
-															<?php else: ?>
-																<td class="precio"><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
-															<?php endif; ?>
+															<td class="precio_n"><?php echo "$".number_format($Servicio['precio_n'], 2, '.', ''); ?></td>
+															<td class="precio_e"><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
 															<td class="id" hidden=""><?php echo $Servicio['id'] ?></td>
 														</tr>
 													<?php  }}else{?>
@@ -598,11 +590,8 @@ class Ajax{
 															<td><?php echo $Servicio['departamento']?></td>
 															<td><?php echo $Servicio['nombre_tipo_servicio']?></td>
 															<td><?php echo $Servicio['alcance']?></td>
-															<?php if ($id_nacionalidad == 1): ?>
-																<td class="precio"><?php echo "$".number_format($Servicio['precio_n'], 2, '.', ''); ?></td>
-															<?php else: ?>
-																<td class="precio"><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
-															<?php endif; ?>
+															<td class="precio_n"><?php echo "$".number_format($Servicio['precio_n'], 2, '.', ''); ?></td>
+															<td class="precio_e"><?php echo "$".number_format($Servicio['precio_e'], 2, '.', ''); ?></td>
 															<td class="id" hidden=""><?php echo $Servicio['id'] ?></td>
 														</tr>
 													<?php } $contador_table++;} ?>
@@ -757,7 +746,7 @@ class Ajax{
 
 					function registrarCotizacionAjax(){
 						date_default_timezone_set("America/Lima");
-						print_r($_POST);
+						// print_r($_POST);
 						// exit;
 						if(isset($_FILES['files']) && ($_FILES['files']['name'] != "")){
 
@@ -791,11 +780,6 @@ class Ajax{
 						//arreglos bidimensionales
 						//(Dias,Check)
 						$habitaciones = $_POST['habitaciones'];
-						// $check_habitaciones = $_POST['check_habitaciones'];
-						// $precios_habitaciones = $_POST['precios_habitaciones'];
-						// $cantidad_habitaciones = $_POST['cantidad_habitaciones'];
-						//arreglos tridimensionales (dias,habitaciones,pasajeros)
-						// $id_pasajeros = $_POST['id_pasajero_hotel'];
 
 						$precio_v = 0;
 
@@ -807,8 +791,19 @@ class Ajax{
 
 							if (is_array($servicioarray) || is_object($servicioarray)) {
 								foreach ($servicioarray as $llave => $servicio) {
-									$query_itinerario_detalle = new Consulta("INSERT INTO cotizaciones_itinerarios_detalles VALUES('','". $nuevoIdItinerarios ."','". $servicio['id'] ."','". $servicio['precio'] ."') ");
-									$precio_v += (float)$servicio['precio'];
+									$query_itinerario_detalle = new Consulta("INSERT INTO cotizaciones_itinerarios_detalles VALUES('','". $nuevoIdItinerarios ."','". $servicio['id'] ."','". $servicio['precio_n'] ."','". $servicio['precio_e'] ."') ");
+									$id_servicio_detalle = $query_itinerario_detalle->nuevoid();
+									foreach ($lista_pasajeros as $key_pasajero => $pasajero) {
+										$id_pasajero_detalle = $pasajero['id'];
+										if ($pasajero['nacionalidad'] == 0) {
+											$precio = (float)$servicio['precio_n'];
+											$precio_v += (float)$servicio['precio_n'];
+										}else {
+											$precio = (float)$servicio['precio_e'];
+											$precio_v += (float)$servicio['precio_e'];
+										}
+										$query_detalle_pasajero = new Consulta("INSERT INTO cotizaciones_itinerarios_detalles_pasajeros VALUES(null,$id_servicio_detalle,$id_pasajero_detalle,$precio)");
+									}
 								}
 							}
 
@@ -816,59 +811,56 @@ class Ajax{
 
 							//arreglo de habitaciones marcadas con check
 							$habitacionesArray = $habitaciones[$key];
-							// $checkarray = $check_habitaciones[$key];
-							// $preciosarray = $precios_habitaciones[$key];
-							// $cantidadarray = $cantidad_habitaciones[$key];
-
-							//arreglo bidimensioanl(habitaciones,pasajeros)
-							// $id_pasajerosarray = $id_pasajeros[$key];
 
 							if (is_array($habitacionesArray) || is_object($habitacionesArray)) {
 								foreach ($habitacionesArray as $key2 => $habitacion) {
 									if ($habitacion['checked']) {
 										//precio_v = precio general de cotizacion
-										$precio_habitacion = (float)$habitacion['cantidad_habitacion']*(float)$habitacion['precio_habitacion'];
-										$precio_v += $precio_habitacion;
 
 										$queryItinerariosHoteles = new Consulta("INSERT INTO cotizaciones_itinerarios_hoteles
-											VALUES('','". $nuevoIdItinerarios ."','". $hotel ."','". $key2 ."','". $habitacion['cantidad_habitacion'] ."','".$habitacion['precio_habitacion']."') ");
+											VALUES('','". $nuevoIdItinerarios ."','". $hotel ."','". $key2 ."','". $habitacion['cantidad_habitacion'] ."','".$habitacion['precio_n']."','".$habitacion['precio_e']."') ");
 
 											$nuevoIdItinerarioshoteles = $queryItinerariosHoteles->nuevoid();
 
 											$pasajeros = $habitacion['id_pasajero_hotel'];
+
 											if (is_array($pasajeros) || is_object($pasajeros)) {
 												foreach ($pasajeros as $key3 => $pasajero) {
-													$id_pasajero = $lista_pasajeros[$pasajero];
+													foreach ($pasajero as $key4 => $p) {
+														$bl_nacional = Cotizaciones::getNacional($pasajero,$lista_pasajeros);
+														$id_pasajero = $lista_pasajeros[$p]['id'];
+														$alcanse = (float)$habitacion['alcanse_habitacion'];
 
-													$queryItinerariosHotelesPasajeros = new Consulta("INSERT INTO cotizaciones_itinerarios_hoteles_pasajeros
-													VALUES('','".$nuevoIdItinerarioshoteles."',$id_pasajero)");
+														if ($bl_nacional) {
+															$precio = ceil((float)$habitacion['precio_n']/$alcanse);
+														}else {
+															$precio = ceil((float)$habitacion['precio_e']/$alcanse);
+														}
+														$precio_v += $precio;
+
+														$queryItinerariosHotelesPasajeros = new Consulta("INSERT INTO cotizaciones_itinerarios_hoteles_pasajeros
+														VALUES('','".$nuevoIdItinerarioshoteles."',$id_pasajero,$precio)");
+													}
+
+                          //
+													// $id_pasajero = $lista_pasajeros[$pasajero]['id'];
+													// $alcanse = (float)$habitacion['alcanse_habitacion'];
+                          //
+													// if ($bl_nacional) {
+													// 	$precio = ceil((float)$habitacion['precio_n']/$alcanse);
+													// }else {
+													// 	$precio = ceil((float)$habitacion['precio_e']/$alcanse);
+													// }
+                          //
+													// $precio_v += $precio;
+                          //
+													// $queryItinerariosHotelesPasajeros = new Consulta("INSERT INTO cotizaciones_itinerarios_hoteles_pasajeros
+													// VALUES('','".$nuevoIdItinerarioshoteles."',$id_pasajero,$precio)");
 												}
 											}
 									}
 								}
 							}
-
-
-							// if (is_array($checkarray) || is_object($checkarray)) {
-							// 	foreach ($checkarray as $k => $value) {
-							// 		$cantidad_v = $cantidadarray[$k];
-							// 		$precio_v += (float)$cantidad_v*(float)$preciosarray[$k];
-							// 		$queryItinerariosHoteles = new Consulta("INSERT INTO cotizaciones_itinerarios_hoteles
-							// 			VALUES('','". $nuevoIdItinerarios ."','". $hotel ."','". $value ."','". $cantidad_v ."') ");
-              //
-							// 		$nuevoIdItinerarioshoteles = $queryItinerariosHoteles->nuevoid();
-              //
-							// 		$id_pasajeros_v = $id_pasajerosarray[$k];
-							// 		if (is_array($id_pasajeros_v) || is_object($id_pasajeros_v)) {
-							// 			foreach ($id_pasajeros_v as $key2 => $id_pasajero) {
-							// 				$id_pasajero = $lista_pasajeros[$id_pasajero];
-              //
-							// 				$queryItinerariosHotelesPasajeros = new Consulta("INSERT INTO cotizaciones_itinerarios_hoteles_pasajeros
-							// 				VALUES('','".$nuevoIdItinerarioshoteles."',$id_pasajero)");
-							// 			}
-							// 		}
-							// 	}
-							// }
 						}
 
 						Cotizaciones::InsertInclusion($_POST['incluye'],$nuevoIdCotizacion,1);

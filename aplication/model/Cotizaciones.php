@@ -41,17 +41,32 @@ class Cotizaciones{
 
 	}
 
+	static public function getNacional($array_codigo_pasajero,$list_pasajeros){
+
+		$salida = 0;
+		// print_r($array_codigo_pasajero);
+		// print_r($list_pasajeros);
+		foreach ($array_codigo_pasajero as $key => $codigo) {
+			if ($list_pasajeros[$codigo]['nacionalidad'] == 0) {
+				$salida = 1;
+			}
+		}
+		return $salida;
+	}
+
 	static public function GetListaPasajeros($lista_pasajeros){
 		foreach ($lista_pasajeros as $key => $pasajero) {
 			$nombre = $pasajero['Nombres'];
 			$documento = $pasajero['Documento'];
 			$whatsapp = $pasajero['WhatsApp'];
 			$email = $pasajero['email'];
-			$sql_pasajero = "INSERT INTO pasajeros(id_pasajero,nombres_pasajero,documento_pasajero,whatsapp_pasajero,email_pasajero)
-											VALUES(null,'$nombre','$documento','$whatsapp','$email')";
+			$id_nacionalidad = $pasajero['nacionalidad'];
+			$sql_pasajero = "INSERT INTO pasajeros(id_pasajero,nombres_pasajero,documento_pasajero,whatsapp_pasajero,email_pasajero,id_nacionalidad)
+											VALUES(null,'$nombre','$documento','$whatsapp','$email','$id_nacionalidad')";
 			$query_pasajero = new Consulta($sql_pasajero);
 			$nuevo_id_pasajero = $query_pasajero->nuevoid();
-			$lista_pasajeros_salida[$key] = $nuevo_id_pasajero;
+			$lista_pasajeros_salida[$key]['id'] = $nuevo_id_pasajero;
+			$lista_pasajeros_salida[$key]['nacionalidad'] = $id_nacionalidad;
 		}
 		return $lista_pasajeros_salida;
 	}
@@ -161,23 +176,28 @@ class Cotizaciones{
 	}
 
 	public function getServiciosxCotizacion($id){
-		$sql = "SELECT s.* from cotizaciones_itinerarios ci
-					inner join cotizaciones_itinerarios_detalles cid using(id_cotizacion_itinerario)
-					inner join servicios s using(id_servicio)
-					where ci.id_cotizacion =".$id;
+		$sql = "SELECT ci.id_cotizacion_itinerario,cid.id_cotizacion_itinerario_detalle,cid.id_servicio,cidp.id_pasajero,cidp.precio FROM cotizaciones c
+						INNER JOIN cotizaciones_itinerarios ci USING(id_cotizacion)
+						INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
+						INNER JOIN cotizaciones_itinerarios_detalles_pasajeros cidp USING(id_cotizacion_itinerario_detalle)
+						WHERE ci.id_cotizacion = $id";
 		$query = new Consulta($sql);
-		$result['precio_nacional']=0;
-		$result['precio_extranjero']=0;
+
 		while ($row = $query->VerRegistro()) {
-			$result['precio_nacional'] += (int)$row['precio_nacional_servicio'];
-			$result['precio_extranjero'] += (int)$row['precio_extranjero_servicio'];
+			$datos[] = array(
+				'id_cotizacion_itinerario' => $row['id_cotizacion_itinerario'],
+				'id_cotizacion_itinerario_detalle' => $row['id_cotizacion_itinerario_detalle'],
+				'id_servicio' => $row['id_servicio'],
+				'id_pasajero' => $row['id_pasajero'],
+				'precio' => $row['precio']
+			);
 		}
-		return $result;
+		return $datos;
 
 	}
 
 	public function getHotelesxPasajeros($id){
-		$sql = "SELECT ci.id_cotizacion_itinerario,h.nombre_hotel,ha.id_habitacion,ha.nombre_habitacion,ha.cantidad_habitacion,cih.cantidad,h.estrellas_hotel,cih.precio,ht.precio_extranjero,ht.precio_nacional,p.nombres_pasajero,p.documento_pasajero
+		$sql = "SELECT ci.id_cotizacion_itinerario,h.nombre_hotel,ha.id_habitacion,ha.nombre_habitacion,ha.cantidad_habitacion,cih.cantidad,cihp.precio_hotel,h.estrellas_hotel,ht.precio_extranjero,ht.precio_nacional,p.id_pasajero,p.nombres_pasajero,p.documento_pasajero
 					FROM cotizaciones_itinerarios ci
 					INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
 					INNER JOIN cotizaciones_itinerarios_hoteles_pasajeros cihp USING(id_cotizacion_itinerario_hotel)
@@ -197,7 +217,8 @@ class Cotizaciones{
 				'cantidad' => $row['cantidad'],
 				'cantidad_habitacion' => $row['cantidad_habitacion'],
 				'estrellas_hotel' => $row['estrellas_hotel'],
-				'precio' => $row['precio'],
+				'precio' => $row['precio_hotel'],
+				'id_pasajero' => $row['id_pasajero'],
 				'nombres_pasajero' => $row['nombres_pasajero'],
 				'documento_pasajero' => $row['documento_pasajero']
 			);

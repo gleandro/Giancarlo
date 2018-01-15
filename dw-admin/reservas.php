@@ -6,27 +6,18 @@ switch ($_GET['action']) {
     $titlecontent = "Nueva Venta";
 		break;
 	default:
-		$template = 'venta_list.php';
-    $titlecontent = "Lista de Ventas";
+		$template = 'reserva_list.php';
+    $titlecontent = "Lista de Ventas pendientes de Reserva";
 		break;
 }
 
 include (_includes_."admin/inc.header.php");
 
 $objVentas = new Ventas();
-$listVentas = $objVentas->getVentas();
-
-$estados = array('En espera de Reserva', 'Reservado', 'Cancelado', 'Cancelado con penalidad');
+$listVentas = $objVentas->getVentas(1);
 
 if ($_GET['id']) {
-    $objVent= new Venta($_GET['id']);
 
-		$cotizacion = $objVent->__get("_cotizacion");
-		$cliente = $objVent->__get("_cliente");
-		$ventas_itinerario = $objVent->__get("_itinerario");
-
-		$departamentos = $objVent->__get('_departamento');
-		$destinos = $objVentas->getDestinos($departamentos);
 }
 
 ?>
@@ -36,7 +27,7 @@ if ($_GET['id']) {
             <div class="container-fluid">
 
                 <!-- PINTA EL TEMPLATE -->
-                <?php include _view_venta_.$template; ?>
+                <?php include _view_reserva_.$template; ?>
                 <!-- PINTA EL TEMPLATE -->
 
             </div>
@@ -58,7 +49,7 @@ if ($_GET['id']) {
         <!-- HOTELES -->
 
         <!-- LLAMO AL JS DEL TEMPLATE CORRESPONDIENTE AL MODULO -->
-        <script src="<?php echo _js_template_ ?>ventas.js" type="text/javascript"></script>
+        <script src="<?php echo _js_template_ ?>reservas.js" type="text/javascript"></script>
         <!-- LLAMO AL JS DEL TEMPLATE CORRESPONDIENTE AL MODULO -->
 
         <?php include 'footer.php'; ?> <!--EL FOOTER ES EL QUE CONTIENE LOS JS -->

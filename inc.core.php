@@ -38,6 +38,7 @@ include("aplication/inc.config.php");
 	define("_view_cotizacion_",$_config["server"]["host"]."aplication/view/cotizacion/");
 	define("_view_counter_",$_config["server"]["host"]."aplication/view/counter/");
 	define("_view_agencia_",$_config["server"]["host"]."aplication/view/agencia/");
-	define("_view_ventas_",$_config["server"]["host"]."aplication/view/ventas/");
+	define("_view_venta_",$_config["server"]["host"]."aplication/view/venta/");
+	define("_view_reserva_",$_config["server"]["host"]."aplication/view/reserva/");
 
 ?>

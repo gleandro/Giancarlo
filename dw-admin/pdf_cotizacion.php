@@ -19,10 +19,19 @@ $array_inclusiones = $cotizaciones->getInclusiones($id,1);
 $array_exclusiones = $cotizaciones->getInclusiones($id,2);
 // $utilidad = $cotizacion->__get('_utilidad');
 
-$hoteles = $cotizaciones->getHotelesxPasajeros($id);
-
 $precios_servicios = $cotizaciones->getServiciosxCotizacion($id);
-// print_r($itinerarios);
+
+foreach ($precios_servicios as $key_s => $servicio) {
+  $id_pasajero = $servicio['id_pasajero'];
+  $precio = $servicio['precio'];
+  $id_cotizacion_itinerario = $servicio['id_cotizacion_itinerario'];
+  $servicio_list[$id_cotizacion_itinerario][$id_pasajero] += (float)$precio ;
+}
+
+// echo "<pre>";
+// print_r($servicio_list);
+
+$hoteles = $cotizaciones->getHotelesxPasajeros($id);
 
 foreach ($hoteles as $key => $value) {
   $itinerario = $value['id_cotizacion_itinerario'];
@@ -33,6 +42,7 @@ foreach ($hoteles as $key => $value) {
   $cantidad_comprada = $value['cantidad'];
   $precio_habitacion = $value['precio'];
   $nombre_habitacion = $value['nombre_habitacion'];
+  $id_pasajero = $value['id_pasajero'];
   $nombres_pasajero = $value['nombres_pasajero'];
   $documento_pasajero = $value['documento_pasajero'];
   $hoteles_habitaciones_pasajeros[$itinerario]['nombre_hotel']=$nombre_hotel;
@@ -40,9 +50,9 @@ foreach ($hoteles as $key => $value) {
   $hoteles_habitaciones_pasajeros[$itinerario]['habitacion'][$id_habitacion]['nombre_habitacion']=$nombre_habitacion;
   $hoteles_habitaciones_pasajeros[$itinerario]['habitacion'][$id_habitacion]['alcanse_habitacion']=$alcanse_habitacion;
   $hoteles_habitaciones_pasajeros[$itinerario]['habitacion'][$id_habitacion]['cantidad_comprada']=$cantidad_comprada;
-  $hoteles_habitaciones_pasajeros[$itinerario]['habitacion'][$id_habitacion]['precio']=$precio_habitacion;
-  $hoteles_habitaciones_pasajeros[$itinerario]['habitacion'][$id_habitacion]['pasajeros'][$key]['nombre']=$nombres_pasajero;
-  $hoteles_habitaciones_pasajeros[$itinerario]['habitacion'][$id_habitacion]['pasajeros'][$key]['documento']=$documento_pasajero;
+  $hoteles_habitaciones_pasajeros[$itinerario]['habitacion'][$id_habitacion]['pasajeros'][$id_pasajero]['precio']=$precio_habitacion;
+  $hoteles_habitaciones_pasajeros[$itinerario]['habitacion'][$id_habitacion]['pasajeros'][$id_pasajero]['nombre']=$nombres_pasajero;
+  $hoteles_habitaciones_pasajeros[$itinerario]['habitacion'][$id_habitacion]['pasajeros'][$id_pasajero]['documento']=$documento_pasajero;
 }
 // echo "<pre>";
 // print_r($hoteles_habitaciones_pasajeros);
@@ -352,7 +362,10 @@ hr {
       <td class="cabecera2" colspan="2">Nombre</td>
       <td class="cabecera2">Documento</td>
     </tr>';
+    // echo "<pre>";
+    // print_r($hoteles_habitaciones_pasajeros);
     foreach ($hoteles_habitaciones_pasajeros as $key => $dias) {
+      $id_cotizacion_itinerario = $key;
       $habitaciones = $dias['habitacion'];
       $contador ++;
       $contador_h = 1;
@@ -363,18 +376,17 @@ hr {
         <tr>
           <td class="cabecera1" colspan="10">Hotel : '.$dias['nombre_hotel'].' - '.$dias['estrellas_hotel'].' estrellas</td>
         </tr>';
-        foreach ($habitaciones as $key => $value) {
+        foreach ($habitaciones as $key2 => $value) {
           $pasajeros = $value['pasajeros'];
           $cantidad_comp = (float)$value['cantidad_comprada'];
           $cantidad_pasajero = (float)count($pasajeros);
-          $divisor_precio = $cantidad_pasajero / $cantidad_comp ;
 
           if ($value['alcanse_habitacion'] < count($pasajeros)) {
 
             $alcanse_hab = $value['alcanse_habitacion'];
             $contador_c =1;
 
-            foreach ($pasajeros as $key => $pasajero) {
+            foreach ($pasajeros as $key3 => $pasajero) {
 
               if ($alcanse_hab == 1) {
                 $html .='
@@ -394,12 +406,12 @@ hr {
                   $contador_c =0 ;
                 }
               }
-              $precio = ceil($value['precio']/$divisor_precio);
+              $precio_s = (int)$servicio_list[$id_cotizacion_itinerario][$key3] + (int)$pasajero['precio'];
               $html .= '
                 <tr>
                   <td colspan="2">'.$pasajero['nombre'].'</td>
                   <td>'.$pasajero['documento'].'</td>
-                  <td colspan="7" style="text-align:center">$'.$precio.'</td>
+                  <td colspan="7" style="text-align:center">$'.ceil($precio_s).'</td>
                 </tr>';
               $contador_c++;
               $contador_h++;
@@ -411,13 +423,13 @@ hr {
             <tr>
               <td class="cabecera3" colspan="10">Habitacion '.$contador_h.' - '.$value['nombre_habitacion'].'</td>
             </tr>';
-            foreach ($pasajeros as $key => $pasajero) {
-              $precio = ceil($value['precio']/$divisor_precio);
+            foreach ($pasajeros as $key4 => $pasajero) {
+              $precio_s = (int)$servicio_list[$id_cotizacion_itinerario][$key4] + (int)$pasajero['precio'];
               $html .='
                 <tr>
                   <td colspan="2">'.$pasajero['nombre'].'</td>
                   <td>'.$pasajero['documento'].'</td>
-                  <td colspan="7" style="text-align:center">$'.$precio.'</td>
+                  <td colspan="7" style="text-align:center">$'.ceil($precio_s).'</td>
                 </tr>';
             }
             $contador_h++;
@@ -427,105 +439,7 @@ hr {
 
       $html .= '</tr>';
     }
-    // foreach ($detalle_hoteles as $key => $opcion) {
-    //   //variables totales nacionales
-    //   $vt_n1=0.00;
-    //   $vt_n2=0.00;
-    //   $vt_n3=0.00;
-    //   //variables totales extranjeras
-    //   $vt_e1=0.00;
-    //   $vt_e2=0.00;
-    //   $vt_e3=0.00;
-    //   $html ='
-    //   <tr>
-    //   <td class="cabecera1" colspan="10">Opcion'.($key+1).'</td>
-    //   </tr>';
-    //
-    //   foreach ($opcion as $key2 => $dia) {
-    //     $html .='<tr style="text-align:left">
-    //               <td></td>';
-    //   foreach ($dia as $key3 => $hotel) {
-    //     if ($hotel["nombre_hotel"]=='') {
-    //       $hotel["nombre_hotel"] = "";
-    //     }
-    //     $html.='<td colspan="2" style="text-align:left">'.$hotel["nombre_hotel"].'</td>';
-    //     //variables nacionales
-    //     $v_n1=0.00;
-    //     $v_n2=0.00;
-    //     $v_n3=0.00;
-    //     //variables extranjeras
-    //     $v_e1=0.00;
-    //     $v_e2=0.00;
-    //     $v_e3=0.00;
-    //
-    //     if (is_array($hotel["nacional"]) || is_object($hotel["nacional"]))
-    //     {
-    //       foreach ($hotel["nacional"] as $key => $value) {
-    //         if ($key == 1) {
-    //           $v_n1=$value;
-    //         }
-    //         if ($key == 2) {
-    //           $v_n2=$value;
-    //         }
-    //         if ($key == 3) {
-    //           $v_n3=$value;
-    //         }
-    //       }
-    //     }
-    //     if (is_array($hotel["extranjero"]) || is_object($hotel["extranjero"]))
-    //     {
-    //       foreach ($hotel["extranjero"] as $key => $value) {
-    //         if ($key == 1) {
-    //           $v_e1=$value;
-    //         }
-    //         if ($key == 2) {
-    //           $v_e2=$value;
-    //         }
-    //         if ($key == 3) {
-    //           $v_e3=$value;
-    //         }
-    //       }
-    //     }
-    //     //variables nacionales
-    //     $vt_n1+=$v_n1;
-    //     $vt_n2+=$v_n2;
-    //     $vt_n3+=$v_n3;
-    //     //variables extranjeras
-    //     $vt_e1+=$v_e1;
-    //     $vt_e2+=$v_e2;
-    //     $vt_e3+=$v_e3;
-    //
-    //
-    //     $html.='<td>'.$hotel["estrellas_hotel"].'</td>';
-    //     // $html.='<td>$'.number_format($v_e1, 2, '.', '').'</td>';
-    //     // $html.='<td>$'.number_format($v_e2, 2, '.', '').'</td>';
-    //     // $html.='<td>$'.number_format($v_e3, 2, '.', '').'</td>';
-    //     // $html.='<td>$'.number_format($v_n1, 2, '.', '').'</td>';
-    //     // $html.='<td>$'.number_format($v_n2, 2, '.', '').'</td>';
-    //     // $html.='<td>$'.number_format($v_n3, 2, '.', '').'</td>';
-    //     $html.='<td></td>';
-    //     $html.='<td></td>';
-    //     $html.='<td></td>';
-    //     $html.='<td></td>';
-    //     $html.='<td></td>';
-    //     $html.='<td></td>';
-    //
-    //   }
-    //       $html .='</tr>';
-    //   }
-    //   $html .='<tr style="text-align:right">
-    //   <td colspan="3" style="color:red">Total</td>
-    //   <td></td>
-    //   <td style="text-align:center">$'.ceil(($vt_e1+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1)).'</td>
-    //   <td style="text-align:center">$'.ceil(($vt_e2+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1)).'</td>
-    //   <td style="text-align:center">$'.ceil(($vt_e3+$precios_servicios['precio_extranjero'])*(($utilidad/100)+1)).'</td>
-    //   <td style="text-align:center">$'.ceil(($vt_n1+$precios_servicios['precio_nacional'])*(($utilidad/100)+1)).'</td>
-    //   <td style="text-align:center">$'.ceil(($vt_n2+$precios_servicios['precio_nacional'])*(($utilidad/100)+1)).'</td>
-    //   <td style="text-align:center">$'.ceil(($vt_n3+$precios_servicios['precio_nacional'])*(($utilidad/100)+1)).'</td>
-    //   </tr>';
-    //
       $formato .=$html;
-    // }
 
   $formato .=
   '</table>

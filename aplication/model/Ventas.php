@@ -1,11 +1,16 @@
 <?php
  class Ventas{
 
- 	public function getVentas(){
+ 	public function getVentas($reserva = 0){
+    $sql_v = "";
+    if ($reserva) {
+      $sql_v = " WHERE bl_estado_venta =  0 ";
+    }
 
- 		$sql = "SELECT v.*,cot.fecha_reserva,c.nombres_cliente FROM ventas v
+ 		$sql = "SELECT v.*,cot.fecha_reserva,c.nombres_cliente,c.documento_cliente FROM ventas v
             INNER JOIN clientes c using(id_cliente)
             INNER JOIN cotizaciones cot USING(id_cotizacion)
+            $sql_v
             ORDER BY id_venta DESC";
  		$query = new consulta($sql);
 
@@ -21,7 +26,8 @@
     		 'descripcion' => $row['descripcion_venta'],
     		 'observacion' => $row['observacion_venta'],
          'estado' => $row['bl_estado_venta'],
-         'cliente' => $row['nombres_cliente']
+         'cliente' => $row['nombres_cliente'],
+         'documento' => $row['documento_cliente']
        );
 		}
 		return $datos;
@@ -29,10 +35,13 @@
 
   public function getEstado($bl_estado,$array){
     if ($bl_estado == 0) {
-      return '<p class="text-success">'.$array[$bl_estado].'</p>';
+      return '<span class="text-warning">'.$array[$bl_estado].'</span>';
     }
-    else if ($_estado == 1) {
-      return '<p class="text-error">'.$array[$bl_estado].'</p>';
+    else if ($bl_estado == 1) {
+      return '<span class="text-info">'.$array[$bl_estado].'</span>';
+    }
+    else{
+      return '<span class="text-danger">'.$array[$bl_estado].'</span>';
     }
 
   }
