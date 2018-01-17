@@ -798,12 +798,11 @@ class Ajax{
 									foreach ($lista_pasajeros as $key_pasajero => $pasajero) {
 										$id_pasajero_detalle = $pasajero['id'];
 										if ($pasajero['nacionalidad'] == 0) {
-											$precio = (float)$servicio['precio_n'];
-											$precio_v += (float)$servicio['precio_n'];
+											$precio = ceil((float)$servicio['precio_n']);
 										}else {
-											$precio = (float)$servicio['precio_e'];
-											$precio_v += (float)$servicio['precio_e'];
+											$precio = ceil((float)$servicio['precio_e']);
 										}
+										$precio_v += $precio;
 										$query_detalle_pasajero = new Consulta("INSERT INTO cotizaciones_itinerarios_detalles_pasajeros VALUES(null,$id_servicio_detalle,$id_pasajero_detalle,$precio)");
 									}
 								}
