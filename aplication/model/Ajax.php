@@ -999,7 +999,7 @@ class Ajax{
 							$departamento = $_POST['departamento'];
 							if ($_POST['departamento']) {
 								foreach ($departamento as $depa) {
-									$query2 =new Consulta( "INSERT INTO paquetes_destinos values('','".$id_paquete."','".$depa."')" );
+									$query2 =new Consulta( "quetes_destinos values('','".$id_paquete."','".$depa."')" );
 								}
 							}
 

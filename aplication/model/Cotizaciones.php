@@ -66,8 +66,8 @@ class Cotizaciones{
 			$whatsapp = $pasajero['WhatsApp'];
 			$id_nacionalidad = $pasajero['nacionalidad'];
 			$sexo = $pasajero['sexo'];
-			$sql_pasajero = "INSERT INTO pasajeros(id_pasajero,nombres_pasajero,documento_pasajero,whatsapp_pasajero,email_pasajero,id_nacionalidad)
-											VALUES(null,'$nombre','$documento','$whatsapp','$id_nacionalidad',$sexo)";
+			$sql_pasajero = "INSERT INTO pasajeros(id_pasajero,nombres_pasajero,documento_pasajero,whatsapp_pasajero,id_nacionalidad,sexo)
+											VALUES(null,'$nombre','$documento','$whatsapp',$id_nacionalidad,$sexo)";
 			$query_pasajero = new Consulta($sql_pasajero);
 			$nuevo_id_pasajero = $query_pasajero->nuevoid();
 			$lista_pasajeros_salida[$key]['id'] = $nuevo_id_pasajero;
@@ -80,13 +80,13 @@ class Cotizaciones{
 		if ($bl_tipo == 1) {
 			if (is_array($array) || is_object($array)) {
 				foreach ($array as $key => $value) {
-					$query = new Consulta("INSERT INTO inclusiones values(null,null,".$id_cotizacion.",'".$value."',$bl_tipo,1)");
+					$query = new Consulta("INSERT INTO inclusiones values(null,null,$id_cotizacion,null,'".$value."',$bl_tipo,1)");
 				}
 			}
 		}else {
 			if (is_array($array) || is_object($array)) {
 				foreach ($array as $key => $value) {
-					$query = new Consulta("INSERT INTO inclusiones values(null,null,".$id_cotizacion.",'".$value."',$bl_tipo,1)");
+					$query = new Consulta("INSERT INTO inclusiones values(null,null,$id_cotizacion,null,'".$value."',$bl_tipo,1)");
 				}
 			}
 		}
