@@ -109,12 +109,6 @@
                                         <span class="sidebar-normal">Ventas</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="reservas.php">
-                                        <span class="sidebar-mini"><i class="ti-book"></i></span>
-                                        <span class="sidebar-normal">Reservas</span>
-                                    </a>
-                                </li>
                             </ul>
                         </div>
                     </li>
