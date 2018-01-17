@@ -1122,8 +1122,7 @@ class Ajax{
 										$precio_n = $servicio['precio_n'];
 										$precio_e = $servicio['precio_e'];
 										$consulta_ventas_itinerarios_detalles = new Consulta("INSERT INTO ventas_itinerarios_detalles values(null,$id_venta_itinerario,$id_servicio,$precio_n,$precio_e)");
-										$id_venta_itinerario_detalle = $consulta_ventas_itinerarios_detalles->nuevoid();
-										$list_ventas_itinerarios_detalles[$c] = $id_venta_itinerario_detalle;
+										$list_ventas_itinerarios_detalles[$c] = $consulta_ventas_itinerarios_detalles->nuevoid();
 										$c++;
 									}
 								}
@@ -1176,20 +1175,21 @@ class Ajax{
 										$precio_n = $hotel['precio_n'];
 										$precio_e = $hotel['precio_e'];
 										$consulta_ventas_itinerarios_hoteles = new Consulta("INSERT INTO ventas_itinerarios_hoteles values(null,$id_venta_itinerario,$id_hotel,$id_habitacion,$cantidad,$precio_n,$precio_e)");
-										$id_venta_itinerario_hotel = $consulta_ventas_itinerarios_hoteles->nuevoid();
-										$list_ventas_itinerarios_hoteles[$c] = $id_venta_itinerario_hotel;
+										$list_ventas_itinerarios_hoteles[$c] = $consulta_ventas_itinerarios_hoteles->nuevoid();
 										$c++;
 									}
 								}
 							}
-
 							$query_hoteles_pasajeros = new Consulta("SELECT cihp.id_pasajero,cihp.precio_hotel FROM cotizaciones_itinerarios ci
 																												INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
 																												INNER JOIN cotizaciones_itinerarios_hoteles_pasajeros cihp USING(id_cotizacion_itinerario_hotel)
 																												WHERE id_cotizacion = $id");
+
+							unset($id_first);
 							$c = (int)0;
 							while ($row3 = $query_hoteles_pasajeros->VerRegistro()) {
 								 $id_pasajero = $row3['id_pasajero'];
+								 // echo $id_pasajero."--";
 								 if(!$id_first) {
 										$id_first = $id_pasajero;
 								 }else {
@@ -1198,7 +1198,6 @@ class Ajax{
 										$id_first = $id_pasajero;
 									 }
 								 }
-
 								 $precio = $row3['precio_hotel'];
 								 $id_venta_itinerario_hotel = $list_ventas_itinerarios_hoteles[$c];
 								 $insert_detalles_pasajeros = new Consulta("INSERT INTO ventas_itinerarios_hoteles_pasajeros VALUES(null,$id_venta_itinerario_hotel,$id_pasajero,$precio)");
