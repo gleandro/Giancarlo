@@ -804,7 +804,7 @@ $(document).ready(function(){
                 contentType: false,
                 processData: false,
                 success: function(datos){
-                  alert(datos);
+                  // alert(datos);
                   swal({
                     title: 'Vendido!',
                     text: "Cotizacion Vendida",
