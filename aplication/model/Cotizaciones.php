@@ -3,7 +3,10 @@ class Cotizaciones{
 
 	public function getCotizaciones()
 	{
-		$sql   = "SELECT * FROM cotizaciones WHERE bl_estado = 0 ORDER BY id_cotizacion DESC";
+		$sql   = "SELECT c.*,cli.nombres_cliente,cli.documento_cliente FROM cotizaciones c
+							INNER JOIN clientes cli USING(id_cliente)
+							WHERE bl_estado = 0
+							ORDER BY id_cotizacion DESC";
 		$query = new Consulta($sql);
 		$datos = array();
 
@@ -12,6 +15,8 @@ class Cotizaciones{
 		 'id' => $row['id_cotizacion'] ,
 		 'nombre' => $row['nombre_cotizacion'],
 		 'descripcion' => $row['descripcion_cotizacion'],
+		 'cliente' => $row['nombres_cliente'],
+		 'documento' => $row['documento_cliente'],
 		 'cantidad' => $row['numero_pasajeros'],
 		 'estado' => $row['estado_cotizacion'],
 		 'fecha' => $row['fecha_cotizacion'],
@@ -59,10 +64,10 @@ class Cotizaciones{
 			$nombre = $pasajero['Nombres'];
 			$documento = $pasajero['Documento'];
 			$whatsapp = $pasajero['WhatsApp'];
-			$email = $pasajero['email'];
 			$id_nacionalidad = $pasajero['nacionalidad'];
+			$sexo = $pasajero['sexo'];
 			$sql_pasajero = "INSERT INTO pasajeros(id_pasajero,nombres_pasajero,documento_pasajero,whatsapp_pasajero,email_pasajero,id_nacionalidad)
-											VALUES(null,'$nombre','$documento','$whatsapp','$email','$id_nacionalidad')";
+											VALUES(null,'$nombre','$documento','$whatsapp','$id_nacionalidad',$sexo)";
 			$query_pasajero = new Consulta($sql_pasajero);
 			$nuevo_id_pasajero = $query_pasajero->nuevoid();
 			$lista_pasajeros_salida[$key]['id'] = $nuevo_id_pasajero;
@@ -87,18 +92,15 @@ class Cotizaciones{
 		}
 	}
 
-	/*
-
-	static public function getTotalPaquetes()
+	static public function getTotalCotizaciones()
 	{
-		$sql   = "SELECT count(*) as total FROM paquetes";
+		$sql   = "SELECT count(*) as total FROM cotizaciones WHERE bl_estado = 0";
 		$query = new Consulta($sql);
 		$row = $query->VerRegistro();
 		return $row['total'];
 	}
 
-
-
+/*
 	static public function getCotizacionesItinerariosServicios($id)
 	{
 		$sql   = "SELECT * FROM cotizaciones_itinerarios_detalles WHERE id_paquete_itinerario= '".$id."' ";

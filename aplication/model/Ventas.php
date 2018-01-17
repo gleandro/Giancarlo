@@ -33,12 +33,46 @@
 		return $datos;
  	}
 
+  static public function getVentasTotal(){
+    $sql = "SELECT SUM(v.precio_venta) 'precio_total' FROM ventas v
+            INNER JOIN cotizaciones c USING(id_cotizacion)
+            WHERE c.estado_cotizacion = 1 AND v.bl_estado_venta < 2";
+    $query = new Consulta($sql);
+
+    $row = $query->VerRegistro();
+
+    return $row['precio_total'];
+  }
+
+  public function getReservaXTipo($id,$tipo_reserva){
+    if ($tipo_reserva) {
+      $sql = "SELECT r.id_reserva,s.nombre_servicio 'nombre',r.codigo_reserva FROM reservas r
+              INNER JOIN servicios s USING(id_servicio)
+              where r.tipo_reserva = 1 and r.id_venta = $id";
+    }else {
+      $sql = "SELECT r.id_reserva,h.nombre_hotel 'nombre',r.codigo_reserva FROM reservas r
+              INNER JOIN hoteles h USING(id_hotel)
+              where r.tipo_reserva = 0 and r.id_venta = $id";
+    }
+
+    $query = new Consulta($sql);
+
+    while ($row = $query->VerRegistro()) {
+      $list_reserva[] = array(
+        'id_reserva' => $row["id_reserva"],
+        'nombre' => $row["nombre"],
+        'codigo_reserva' => $row["codigo_reserva"]
+      );
+    }
+    return $list_reserva;
+  }
+
   public function getEstado($bl_estado,$array){
     if ($bl_estado == 0) {
       return '<span class="text-warning">'.$array[$bl_estado].'</span>';
     }
     else if ($bl_estado == 1) {
-      return '<span class="text-info">'.$array[$bl_estado].'</span>';
+      return '<span class="text-success">'.$array[$bl_estado].'</span>';
     }
     else{
       return '<span class="text-danger">'.$array[$bl_estado].'</span>';

@@ -24,6 +24,19 @@
               <div class="row">
                 <div class="col-md-5 col-md-offset-1">
                   <div class="form-group">
+                    <label class="control-label">
+                      Agencia
+                    </label>
+                    <select id="list_agencias" name="id_agencia">
+                      <option value="0"> - seleccione una Agencia - </option>
+                      <?php foreach ($listadoAgencias as $key => $agencia): ?>
+                        <option value="<?php echo $agencia['id'] ?>"><?php echo $agencia['razonsocial'] ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <div class="form-group">
                     <a href="#" onclick="agregarCliente();"><i class="ti-user"></i></a>
                     <label class="control-label">
                       Cliente
@@ -36,7 +49,7 @@
                     </select>
                   </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-md-offset-1">
                   <div class="form-group">
                     <label class="control-label">
                       Paquete
@@ -49,7 +62,7 @@
                     </select>
                   </div>
                 </div>
-                <div class="col-md-5 col-md-offset-1">
+                <div class="col-md-5">
                   <div class="form-group">
                     <label class="control-label">
                       Fuente de Contacto
@@ -62,7 +75,7 @@
                     </select>
                   </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-md-offset-1">
                   <div class="form-group">
                     <label class="control-label">
                       Documento (DNI/PASAPORTE)
@@ -70,7 +83,7 @@
                     <input disabled class="form-control" type="number" placeholder="Documento" required="required" id="ajax_Documento"/>
                   </div>
                 </div>
-                <div class="col-md-5 col-md-offset-1">
+                <div class="col-md-5">
                   <div class="form-group">
                     <label class="control-label">
                       Teléfono
@@ -78,12 +91,20 @@
                     <input disabled class="form-control" type="number" placeholder="Teléfono" required="required" id="ajax_Telefono"/>
                   </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 col-md-offset-1">
                   <div class="form-group">
                     <label class="control-label">
                       Nacionalidad
                     </label>
                     <input disabled class="form-control" type="text" placeholder="Nacionalidad" required="required" id="ajax_Nacionalidad"/>
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <label class="control-label">
+                      Sexo
+                    </label>
+                    <input disabled class="form-control" type="text" placeholder="Nacionalidad" required="required" id="ajax_Sexo"/>
                   </div>
                 </div>
                 <div class="col-md-5 col-md-offset-1">

@@ -11,10 +11,11 @@
             <th data-field="state" data-checkbox="true"></th>
             <th data-field="id" class="text-center">ID</th>
             <th data-field="nombre" data-sortable="true">Nombre</th>
-            <th data-field="descripcion" data-sortable="true">Descripción</th>
-            <th data-field="cantidad" data-sortable="true">Pasajeros</th>
-            <th data-field="fecha" data-sortable="true">Fecha Cotización</th>
-            <th data-field="fecha_reserva" data-sortable="true">Fecha Reserva</th>
+            <th data-field="cliente" data-sortable="true">Cliente</th>
+            <th data-field="documento" data-sortable="true">Documento</th>
+            <th data-field="cantidad" data-sortable="true">Pax</th>
+            <th data-field="fecha" data-sortable="true">Cotizado</th>
+            <th data-field="fecha_reserva" data-sortable="true">Reservado</th>
             <th data-field="precio" data-sortable="true">Precio</th>
             <th data-field="estado" data-sortable="true">Estado</th>
             <th data-field="actions" class="td-actions text-right" data-events="operateEvents" data-formatter="operateFormatter">Actions</th>
@@ -25,12 +26,17 @@
               <tr>
                 <td></td>
                 <td><?php echo $cotizacion['id'] ?></td>
-                <td><?php echo $cotizacion['nombre'] ?></td>
-                <td><?php echo $cotizacion['descripcion'] ?></td>
+                <td>
+                  <div class="">
+                    <span><?php echo $cotizacion['nombre'] ?></span><br>
+                    <span class="text-muted"><?php echo $cotizacion['descripcion'] ?></span>
+                  </div>
+                </td>
+                <td><?php echo $cotizacion['cliente'] ?></td>
+                <td><?php echo $cotizacion['documento'] ?></td>
                 <td><?php echo $cotizacion['cantidad'] ?></td>
-                <!-- <td><?php echo fecha_long($cotizacion['fecha']) ?></td> -->
-                <td><?php echo $cotizacion['fecha'] ?></td>
-                <td><?php echo $cotizacion['fecha_reserva'] ?></td>
+                <td><?php echo date('d-m-Y', strtotime($cotizacion['fecha']))?></td>
+                <td><?php echo date('d-m-Y', strtotime($cotizacion['fecha_reserva']))?></td>
                 <td><?php echo "$".$cotizacion['precio'] ?></td>
                 <?php
                 if($cotizacion['estado'] == 1){

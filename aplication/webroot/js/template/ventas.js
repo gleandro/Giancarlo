@@ -1,82 +1,42 @@
 var $table = $('#bootstrap-table-ventas');
 
+function reservar(element,id){
+  var input = $(element).parents(".row").first().find(".codigo_reserva");
+  var codigo = input.val();
+
+  if (codigo == "") {
+    alert("El campo codigo reserva no puede estar vacio");
+    input.focus();
+  }else{
+    $.ajax({
+      url: 'ajax2.php',
+      type: 'POST',
+      data: '&action=reservarServicio&id='+id+'&codigo='+codigo,
+      success: function(result){
+        $(element).hide(800, function() {
+          input.prop('disabled', true);
+        });
+      }
+    });
+  }
+}
+
+
   function operateFormatter(value, row, index) {
       return [
   '<div class="table-icons">',
-            '<a rel="tooltip" title="Descargar" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
-            '<i class="ti-image"></i>',
+            // '<a rel="tooltip" title="Descargar" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
+            // '<i class="ti-image"></i>',
             '</a>',
-            '<a rel="tooltip" title="Cancelar" class="btn btn-simple btn-danger btn-icon table-action edit" href="javascript:void(0)">',
+            '<a rel="tooltip" title="Reservar" class="btn btn-simple btn-success btn-icon table-action reserve" href="javascript:void(0)">',
+                '<i class="ti-calendar"></i>',
+            '</a>',
+            '<a rel="tooltip" title="Cancelar" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
                 '<i class="ti-close"></i>',
             '</a>',
-            // '<a rel="tooltip" title="Eliminar" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
-            //     '<i class="ti-close"></i>',
-            // '</a>',
   '</div>',
       ].join('');
   }
-
-$("#formAddAgencia").submit(function(e) { //AGREGAR UN PAQUETE
-    e.preventDefault();
-    var $form = $(this);
-    if(! $form.valid()) return false;
-    var formData = new FormData($("#formAddAgencia")[0]);
-    var ruta = "ajax2.php";
-    $.ajax({
-        url: ruta,
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(datos){
-           swal({
-              title: 'Registrado!',
-              text: datos,
-              type: 'success',
-              confirmButtonText: 'Ok!',
-              allowOutsideClick: false,
-              allowEscapeKey: false,
-              onClose: function(){
-                location.href="agencias.php";
-              }
-            })
-
-        }
-    });
-    return false;
-});
-
-
-$("#formEditAgencia").submit(function(e) {
-    e.preventDefault();
-    var $form = $(this);
-    if(! $form.valid()) return false;
-    var formData = new FormData($("#formEditAgencia")[0]);
-    var ruta = "ajax2.php";
-    $.ajax({
-        url: ruta,
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(datos){
-           swal({
-              title: 'Listo!',
-              text: 'Registro Modificado!',
-              type: 'success',
-              confirmButtonText: 'Ok!',
-              allowOutsideClick: false,
-              allowEscapeKey: false,
-              onClose: function(){
-                location.href="agencias.php";
-              }
-            })
-        }
-    });
-    return false;
-});
-
-
 
   $().ready(function(){
       window.operateEvents = {
@@ -124,7 +84,16 @@ $("#formEditAgencia").submit(function(e) {
             $(".tipo_documento").selectpicker();
 
           },
-          'click .edit': function (e, value, row, index) {
+          'click .reserve': function (e, value, row, index){
+            info = JSON.stringify(row);
+            if (row.id_estado < 2) {
+              location.href="ventas.php?action=reserve&id="+row.id;
+            }else {
+              swal('No puede Continuar', 'Esta venta fue cancelada','info');
+            }
+
+          },
+          'click .remove': function (e, value, row, index) {
               info = JSON.stringify(row);
 
               var fecha_actual = moment().format("YYYY-MM-DD");
@@ -133,11 +102,11 @@ $("#formEditAgencia").submit(function(e) {
 
               if (row.id_estado >= 2) {
                 if (row.id_estado == 2) {
-                  var t = "cancelada";
+                  var texto = "cancelada";
                 }else {
-                  var t = "cancelada con penalidad";
+                  var texto = "cancelada con penalidad";
                 }
-                swal('', 'Esta venta se encuentra '+t+'.','info');
+                swal('No puede Continuar', 'Esta venta se encuentra '+texto+'.','info');
                 return;
               }if (dias <= 0) {
                 return;
@@ -185,6 +154,108 @@ $("#formEditAgencia").submit(function(e) {
                 })
           }
       };
+
+
+      $("#wizardFormReservarVentas").submit(function(e) { //AGREGAR UN PAQUETE
+          e.preventDefault();
+          var cantidad_reserva = $(".codigo_reserva:enabled").length;
+          if (cantidad_reserva == 0) {
+            $("#estado").val(1);
+            var formData = new FormData(this);
+            $.ajax({
+                url: "ajax2.php",
+                type: "POST",
+                data:  formData,
+                contentType: false,
+                processData: false,
+                success: function(datos){
+                  // alert(datos);
+                   swal({
+                      title: 'Excelente!',
+                      text: "Todos los servicios tienen Codigo de reserva",
+                      type: 'success',
+                      confirmButtonText: 'Ok!',
+                      allowOutsideClick: false,
+                      allowEscapeKey: false,
+                      onClose: function(){
+                        location.href="ventas.php";
+                      }
+                    })
+                }
+            });
+          }else {
+            swal({
+               title: 'Hasta luego!',
+               text: 'Aun quedan Servicios sin codigo de reserva.',
+               type: 'info',
+               confirmButtonText: 'Ok!',
+               allowOutsideClick: false,
+               allowEscapeKey: false,
+               onClose: function(){
+                 location.href="ventas.php";
+               }
+             })
+          }
+          return false;
+      });
+
+      $('#wizardFormReservarVentas').bootstrapWizard({
+        tabClass: 'nav nav-pills',
+        nextSelector: '.btn-next',
+        previousSelector: '.btn-back',
+        onNext: function(tab, navigation, index) {
+          var $valid = $('#wizardFormReservarVentas').valid();
+          if(!$valid) {
+            $validator.focusInvalid();
+            return false;
+          }
+          if (index == 1) {
+            var dias = $(".card-dia").val();
+            for (var i = 0; i < dias; i++) {
+              $("#collapse"+(i+1)).collapse('toggle');
+            }
+          }
+        },
+        onInit : function(tab, navigation, index){
+
+          //check number of tabs and fill the entire row
+          var $total = navigation.find('li').length;
+          $width = 100/$total;
+
+          $display_width = $(document).width();
+
+          if($display_width < 600 && $total > 3){
+            $width = 50;
+          }
+
+          navigation.find('li').css('width',$width + '%');
+        },
+        onTabClick : function(tab, navigation, index){
+          // Disable the posibility to click on tabs
+          return false;
+        },
+        onTabShow: function(tab, navigation, index) {
+          var $total = navigation.find('li').length;
+          var $current = index+1;
+
+          var wizard = navigation.closest('.card-wizard');
+
+          // If it's the last tab then hide the last button and show the finish instead
+          if($current >= $total) {
+            $(wizard).find('.btn-next').hide();
+            $(wizard).find('.btn-finish').show();
+            $(wizard).find('.btn-back').show();
+          } else if($current == 1){
+            $(wizard).find('.btn-back').hide();
+            $(wizard).find('.btn-next').show();
+            $(wizard).find('.btn-finish').hide();
+          } else {
+            $(wizard).find('.btn-back').show();
+            $(wizard).find('.btn-next').show();
+            $(wizard).find('.btn-finish').hide();
+          }
+        }
+      });
 
       $table.bootstrapTable({
           toolbar: ".toolbar",

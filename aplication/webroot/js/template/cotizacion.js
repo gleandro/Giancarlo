@@ -143,6 +143,12 @@ function cargar_listas(){
   }
 
   if ($('#list_clientes').length > 0) {
+    $('#list_agencias').multiselect({
+      enableFiltering: true
+    });
+  }
+
+  if ($('#list_clientes').length > 0) {
     $('#list_clientes').multiselect({
       enableFiltering: true
     });
@@ -161,6 +167,11 @@ function cargar_listas(){
             $("#ajax_Documento").val(datos.documento);
             $("#ajax_Telefono").val(datos.telefono);
             $("#ajax_Email").val(datos.email);
+            if (datos.sexo == 0) {
+              $("#ajax_Sexo").val("Masculino");
+            }else{
+              $("#ajax_Sexo").val("Femenino");
+            }
             $('#list_fuentes').multiselect('select', [datos.id_fuente], true);
             if (datos.nacionalidad == 1) {
               $("#ajax_Nacionalidad").val("Nacional");
@@ -207,6 +218,11 @@ function agregarCliente(){
   '<div class="form-group">'+
   '<input class="form-control" type="email" name="email" placeholder="Email"/>'+
   '</div>'+
+  '<div class="form-group">'+
+  '<select class="form-control" data-style="btn-info btn-fill btn-block" name="sexo">'+
+  '<option value="0">Masculino</option>'+
+  '<option value="1">Femenino</option>'+
+  '</select>'+
   '<div class="form-group">'+
   '<select class="form-control" data-style="btn-info btn-fill btn-block" name="nacionalidad">'+
   '<option value="1">Nacional</option>'+
@@ -259,6 +275,11 @@ function agregarCliente(){
         $("#ajax_Documento").val(datos.documento);
         $("#ajax_Telefono").val(datos.telefono);
         $("#ajax_Email").val(datos.email);
+        if (datos.sexo == 0) {
+          $("#ajax_Sexo").val("Masculino");
+        }else{
+          $("#ajax_Sexo").val("Femenino");
+        }
         $('#list_fuentes').multiselect('select', [datos.id_fuente], true);
         $('#list_clientes').append('<option value="'+datos.id_cliente+'">'+datos.nombres+'</option>');
         $('#list_clientes').multiselect('rebuild');
@@ -478,12 +499,15 @@ $(document).ready(function(){
                     		  '<input class="form-control WhatsApp_pasajero" name="list_pasajeros['+i+'][WhatsApp]" type="text" placeholder="WhatsApp" required="required"/>'+
                     		'</div>'+
                   	  '</div>'+
-                  	  '<div class="col-md-6">'+
-                    		'<div class="form-group">'+
-                    		  '<label class="control-label">email</label>'+
-                    		  '<input class="form-control email_pasajero" name="list_pasajeros['+i+'][email]" type="text" placeholder="email" required="required"/>'+
-                    		'</div>'+
-                  	  '</div>'+
+                      '<div class="col-md-6">'+
+                        '<div class="form-group">'+
+                          '<label class="control-label">Sexo</label>'+
+                          '<select class="tipo_nacionalidad" name="list_pasajeros['+i+'][sexo]">'+
+                            '<option value="0">Masculino</option>'+
+                            '<option value="1">Femenino</option>'+
+                          '</select>'+
+                        '</div>'+
+                      '</div>'+
                       '<div class="col-md-6 col-md-offset-3">'+
                         '<div class="form-group">'+
                           '<label class="control-label">Nacionalidad</label>'+
@@ -557,7 +581,8 @@ $(document).ready(function(){
                                     '<th>Departamento</th>'+
                                     '<th>Tipo Servicio</th>'+
                                     '<th>Alcance</th>'+
-                                    '<th>Precio</th>'+
+                                    '<th>Precio Nacional</th>'+
+                                    '<th>Precio Extranjero</th>'+
                                 '</tr>'+
                               '</thead>'+
                               '<tbody>';
@@ -568,13 +593,15 @@ $(document).ready(function(){
             var departamento = $(servicios[k]).find("td")[1].innerHTML;
             var tipo_servicio = $(servicios[k]).find("td")[2].innerHTML;
             var alcance = $(servicios[k]).find("td")[3].innerHTML;
-            var precio = $(servicios[k]).find("td")[4].innerHTML;
+            var precio_n = $(servicios[k]).find("td")[4].innerHTML;
+            var precio_e = $(servicios[k]).find("td")[5].innerHTML;
             html_servicio += '<tr>';
             html_servicio += '<td>'+nombre+'</td>';
             html_servicio += '<td>'+departamento+'</td>';
             html_servicio += '<td>'+tipo_servicio+'</td>';
             html_servicio += '<td>'+alcance+'</td>';
-            html_servicio += '<td>'+precio+'</td>';
+            html_servicio += '<td>'+precio_n+'</td>';
+            html_servicio += '<td>'+precio_e+'</td>';
             html_servicio += '</tr>';
           }
           html_servicio += '</tbody></table></div></div></div>';
@@ -734,38 +761,67 @@ $(document).ready(function(){
       location.href="cotizaciones.php?action=edit&id="+row.id;
     },
     'click .cotizar': function (e, value, row, index) {
-      if ($($(this).parents("tr").children("td")[6]).html() == "Vendido") {
+      if ($($(this).parents("tr").children("td")[8]).html() == "Vendido") {
         swal('Lo sentimos', 'Esta cotizacion ya fue Vendida');
       }else {
+
+        var html = '<form id="form_vender_cotizacion" action="index.html" method="post">'+
+                      '<div class="row">'+
+                        '<input hidden name="id" type="text" value="'+row.id+'" />'+
+                        '<input hidden name="action" type="text" value="VenderCotizacion" />'+
+                        '<div class="col-md-10 col-md-offset-1">'+
+                          '<div class="form-group">'+
+                            '<label class="control-label">Forma de Pago</label>'+
+                            '<select id="list_forma_pago" name="id_tipo_pago">'+
+                              '<option value="0">Pago Efectivo</option>'+
+                              '<option value="1">Pago Tarjeta 5%</option>'+
+                              '<option value="2">Pago tarjeta 7%</option>'+
+                            '</select>'+
+                          '</div>'+
+                        '</div>'+
+                        '<div class="col-md-12">'+
+                          '<div class="form-group">'+
+                            '<label class="control-label">Observaciones</label>'+
+                            '<textarea style="max-width: 100%;" name="observacion" class="form-control" rows="5"></textarea>'+
+                          '</div>'+
+                        '</div>'+
+                      '</div>'+
+                    '</form>';
+
         swal({
-            title: 'Observaciones:',
-            input: 'textarea',
+            title: 'Vender Cotizacion',
+            html: html,
             showCancelButton: true,
             confirmButtonText: 'Vender',
             showLoaderOnConfirm: false,
-            allowOutsideClick: false
-          }).then((result) => {
-            $.ajax({
-              url: 'ajax2.php',
-              type: 'POST',
-              data: '&action=VenderCotizacion&observacion='+result+'&id='+row.id,
-              beforeSend: function(){
-              },
-              success: function(datos){
-                swal({
-                  title: 'Vendido!',
-                  text: "Cotizacion Vendida",
-                  type: 'success',
-                  confirmButtonText: 'Ok!',
-                  allowOutsideClick: false,
-                  allowEscapeKey: false,
-                  onClose: function(){
-                    location.href="cotizaciones.php";
-                  }
-                })
-              }
-            })
-          })
+            allowOutsideClick: false,
+            preConfirm: () => {
+              var formData = new FormData($("#form_vender_cotizacion")[0]);
+              $.ajax({
+                url: 'ajax2.php',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(datos){
+                  alert(datos);
+                  swal({
+                    title: 'Vendido!',
+                    text: "Cotizacion Vendida",
+                    type: 'success',
+                    confirmButtonText: 'Ok!',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    onClose: function(){
+                      location.href="cotizaciones.php";
+                    }
+                  })
+                }
+              });
+              swal.close();
+            }
+          });
+          $("#list_forma_pago").selectpicker();
       }
     },
     'click .remove': function (e, value, row, index) {
@@ -1023,13 +1079,13 @@ $("#wizardFormCotizacion").submit(function(e) { //AGREGAR UN PAQUETE
       //alert(datos);
       swal({
         title: 'Registrado!',
-        text: datos,
+        text: "",
         type: 'success',
         confirmButtonText: 'Ok!',
         allowOutsideClick: false,
         allowEscapeKey: false,
         onClose: function(){
-          // location.href="cotizaciones.php";
+          location.href="cotizaciones.php";
         }
       })
     }

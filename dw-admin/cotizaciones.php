@@ -37,6 +37,9 @@ $listadoServicios = $objServicios->getServicios();
 $fuentes = Fuentes::getFuentes();
 $nacionalidades = array(array('id' => '1','nombre' => 'Peruano'),array('id' => '2','nombre' => 'Extranjero'));
 
+$objAgencias = new Agencias();
+$listadoAgencias = $objAgencias->getAgencias();
+
 if ($_GET['id']) {
     $objCotizacion= new Cotizacion($_GET['id']);
     $cotizacion_cliente = $objCotizacion->__get('_cliente');

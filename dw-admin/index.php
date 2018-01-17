@@ -33,7 +33,7 @@ include(_includes_."admin/inc.header.php");
                                         <div class="col-xs-7">
                                             <div class="numbers">
                                                 <p>Cotizaciones</p>
-                                                480
+                                                <?php echo Cotizaciones::getTotalCotizaciones(); ?>
                                             </div>
                                         </div>
                                     </div>
@@ -59,7 +59,7 @@ include(_includes_."admin/inc.header.php");
                                         <div class="col-xs-7">
                                             <div class="numbers">
                                                 <p>Ventas</p>
-                                                $35 806
+                                                <?php echo "$".ceil(Ventas::getVentasTotal()); ?>
                                             </div>
                                         </div>
                                     </div>

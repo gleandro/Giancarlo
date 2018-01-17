@@ -473,8 +473,8 @@ class Ajax{
 							<tbody>
 								<?php foreach ($habitaciones as $key => $habitacion) {
 									$cantidad = $habitacion['cantidad_habitacion'];
-									$precio_n = $habitacion['precio_hotel_tarifa_n'];
-									$precio_e = $habitacion['precio_hotel_tarifa_e'];
+									$precio_n = ceil($habitacion['precio_hotel_tarifa_n']);
+									$precio_e = ceil($habitacion['precio_hotel_tarifa_e']);
 									?>
 									<tr>
 										<td class="text-center">
@@ -732,9 +732,8 @@ class Ajax{
 					function updateEstadoCotizacionAjax(){
 						$id = $_POST['id'];
 						$estado = $_POST['estado'];
-
+						// print_r($_POST);
 						$query = new Consulta("UPDATE ventas SET bl_estado_venta = $estado  WHERE id_venta = $id");
-						echo "UPDATE ventas SET bl_estado_venta = $estado  WHERE id_venta = $id";
 					}
 
 					function getIdCotizacionAjax(){
@@ -746,8 +745,7 @@ class Ajax{
 
 					function registrarCotizacionAjax(){
 						date_default_timezone_set("America/Lima");
-						// print_r($_POST);
-						// exit;
+
 						if(isset($_FILES['files']) && ($_FILES['files']['name'] != "")){
 
 							$obj  = new Upload();
@@ -761,7 +759,11 @@ class Ajax{
 							$obj->upload_imagen($name, $temp, $destino, $type, $size);
 						}
 
-						$query_cotizacion = new Consulta("INSERT INTO cotizaciones values('','".$_POST['id_cliente']."','".$_POST['numero_pasajeros']."','".$_POST['nombre_paquete']."','".$_POST['descripcion_paquete']."','".$name."','".date('Y-m-d')."','".$_POST['fecha_reserva']."',0,0,0)");
+						if ($_POST['id_agencia'] == 0) {
+							$_POST['id_agencia'] = "null";
+						}
+
+						$query_cotizacion = new Consulta("INSERT INTO cotizaciones values('','".$_POST['id_cliente']."',".$_POST['id_agencia'].",'".$_POST['numero_pasajeros']."','".$_POST['nombre_paquete']."','".$_POST['descripcion_paquete']."','".$name."','".date('Y-m-d')."','".$_POST['fecha_reserva']."',0,0,0)");
 						$nuevoIdCotizacion = $query_cotizacion->nuevoid();
 
 						$departamento = $_POST['departamento'];
@@ -957,12 +959,12 @@ class Ajax{
 						$query4 = new Consulta("DELETE FROM inclusiones where tipo_programa = 1 AND id_cotizacion = '".$id."'");
 						if (is_array($incluye) || is_object($incluye)) {
 							foreach ($incluye as $key => $value) {
-								$query4 = new Consulta("INSERT INTO inclusiones values(null,null,".$id.",'".$value."',1,1)");
+								$query4 = new Consulta("INSERT INTO inclusiones values(null,null,$id,null,'".$value."',1,1)");
 							}
 						}
 						if (is_array($excluye) || is_object($excluye)) {
 							foreach ($excluye as $key => $value) {
-								$query4 = new Consulta("INSERT INTO inclusiones values(null,null,".$id.",'".$value."',2,1)");
+								$query4 = new Consulta("INSERT INTO inclusiones values(null,null,$id,null,'".$value."',2,1)");
 							}
 						}
 
@@ -1077,20 +1079,156 @@ class Ajax{
 						}
 
 						function VenderCotizacionAjax(){
-							$objCotizacion= new Cotizacion($_POST['id']);
 
-							$id_cotizacion = $objCotizacion->__get("_id");
-							$id_cliente = $objCotizacion->__get("_cliente")->__get("_id");
+							$id = $_POST['id'];
+
 							$fecha_actual = date("Y-m-d");
-							$precio =  $objCotizacion->__get("_precio");
-							$pasajeros = $objCotizacion->__get("_pasajeros");
-							$nombre_venta = $objCotizacion->__get("_nombre");
-							$descripcion_venta = $objCotizacion->__get("_descripcion");
 							$observacion = $_POST['observacion'];
-							$precio_venta=0;
-							$query_ventas = new Consulta("INSERT INTO ventas values(null,".$id_cotizacion.",".$id_cliente.",'".$fecha_actual."',$precio,".$pasajeros.",'".$nombre_venta."','".$descripcion_venta."','".$observacion."')");
+							$id_tipo_pago = $_POST['id_tipo_pago'];
 
-							$query_update_cotizacion = new Consulta("UPDATE cotizaciones SET estado_cotizacion = 1 WHERE id_cotizacion = ".$id_cotizacion);
+							$consulta_ventas = new Consulta("INSERT INTO ventas select null,id_cotizacion,id_cliente,id_agencia,'$fecha_actual',fecha_reserva,precio_cotizacion,numero_pasajeros,nombre_cotizacion,descripcion_cotizacion,'$observacion',$id_tipo_pago,0 from cotizaciones where id_cotizacion = $id");
+							$id_venta = $consulta_ventas->nuevoid();
+
+							//Insert destinos
+							$consulta_ventas_destinos = new Consulta("INSERT INTO ventas_destinos SELECT null,$id_venta,id_departamento FROM cotizaciones_destinos WHERE id_cotizacion = $id");
+							//insert ventas itinerario
+							$consulta_ventas_itinerarios = new Consulta("INSERT INTO ventas_itinerarios SELECT null,$id_venta,dia,nombre_cotizacion_itinerario,descripcion_cotizacion_itinerario FROM cotizaciones_itinerarios WHERE id_cotizacion = $id");
+							//obtenemos todos los id_itinerarios
+							$query_itinerario = new Consulta("SELECT id_venta_itinerario from ventas_itinerarios where id_venta = $id_venta");
+							//agrupamos en un arreglo
+							while ($row1 = $query_itinerario->VerRegistro()) {
+								$datos_itinerario[] = array(
+								 'id_venta_itinerario' => $row1['id_venta_itinerario']
+							 );
+						 }
+
+						 //INSERT SERVICIOS
+							$query_servicios = new Consulta("SELECT dia,cid.* FROM cotizaciones_itinerarios ci
+																							INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
+																							WHERE id_cotizacion = $id");
+							while ($row2 = $query_servicios->VerRegistro()) {
+								$datos_servicios[] = array(
+								 'dia' => $row2['dia'] ,
+								 'id_servicio' => $row2['id_servicio'],
+								 'precio_n' => $row2['precio_nacional_servicio'],
+								 'precio_e' => $row2['precio_extranjero_servicio']
+							 );
+							}
+							$c = (int)0;
+							for ($i=0; $i < count($datos_itinerario); $i++) {
+								foreach ($datos_servicios as $key => $servicio) {
+									if ($i == $servicio['dia']) {
+										$id_venta_itinerario = $datos_itinerario[$i]['id_venta_itinerario'];
+										$id_servicio = $servicio['id_servicio'];
+										$precio_n = $servicio['precio_n'];
+										$precio_e = $servicio['precio_e'];
+										$consulta_ventas_itinerarios_detalles = new Consulta("INSERT INTO ventas_itinerarios_detalles values(null,$id_venta_itinerario,$id_servicio,$precio_n,$precio_e)");
+										$id_venta_itinerario_detalle = $consulta_ventas_itinerarios_detalles->nuevoid();
+										$list_ventas_itinerarios_detalles[$c] = $id_venta_itinerario_detalle;
+										$c++;
+									}
+								}
+							}
+							$query_servicios_pasajeros = new Consulta("SELECT cidp.id_pasajero,cidp.precio FROM cotizaciones_itinerarios ci
+																												INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
+																												INNER JOIN cotizaciones_itinerarios_detalles_pasajeros cidp USING(id_cotizacion_itinerario_detalle)
+																												WHERE id_cotizacion = $id");
+							$c = (int)0;
+							while ($row3 = $query_servicios_pasajeros->VerRegistro()) {
+								 $id_pasajero = $row3['id_pasajero'];
+								 if(!$id_first) {
+										$id_first = $id_pasajero;
+								 }else {
+									 if ($id_first == $id_pasajero) {
+										$c++;
+										$id_first = $id_pasajero;
+									 }
+								 }
+
+								 $precio = $row3['precio'];
+								 $id_venta_itinerario_detalle = $list_ventas_itinerarios_detalles[$c];
+								 $insert_detalles_pasajeros = new Consulta("INSERT INTO ventas_itinerarios_detalles_pasajeros VALUES(null,$id_venta_itinerario_detalle,$id_pasajero,$precio)");
+							}
+
+							//INSERT HOTELES
+
+							$query_hoteles = new Consulta("SELECT * FROM cotizaciones_itinerarios ci
+																							INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
+																							WHERE id_cotizacion = $id");
+							while ($row2 = $query_hoteles->VerRegistro()) {
+								$datos_hoteles[] = array(
+								 'dia' => $row2['dia'] ,
+								 'id_hotel' => $row2['id_hotel'],
+								 'id_habitacion' => $row2['id_habitacion'],
+								 'cantidad' => $row2['cantidad'],
+								 'precio_n' => $row2['precio_nacional_hotel'],
+								 'precio_e' => $row2['precio_extranjero_hotel']
+							 );
+							}
+
+							$c = (int)0;
+							for ($i=0; $i < count($datos_itinerario); $i++) {
+								foreach ($datos_hoteles as $key => $hotel) {
+									if ($i == $hotel['dia']) {
+										$id_venta_itinerario = $datos_itinerario[$i]['id_venta_itinerario'];
+										$id_hotel = $hotel['id_hotel'];
+										$id_habitacion = $hotel['id_habitacion'];
+										$cantidad = $hotel['cantidad'];
+										$precio_n = $hotel['precio_n'];
+										$precio_e = $hotel['precio_e'];
+										$consulta_ventas_itinerarios_hoteles = new Consulta("INSERT INTO ventas_itinerarios_hoteles values(null,$id_venta_itinerario,$id_hotel,$id_habitacion,$cantidad,$precio_n,$precio_e)");
+										$id_venta_itinerario_hotel = $consulta_ventas_itinerarios_hoteles->nuevoid();
+										$list_ventas_itinerarios_hoteles[$c] = $id_venta_itinerario_hotel;
+										$c++;
+									}
+								}
+							}
+
+							$query_hoteles_pasajeros = new Consulta("SELECT cihp.id_pasajero,cihp.precio_hotel FROM cotizaciones_itinerarios ci
+																												INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
+																												INNER JOIN cotizaciones_itinerarios_hoteles_pasajeros cihp USING(id_cotizacion_itinerario_hotel)
+																												WHERE id_cotizacion = $id");
+							$c = (int)0;
+							while ($row3 = $query_hoteles_pasajeros->VerRegistro()) {
+								 $id_pasajero = $row3['id_pasajero'];
+								 if(!$id_first) {
+										$id_first = $id_pasajero;
+								 }else {
+									 if ($id_first == $id_pasajero) {
+										$c++;
+										$id_first = $id_pasajero;
+									 }
+								 }
+
+								 $precio = $row3['precio_hotel'];
+								 $id_venta_itinerario_hotel = $list_ventas_itinerarios_hoteles[$c];
+								 $insert_detalles_pasajeros = new Consulta("INSERT INTO ventas_itinerarios_hoteles_pasajeros VALUES(null,$id_venta_itinerario_hotel,$id_pasajero,$precio)");
+							}
+
+							//INSERT RESERVAS HOTEL
+							$query_reserva_hotel = new Consulta("SELECT DISTINCT cih.id_hotel FROM cotizaciones c
+																		INNER JOIN cotizaciones_itinerarios ci USING(id_cotizacion)
+																		INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
+																		WHERE c.id_cotizacion = $id");
+
+							while ($row = $query_reserva_hotel->VerRegistro()) {
+								$id_hotel = $row['id_hotel'];
+								$query = new Consulta("INSERT INTO reservas SELECT null,$id_venta,$id_hotel,null,'',0");
+							}
+
+							//INSERT RESERVAS SERVICIO
+							$query_reserva_servicio = new Consulta("SELECT DISTINCT cid.id_servicio from cotizaciones c
+																		INNER JOIN cotizaciones_itinerarios ci USING(id_cotizacion)
+																		INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
+																		where c.id_cotizacion = $id");
+
+							while ($row = $query_reserva_servicio->VerRegistro()) {
+								$id_servicio = $row['id_servicio'];
+								$query = new Consulta("INSERT INTO reservas SELECT null,$id_venta,null,$id_servicio,'',1");
+							}
+							$consulta_inclusiones = new Consulta("INSERT INTO inclusiones SELECT null,null,null,$id_venta,nombre_inclusion,tipo_inclusion,2 from inclusiones where id_cotizacion =$id");
+
+							$query_update_cotizacion = new Consulta("UPDATE cotizaciones SET estado_cotizacion = 1 WHERE id_cotizacion = $id");
 						}
 
 						//FIN COTIZACIONES
@@ -1323,12 +1461,12 @@ class Ajax{
 							$query4 = new Consulta("DELETE FROM inclusiones where tipo_programa = 0 AND id_paquete = '".$nuevoid."'");
 							if (is_array($incluye) || is_object($incluye)) {
 								foreach ($incluye as $key => $value) {
-									$query4 = new Consulta("INSERT INTO inclusiones values(null,".$nuevoid.",null,'".$value."',1,0)");
+									$query4 = new Consulta("INSERT INTO inclusiones values(null,".$nuevoid.",null,null,'".$value."',1,0)");
 								}
 							}
 							if (is_array($excluye) || is_object($excluye)) {
 								foreach ($excluye as $key => $value) {
-									$query4 = new Consulta("INSERT INTO inclusiones values(null,".$nuevoid.",null,'".$value."',2,0)");
+									$query4 = new Consulta("INSERT INTO inclusiones values(null,".$nuevoid.",null,null,'".$value."',2,0)");
 								}
 							}
 						}
@@ -1406,12 +1544,12 @@ class Ajax{
 								$query4 = new Consulta("DELETE FROM inclusiones where tipo_programa = 0 AND id_paquete = '".$id_paquete."'");
 								if (is_array($incluye) || is_object($incluye)) {
 									foreach ($incluye as $key => $value) {
-										$query4 = new Consulta("INSERT INTO inclusiones values(null,".$id_paquete.",null,'".$value."',1,0)");
+										$query4 = new Consulta("INSERT INTO inclusiones values(null,".$id_paquete.",null,null,'".$value."',1,0)");
 									}
 								}
 								if (is_array($excluye) || is_object($excluye)) {
 									foreach ($excluye as $key => $value) {
-										$query4 = new Consulta("INSERT INTO inclusiones values(null,".$id_paquete.",null,'".$value."',2,0)");
+										$query4 = new Consulta("INSERT INTO inclusiones values(null,".$id_paquete.",null,null,'".$value."',2,0)");
 									}
 								}
 							}
@@ -1425,10 +1563,10 @@ class Ajax{
 							function paqueteCopyAjax(){
 								$id = $_POST['id'];
 
-								$consulta_paquete = new Consulta("INSERT INTO paquetes SELECT '',nombre_paquete,descripcion_paquete,imagen_paquete,pdf_paquete,null,bl_estado FROM paquetes WHERE id_paquete=".$id);
-								$nuevoid = $consulta_paquete->nuevoid();
+								$utilidad = $_SESSION['sede']->__get("_utilidad");
 
-								$update_utilidades = new Consulta("INSERT INTO utilidades SELECT $nuevoid,id_sede,utilidad FROM utilidades where id_paquete = $id");
+								$consulta_paquete = new Consulta("INSERT INTO paquetes SELECT '',nombre_paquete,descripcion_paquete,imagen_paquete,pdf_paquete,$utilidad,bl_estado FROM paquetes WHERE id_paquete=".$id);
+								$nuevoid = $consulta_paquete->nuevoid();
 
 								$update_paquete = new Consulta("UPDATE paquetes SET nombre_paquete = CONCAT(nombre_paquete,' copy') where id_paquete=".$nuevoid);
 
@@ -1461,7 +1599,7 @@ class Ajax{
 									}
 								}
 
-								$consulta_inclusiones = new Consulta("INSERT INTO inclusiones SELECT '',".$nuevoid.",null,nombre_inclusion,tipo_inclusion,tipo_programa from inclusiones where id_paquete =".$id);
+								$consulta_inclusiones = new Consulta("INSERT INTO inclusiones SELECT '',".$nuevoid.",null,null,nombre_inclusion,tipo_inclusion,tipo_programa from inclusiones where id_paquete =".$id);
 
 							}
 							//FIN PAQUETES
@@ -1568,6 +1706,7 @@ class Ajax{
 									$row = $query->VerRegistro();
 									$result['id_fuente'] = $row['id_fuente'];
 									$result['nombres'] = $row['nombres_cliente'];
+									$result['sexo'] = $row['sexo_cliente'];
 									$result['nacionalidad'] = $row['id_nacionalidad'];
 									$result['documento'] = $row['documento_cliente'];
 									$result['telefono'] = $row['telefono_cliente'];
@@ -1577,23 +1716,29 @@ class Ajax{
 
 								function sweelAgregarClienteAjax(){
 
-									$query = new Consulta("INSERT INTO clientes VALUES(null,1,".$_POST['fuente'].",".$_POST['nacionalidad'].",'".$_POST['nombre']."',".$_POST['documento'].",".$_POST['telefono'].",'".$_POST['email']."')");
+									$query = new Consulta("INSERT INTO clientes VALUES(null,1,".$_POST['fuente'].",".$_POST['nacionalidad'].",'".$_POST['nombre']."',".$_POST['documento'].",".$_POST['telefono'].",'".$_POST['email']."','".$_POST['sexo']."')");
 									$id = $query->nuevoid();
 
-									$query2 = new Consulta("SELECT * FROM clientes WHERE id_cliente = ".$id);
-									$row = $query2->VerRegistro();
-									$result['id_cliente'] = $row['id_cliente'];
-									$result['id_fuente'] = $row['id_fuente'];
-									$result['nombres'] = $row['nombres_cliente'];
-									$result['nacionalidad'] = $row['id_nacionalidad'];
-									$result['documento'] = $row['documento_cliente'];
-									$result['telefono'] = $row['telefono_cliente'];
-									$result['email'] = $row['email_cliente'];
+									$result['id_cliente'] = $id;
+									$result['id_fuente'] = $_POST['fuente'];
+									$result['nombres'] = $_POST['nombre'];
+									$result['nacionalidad'] = $_POST['nacionalidad'];
+									$result['documento'] = $_POST['documento'];
+									$result['telefono'] = $_POST['telefono'];
+									$result['sexo'] = $_POST['sexo'];
+									$result['email'] = $_POST['email'];
 									echo json_encode($result);
 								}
 
 								/*AJAX PARA CLIENTES */
 
+								/*AJAX PARA VENTAS*/
+							  function reservarServicioAjax(){
+									$id = $_POST['id'];
+									$codigo = $_POST['codigo'];
+									$query = new Consulta("UPDATE reservas SET codigo_reserva = '$codigo' WHERE id_reserva = $id");
+								}
 
+								/*AJAX PARA VENTAS*/
 							}
 							?>

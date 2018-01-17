@@ -18,7 +18,7 @@ class Paquetes{
 
 		static public function getTotalPaquetes()
 		{
-			$sql   = "SELECT count(*) as total FROM paquetes";
+			$sql   = "SELECT count(*) as total FROM paquetes WHERE bl_estado = 0";
 			$query = new Consulta($sql);
 			$row = $query->VerRegistro();
 			return $row['total'];
