@@ -276,6 +276,8 @@
         showAddButtonDepartamento: false,
         showAddButtonHotel: false,
         showAddButtonPaquete: false,
+        showExportExcelButton: false,
+        seachDate: false,
         showToggle: false,
         buttonsAlign: 'right',
         smartDisplay: true,
@@ -421,6 +423,9 @@
         },
         formatAddButton: function () {
             return 'Añadir';
+        },
+        formatExcelButton: function () {
+            return 'Exportar';
         },
         formatToggle: function () {
             return 'Toggle';
@@ -977,6 +982,12 @@
                 sprintf('<i class="fa fa-plus"></i>'),
                 '</button>');
         }
+        if (this.options.showExportExcelButton) {
+            html.push(sprintf('<button onclick="exportExcel()'+'" class="btn btn-success' + (this.options.iconSize === undefined ? '' : ' btn-' + this.options.iconSize) + '" type="button" name="plus" title="%s">',
+                    this.options.formatExcelButton()),
+                sprintf('<i class="ti-file"></i>'),
+                '</button>');
+        }
 
         if (this.options.showAddButtonCotizacion) {
             html.push(sprintf('<button onclick="addCotizacion()'+'" class="btn btn-success' + (this.options.iconSize === undefined ? '' : ' btn-' + this.options.iconSize) + '" type="button" name="plus" title="%s">',
@@ -1101,6 +1112,15 @@
                     this.options.formatSearch()),
                 '</div>');
 
+            if (this.options.seachDate) {
+
+              html.push(
+                  '<div style="padding-left: 1%;" class="pull-' + this.options.searchAlign + ' search">',
+                  sprintf('<input type="text" class="form-control" name="fecha_reserva" onblur="changeFecha()" placeholder="Fecha Busqueda" id="fecha_search" />',
+                      this.options.formatSearch()),
+                  '</div>');
+            }
+
             this.$toolbar.append(html.join(''));
             $search = this.$toolbar.find('.search input');
             $search.off('keyup drop').on('keyup drop', function (event) {
@@ -1117,9 +1137,13 @@
                     $search.trigger('keyup');
                 }, that.options.searchTimeOut);
             }
+            if (this.options.seachDate) {
+              $('#fecha_search').datetimepicker({
+                format: 'YYYY-MM-DD'
+              });
+            }
         }
     };
-
     BootstrapTable.prototype.onSearch = function (event) {
         var text = $.trim($(event.currentTarget).val());
 
@@ -1649,7 +1673,9 @@
             // remove and update
             if ($tr.next().is('tr.detail-view')) {
                 $this.find('i').attr('class', sprintf('%s %s', that.options.iconsPrefix, that.options.icons.detailOpen));
-                $tr.next().remove();
+                $tr.next().show().fadeOut('slow', function() {
+                  $tr.next().remove();
+                });
                 that.trigger('collapse-row', index, row);
             } else {
                 $this.find('i').attr('class', sprintf('%s %s', that.options.iconsPrefix, that.options.icons.detailClose));

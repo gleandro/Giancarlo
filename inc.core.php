@@ -39,6 +39,6 @@ include("aplication/inc.config.php");
 	define("_view_counter_",$_config["server"]["host"]."aplication/view/counter/");
 	define("_view_agencia_",$_config["server"]["host"]."aplication/view/agencia/");
 	define("_view_venta_",$_config["server"]["host"]."aplication/view/venta/");
-	define("_view_reserva_",$_config["server"]["host"]."aplication/view/reserva/");
+	define("_view_reporte_",$_config["server"]["host"]."aplication/view/reporte/");
 
 ?>

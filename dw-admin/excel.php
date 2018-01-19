@@ -1,5 +1,10 @@
 <?php
 
+$ventas = json_decode($_POST['ventas'], true);
+
+// print_r($ventas);
+
+exit;
 include("inc.aplication_top.php");
 
 /** Se agrega la libreria PHPExcel */

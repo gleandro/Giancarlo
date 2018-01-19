@@ -109,6 +109,12 @@
                                         <span class="sidebar-normal">Ventas</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="reportes.php">
+                                        <span class="sidebar-mini"><i class="ti-bar-chart"></i></span>
+                                        <span class="sidebar-normal">Reporte</span>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </li>

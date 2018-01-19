@@ -1079,8 +1079,9 @@ class Ajax{
 
 						function VenderCotizacionAjax(){
 
-							$id = $_POST['id'];
+							date_default_timezone_set("America/Lima");
 
+							$id = $_POST['id'];
 							$fecha_actual = date("Y-m-d");
 							$observacion = $_POST['observacion'];
 							$id_tipo_pago = $_POST['id_tipo_pago'];
@@ -1088,10 +1089,20 @@ class Ajax{
 							$consulta_ventas = new Consulta("INSERT INTO ventas select null,id_cotizacion,id_cliente,id_agencia,'$fecha_actual',fecha_reserva,precio_cotizacion,numero_pasajeros,nombre_cotizacion,descripcion_cotizacion,'$observacion',$id_tipo_pago,0 from cotizaciones where id_cotizacion = $id");
 							$id_venta = $consulta_ventas->nuevoid();
 
+							$get_fecha = new Consulta("SELECT fecha_reserva FROM ventas WHERE id_venta = $id_venta");
+							$row_v = $get_fecha->VerRegistro();
+							$fecha = $row_v['fecha_reserva'];
+
 							//Insert destinos
 							$consulta_ventas_destinos = new Consulta("INSERT INTO ventas_destinos SELECT null,$id_venta,id_departamento FROM cotizaciones_destinos WHERE id_cotizacion = $id");
 							//insert ventas itinerario
-							$consulta_ventas_itinerarios = new Consulta("INSERT INTO ventas_itinerarios SELECT null,$id_venta,dia,nombre_cotizacion_itinerario,descripcion_cotizacion_itinerario FROM cotizaciones_itinerarios WHERE id_cotizacion = $id");
+
+							$get_itinerarios = new Consulta("SELECT dia,nombre_cotizacion_itinerario,descripcion_cotizacion_itinerario FROM cotizaciones_itinerarios WHERE id_cotizacion = $id");
+							while ($row_i = $get_itinerarios->VerRegistro()) {
+								$consulta_ventas_itinerarios = new Consulta("INSERT INTO ventas_itinerarios VALUES(null,$id_venta,".$row_i['dia'].",'$fecha','".$row_i['nombre_cotizacion_itinerario']."','".$row_i['descripcion_cotizacion_itinerario']."')");
+								$mod_date = strtotime($fecha."+ 1 days");
+								$fecha = date("Y-m-d",$mod_date) ;
+							}
 							//obtenemos todos los id_itinerarios
 							$query_itinerario = new Consulta("SELECT id_venta_itinerario from ventas_itinerarios where id_venta = $id_venta");
 							//agrupamos en un arreglo
@@ -1737,6 +1748,141 @@ class Ajax{
 									$query = new Consulta("UPDATE reservas SET codigo_reserva = '$codigo' WHERE id_reserva = $id");
 								}
 
+								function getventasxFechaAjax(){
+
+									$fecha = $_POST['fecha'];
+
+									$sql = "SELECT v.id_venta,vi.id_venta_itinerario,c.nombres_cliente,c.documento_cliente,vi.fecha_itinerario,s.id_servicio,s.nombre_servicio FROM ventas v
+													INNER JOIN clientes c using(id_cliente)
+													INNER JOIN ventas_itinerarios vi USING(id_venta)
+													INNER JOIN ventas_itinerarios_detalles vid USING(id_venta_itinerario)
+													INNER JOIN servicios s USING(id_servicio)
+													WHERE vi.fecha_itinerario = '$fecha'
+													ORDER BY id_venta DESC";
+									$query = new consulta($sql);
+
+									$c = 0;
+									while($row = $query->VerRegistro()){
+											 $result[$c]['id'] = $row['id_venta'];
+											 $result[$c]['id_itinerario'] = $row['id_venta_itinerario'];
+											 $result[$c]['tipo'] = 'Servicio';
+											 $result[$c]['nombre'] = $row['nombre_servicio'];
+											 $result[$c]['id_servicio'] = $row['id_servicio'];
+											 $result[$c]['cliente'] = $row['nombres_cliente'];
+											 $result[$c]['documento'] = $row['documento_cliente'];
+											 $result[$c]['fecha_reserva'] = $row['fecha_itinerario'];
+											 $c++;
+									}
+
+									$sql = "SELECT v.id_venta,vi.id_venta_itinerario,c.nombres_cliente,c.documento_cliente,vi.fecha_itinerario,h.id_hotel,h.nombre_hotel FROM ventas v
+													INNER JOIN clientes c using(id_cliente)
+													INNER JOIN ventas_itinerarios vi USING(id_venta)
+													INNER JOIN ventas_itinerarios_hoteles vih USING(id_venta_itinerario)
+													INNER JOIN hoteles h USING(id_hotel)
+													WHERE vi.fecha_itinerario = '$fecha'
+													ORDER BY id_venta DESC";
+									$query = new consulta($sql);
+
+									while($row = $query->VerRegistro()){
+										$result[$c]['id'] = $row['id_venta'];
+										$result[$c]['id_itinerario'] = $row['id_venta_itinerario'];
+										$result[$c]['tipo'] = 'Hotel';
+										$result[$c]['nombre'] = $row['nombre_hotel'];
+										$result[$c]['id_servicio'] = $row['id_hotel'];
+										$result[$c]['cliente'] = $row['nombres_cliente'];
+										$result[$c]['documento'] = $row['documento_cliente'];
+										$result[$c]['fecha_reserva'] = $row['fecha_itinerario'];
+										$c++;
+									}
+									echo json_encode($result);
+								}
+
+								function getServiciosXVentaAjax(){
+									$id = $_POST['id'];
+									$tipo = $_POST['tipo'];
+
+									if ($tipo == "Hotel") {
+										$query = new Consulta("SELECT vih.id_habitacion,h.nombre_habitacion,h.cantidad_habitacion 'alcanse',vih.cantidad,e.razon_social_empresa FROM ventas_itinerarios vi
+																					INNER JOIN ventas_itinerarios_hoteles vih USING(id_venta_itinerario)
+																					INNER JOIN habitaciones h USING(id_habitacion)
+																					INNER JOIN hoteles ho USING(id_hotel)
+																					INNER JOIN empresas e USING(id_empresa)
+																					WHERE id_venta_itinerario = $id");
+									}else {
+										$id_servicio = $_POST['servicio'];
+										$query = new Consulta("SELECT s.nombre_servicio,ts.nombre_tipo_servicio,s.alcance_servicio,e.razon_social_empresa FROM ventas_itinerarios vi
+																					INNER JOIN ventas_itinerarios_detalles vid USING(id_venta_itinerario)
+																					INNER JOIN servicios s USING(id_servicio)
+																					INNER JOIN tipos_servicios ts USING(id_tipo_servicio)
+																					INNER JOIN empresas e USING(id_empresa)
+																					WHERE id_venta_itinerario = $id AND vid.id_servicio = $id_servicio");
+									}
+									?>
+									<div class="row">
+
+										<?php if ($tipo == "Hotel"): ?>
+											<div class="col-md-12 text-center">
+												<h5><b>Lista de Habitaciones</b></h5>
+											</div>
+											<div class="col-md-3">
+												<h5><b>Empresa</b></h5>
+											</div>
+											<div class="col-md-5">
+												<h5><b>Nombre</b></h5>
+											</div>
+											<div class="col-md-2 text-center">
+												<h5><b>Alcance</b></h5>
+											</div>
+											<div class="col-md-2 text-center">
+												<h5><b>Cantidad</b></h5>
+											</div>
+											<?php while ($row = $query->VerRegistro()) { ?>
+												<div class="col-md-3 bg-info">
+													<span class="text-info"><?php echo $row['razon_social_empresa']; ?></span>
+												</div>
+												<div class="col-md-5 bg-info">
+													<span class="text-info"><?php echo $row['nombre_habitacion']; ?></span>
+												</div>
+												<div class="col-md-2 bg-info text-center">
+													<span class="text-info"><?php echo $row['alcanse']; ?></span>
+												</div>
+												<div class="col-md-2 bg-info text-center">
+													<span class="text-info"><?php echo $row['cantidad']; ?></span>
+												</div>
+											<?php } ?>
+										<?php else: ?>
+											<div class="col-md-12 text-center">
+												<h5><b>Lista de Servicios</b></h5>
+											</div>
+											<div class="col-md-3">
+												<h5><b>Empresa</b></h5>
+											</div>
+											<div class="col-md-5">
+												<h5><b>Nombre</b></h5>
+											</div>
+											<div class="col-md-2 text-center">
+												<h5><b>Alcance</b></h5>
+											</div>
+											<div class="col-md-2 text-center">
+												<h5><b>Tipo de Servicio</b></h5>
+											</div>
+											<?php while ($row = $query->VerRegistro()) { ?>
+												<div class="col-md-3 bg-info">
+													<span class="text-info"><?php echo $row['razon_social_empresa']; ?></span>
+												</div>
+												<div class="col-md-5 bg-info">
+													<span class="text-info"><?php echo $row['nombre_servicio']; ?></span>
+												</div>
+												<div class="col-md-2 bg-info text-center">
+													<span class="text-info"><?php echo $row['alcance_servicio']; ?></span>
+												</div>
+												<div class="col-md-2 bg-info text-center">
+													<span class="text-info"><?php echo $row['nombre_tipo_servicio']; ?></span>
+												</div>
+											<?php } ?>
+										<?php endif; ?>
+								</div><br>
+							<?php }
 								/*AJAX PARA VENTAS*/
 							}
 							?>

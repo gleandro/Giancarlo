@@ -142,7 +142,7 @@ function cargar_listas(){
     });
   }
 
-  if ($('#list_clientes').length > 0) {
+  if ($('#list_agencias').length > 0) {
     $('#list_agencias').multiselect({
       enableFiltering: true
     });

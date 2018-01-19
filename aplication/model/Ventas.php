@@ -33,6 +33,60 @@
 		return $datos;
  	}
 
+  public function getVentasHoy(){
+
+    date_default_timezone_set("America/Lima");
+
+    $fecha = date("Y-m-d");
+
+ 		$sql = "SELECT v.id_venta,vi.id_venta_itinerario,c.nombres_cliente,c.documento_cliente,vi.fecha_itinerario,s.id_servicio,s.nombre_servicio FROM ventas v
+        		INNER JOIN clientes c using(id_cliente)
+        		INNER JOIN ventas_itinerarios vi USING(id_venta)
+        		INNER JOIN ventas_itinerarios_detalles vid USING(id_venta_itinerario)
+        		INNER JOIN servicios s USING(id_servicio)
+        		WHERE vi.fecha_itinerario = '$fecha'
+        		ORDER BY id_venta DESC";
+ 		$query = new consulta($sql);
+
+ 		$datos = array();
+ 		while($row = $query->VerRegistro()){
+    		$datos[] = array(
+    		 'id' => $row['id_venta'] ,
+    		 'id_itinerario' => $row['id_venta_itinerario'],
+         'fecha_reserva' => $row['fecha_itinerario'],
+    		 'nombre' => $row['nombre_servicio'] ,
+         'id_servicio' => $row['id_servicio'] ,
+         'tipo' => 'Servicio',
+         'cliente' => $row['nombres_cliente'],
+         'documento' => $row['documento_cliente']
+       );
+		}
+
+    $sql = "SELECT v.id_venta,vi.id_venta_itinerario,c.nombres_cliente,c.documento_cliente,vi.fecha_itinerario,h.id_hotel,h.nombre_hotel FROM ventas v
+        		INNER JOIN clientes c using(id_cliente)
+        		INNER JOIN ventas_itinerarios vi USING(id_venta)
+        		INNER JOIN ventas_itinerarios_hoteles vih USING(id_venta_itinerario)
+        		INNER JOIN hoteles h USING(id_hotel)
+        		WHERE vi.fecha_itinerario = '$fecha'
+        		ORDER BY id_venta DESC";
+    $query = new consulta($sql);
+
+    while($row = $query->VerRegistro()){
+    		$datos[] = array(
+    		 'id' => $row['id_venta'] ,
+    		 'id_itinerario' => $row['id_venta_itinerario'],
+         'fecha_reserva' => $row['fecha_itinerario'],
+    		 'nombre' => $row['nombre_hotel'] ,
+         'id_servicio' => $row['id_hotel'] ,
+         'tipo' => 'Hotel',
+         'cliente' => $row['nombres_cliente'],
+         'documento' => $row['documento_cliente']
+       );
+		}
+
+		return $datos;
+ 	}
+
   static public function getVentasTotal(){
     $sql = "SELECT SUM(v.precio_venta) 'precio_total' FROM ventas v
             INNER JOIN cotizaciones c USING(id_cotizacion)

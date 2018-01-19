@@ -21,16 +21,44 @@ function reservar(element,id){
   }
 }
 
+  function changeFecha(){
+    var fecha = $("#fecha_search").val();
+    var rows = [];
 
+    $.ajax({
+      url: 'ajax2.php',
+      type: 'POST',
+      data: '&action=getventasxFecha&fecha='+fecha,
+      dataType : 'json',
+      beforeSend: function(){
+          alerty("HIOJ");
+      },
+      success: function(result){
+        for (var i = 0; i < result.length; i++) {
+          rows.push({
+            id: result[i].id,
+            id_itinerario: result[i].id_itinerario,
+            id_servicio: result[i].id_servicio,
+            tipo: result[i].tipo,
+            cliente: result[i].cliente,
+            documento: result[i].documento,
+            fecha_reserva: result[i].fecha_reserva,
+            nombre: result[i].nombre
+          });
+        }
+        $("#bootstrap-table-ventas").bootstrapTable('load', rows);
+      }
+    });
+  }
   function operateFormatter(value, row, index) {
       return [
   '<div class="table-icons">',
             // '<a rel="tooltip" title="Descargar" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
             // '<i class="ti-image"></i>',
             // '</a>',
-            '<a rel="tooltip" title="Reservar" class="btn btn-simple btn-success btn-icon table-action reserve" href="javascript:void(0)">',
-                '<i class="ti-calendar"></i>',
-            '</a>',
+            // '<a rel="tooltip" title="Reservar" class="btn btn-simple btn-success btn-icon table-action reserve" href="javascript:void(0)">',
+            //     '<i class="ti-calendar"></i>',
+            // '</a>',
             '<a rel="tooltip" title="Cancelar" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
                 '<i class="ti-close"></i>',
             '</a>',
@@ -38,28 +66,8 @@ function reservar(element,id){
       ].join('');
   }
 
-  function exportExcel(){
-
-    var datos = $table.bootstrapTable('getSelections');
-    var ventas = new Array();
-    for (var i = 0; i < datos.length; i++) {
-      ventas.push(parseInt(datos[i].id));
-    }
-
-    $.ajax({
-      url: 'excel.php',
-      type: 'POST',
-      data: {'ventas':JSON.stringify(ventas)},
-      success: function(result){
-        alert(result);
-      }
-    });
-
-
-
-  }
-
   $().ready(function(){
+
       window.operateEvents = {
           'click .view': function (e, value, row, index) {
             info = JSON.stringify(row);
@@ -280,21 +288,30 @@ function reservar(element,id){
 
       $table.bootstrapTable({
           toolbar: ".toolbar",
-          clickToSelect: true,
+          clickToSelect: false,
           search: true,
+          detailView: true,
           showToggle: true,
           pagination: true,
           searchAlign: 'left',
           pageSize: 8,
-          clickToSelect: false,
-          showExportExcelButton: true,
+          seachDate: true,
           pageList: [8,10,25,50,100],
-
           formatShowingRows: function(pageFrom, pageTo, totalRows){
               //do nothing here, we don't want to show the text "showing x of y from..."
           },
           formatRecordsPerPage: function(pageNumber){
               return pageNumber + " Filas Visibles";
+          },
+          onExpandRow: function (index, row, $detail) {
+            $.ajax({
+              url: 'ajax2.php',
+              type: 'POST',
+              data: '&action=getServiciosXVenta&id='+row.id_itinerario+'&tipo='+row.tipo+'&servicio='+row.id_servicio,
+              success: function(result){
+                $detail.hide().html(result).fadeIn('slow');
+              }
+            });
           },
           icons: {
               refresh: 'fa fa-refresh',
