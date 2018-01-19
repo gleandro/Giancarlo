@@ -1751,7 +1751,7 @@ class Ajax{
 								function getventasxFechaAjax(){
 
 									$fecha = $_POST['fecha'];
-
+									$result = array();
 									$sql = "SELECT v.id_venta,vi.id_venta_itinerario,c.nombres_cliente,c.documento_cliente,vi.fecha_itinerario,s.id_servicio,s.nombre_servicio FROM ventas v
 													INNER JOIN clientes c using(id_cliente)
 													INNER JOIN ventas_itinerarios vi USING(id_venta)

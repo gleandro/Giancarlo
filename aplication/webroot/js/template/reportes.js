@@ -31,7 +31,7 @@ function reservar(element,id){
       data: '&action=getventasxFecha&fecha='+fecha,
       dataType : 'json',
       beforeSend: function(){
-          alerty("HIOJ");
+        $("#loader").show();
       },
       success: function(result){
         for (var i = 0; i < result.length; i++) {
@@ -47,6 +47,7 @@ function reservar(element,id){
           });
         }
         $("#bootstrap-table-ventas").bootstrapTable('load', rows);
+        $("#loader").hide();
       }
     });
   }
