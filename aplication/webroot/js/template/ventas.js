@@ -28,7 +28,10 @@ function reservar(element,id){
             // '<a rel="tooltip" title="Descargar" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
             // '<i class="ti-image"></i>',
             // '</a>',
-            '<a rel="tooltip" title="Reservar" class="btn btn-simple btn-success btn-icon table-action reserve" href="javascript:void(0)">',
+            '<a rel="tooltip" title="Pagos" class="btn btn-simple btn-success btn-icon table-action pago" href="javascript:void(0)">',
+            '<i class="ti-money"></i>',
+            '</a>',
+            '<a rel="tooltip" title="Reservar" class="btn btn-simple btn-info btn-icon table-action reserve" href="javascript:void(0)">',
                 '<i class="ti-calendar"></i>',
             '</a>',
             '<a rel="tooltip" title="Cancelar" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
@@ -60,6 +63,7 @@ function reservar(element,id){
   }
 
   $().ready(function(){
+
       window.operateEvents = {
           'click .view': function (e, value, row, index) {
             info = JSON.stringify(row);
@@ -113,6 +117,9 @@ function reservar(element,id){
               swal('No puede Continuar', 'Esta venta fue cancelada','info');
             }
 
+          },
+          'click .pago': function (e, value, row, index){
+            location.href="ventas.php?action=pago&id="+row.id;
           },
           'click .remove': function (e, value, row, index) {
               info = JSON.stringify(row);
@@ -220,7 +227,43 @@ function reservar(element,id){
           return false;
       });
 
-      $('#wizardFormReservarVentas').bootstrapWizard({
+      $("#wizardFormPagosVentas").submit(function(event) {
+        event.preventDefault();
+        var restante = parseFloat($("#precio_restante").val());
+        var pago = parseFloat($("#monto_pago").val());
+        var text = $("#text_swal").val();
+        if (pago > restante) {
+          swal('Ocurrió un problema', 'No puede ingresar un monto superior al restante','error');
+        }else {
+          if (pago = restante) {
+            $("#key_pago").val(1);
+          }
+          var formData = new FormData(this);
+          $.ajax({
+            url: 'ajax2.php',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(result){
+              swal({
+                 title: 'Excelente!',
+                 text: text,
+                 type: 'success',
+                 confirmButtonText: 'Ok!',
+                 allowOutsideClick: false,
+                 allowEscapeKey: false,
+                 onClose: function(){
+                   location.href="ventas.php";
+                 }
+               })
+            }
+          });
+
+        }
+      });
+
+      $('#wizardEditarVentas').bootstrapWizard({
         tabClass: 'nav nav-pills',
         nextSelector: '.btn-next',
         previousSelector: '.btn-back',
@@ -304,6 +347,19 @@ function reservar(element,id){
               detailClose: 'ti-close'
           }
       });
+
+      if ($('#lista_pagos').length > 0) {
+        $('#lista_pagos').DataTable( {
+          "paging":   false,
+          "ordering": false,
+          "info":     false,
+          "searching": false
+          } );
+      }
+
+      if ($("#list_forma_pago").length > 0) {
+        $('#list_forma_pago').multiselect();
+      }
 
       //activate the tooltips after the data table is initialized
       $('[rel="tooltip"]').tooltip();

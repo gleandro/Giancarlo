@@ -5,15 +5,12 @@ var tr_global;
 function operateFormatter(value, row, index) {
   return [
     '<div class="table-icons">',
-    '<a rel="tooltip" title="Cotizar" class="btn btn-simple btn-success btn-icon table-action cotizar" href="javascript:void(0)">',
+    '<a rel="tooltip" title="Vender" class="btn btn-simple btn-success btn-icon table-action cotizar" href="javascript:void(0)">',
     '<i class="ti-money"></i>',
     '</a>',
     '<a rel="tooltip" title="View" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
     '<i class="ti-image"></i>',
     '</a>',
-    // '<a rel="tooltip" title="Edit" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
-    // '<i class="ti-pencil-alt"></i>',
-    // '</a>',
     '<a rel="tooltip" title="Eliminar" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
     '<i class="ti-close"></i>',
     '</a>',
@@ -38,6 +35,14 @@ function crear_table(){
 }
 
 function cargar_listas(){
+
+  if ($(".list_sexo").length > 0) {
+    $('.list_sexo').multiselect();
+  }
+  if ($("#list_forma_pago").length > 0) {
+    $('#list_forma_pago').multiselect();
+  }
+
   if ($('#list_paquetes').length > 0) {
     $('#list_paquetes').multiselect({
       enableFiltering: true,
@@ -330,21 +335,6 @@ function habitacion_update(input){
   };
 }
 
-function valida_pasajero(element){
-  var contenedor = $(element).parents(".panel");
-  var Nombres_pasajero = contenedor.find(".Nombres_pasajero").val();
-  var Documento_pasajero = contenedor.find(".Documento_pasajero").val();
-  var WhatsApp_pasajero = contenedor.find(".WhatsApp_pasajero").val();
-  var email_pasajero = contenedor.find(".email_pasajero").val();
-
-  if (contenedor.find(".collapsed").length == 0) {
-    if (Nombres_pasajero=="") {
-
-    }
-  }
-
-}
-
 function viewpasajero(element,id){
   var tr = $(element).parents("tr");
   tr_global = tr;
@@ -434,6 +424,14 @@ $(document).ready(function(){
 
   //1->nacional  2->extranjero
 
+  $("#check_pagar").change(function(event) {
+    if ($(this).prop("checked")) {
+      $("#precio").prop('disabled', true);
+    }else {
+      $("#precio").prop('disabled', false);
+    }
+  });
+
   $('#add_inclusion').click(function(){
     var nombre = $("#nombre_inclusion").val();
     var tipo = $("#inclusiones").val();
@@ -465,81 +463,38 @@ $(document).ready(function(){
         var pasajeros = $("#pasajeros").val();
         var lista_pasajeros = $("#lista_pasajeros");
         lista_pasajeros.html("");
-        for (var i = 0; i < pasajeros; i++) {
         var html =
-          '<div class="panel panel-default" style="border: 1px;border-color: #0003;border-style: solid;">'+
-            '<div class="panel-heading" role="tab" id="heading_p'+i+'">'+
-              '<h4 class="panel-title" onclick="valida_pasajero(this)">'+
-                '<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_p'+i+'" aria-expanded="false" aria-controls="collapseOne">'+
-                  '<h4 class="card-title">Pasajero '+(i+1)+'</h4>'+
-                '</a>'+
-              '</h4>'+
-            '</div>'+
-            '<div id="collapse_p'+i+'" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading_p'+i+'">'+
-              '<div class="panel-body">'+
-                '<input class="form-control pasajero" type="hidden" value="'+i+'"/>'+
-                '<div class="card card-p-'+i+'">'+
-                  '<div class="card-content">'+
                   	'<div class="row">'+
-                  	  '<div class="col-md-6">'+
+                  	  '<div class="col-md-4">'+
                     		'<div class="form-group">'+
-                    		  '<label class="control-label">Nombres</label>'+
-                    		  '<input class="form-control Nombres_pasajero" name="list_pasajeros['+i+'][Nombres]" type="text" placeholder="Nombres" required="required"/>'+
+                    		  '<label class="control-label">Pasajeros</label>'+
+                    		  '<input class="form-control total_pasajeros" type="text" placeholder="Nombres" value="'+pasajeros+'" disabled/>'+
                     		'</div>'+
                   	  '</div>'+
-                  	  '<div class="col-md-6">'+
+                  	  '<div class="col-md-4">'+
                     		'<div class="form-group">'+
-                    		  '<label class="control-label">Documento (DNI/Pasaporte)</label>'+
-                    		  '<input class="form-control Documento_pasajero" name="list_pasajeros['+i+'][Documento]" type="text" placeholder="Documento (DNI/Pasaporte)" required="required"/>'+
+                    		  '<label class="control-label">N° de Pasajeros Nacionales</label>'+
+                    		  '<input class="form-control pasajero_nacional" name="list_pasajeros[Nacional]" type="number" placeholder="N° Nacionales" required="required" value="0"/>'+
                     		'</div>'+
                   	  '</div>'+
-                  	  '<div class="col-md-6">'+
-                    		'<div class="form-group">'+
-                    		  '<label class="control-label">WhatsApp</label>'+
-                    		  '<input class="form-control WhatsApp_pasajero" name="list_pasajeros['+i+'][WhatsApp]" type="text" placeholder="WhatsApp" required="required"/>'+
+                  	  '<div class="col-md-4">'+
+                    		  '<label class="control-label">N° de Pasajeros Extranjeros</label>'+
+                    		  '<input class="form-control pasajero_extranjero" name="list_pasajeros[Extranjero]" type="number" placeholder="N° Extranjeros" required="required" value="0"/>'+
                     		'</div>'+
-                  	  '</div>'+
-                      '<div class="col-md-6">'+
-                        '<div class="form-group">'+
-                          '<label class="control-label">Sexo</label>'+
-                          '<select class="tipo_nacionalidad" name="list_pasajeros['+i+'][sexo]">'+
-                            '<option value="0">Masculino</option>'+
-                            '<option value="1">Femenino</option>'+
-                          '</select>'+
-                        '</div>'+
-                      '</div>'+
-                      '<div class="col-md-6 col-md-offset-3">'+
-                        '<div class="form-group">'+
-                          '<label class="control-label">Nacionalidad</label>'+
-                          '<select class="tipo_nacionalidad" name="list_pasajeros['+i+'][nacionalidad]">'+
-                            '<option value="0">Nacional</option>'+
-                            '<option value="1">Extranjero</option>'+
-                          '</select>'+
-                        '</div>'+
-                      '</div>'+
-                  	'</div>'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
-            '</div>'+
-          '</div>';
+                  	  '</div>' ;
           lista_pasajeros.append(html);
-          $(".tipo_nacionalidad").selectpicker();
-          $("#collapse_p"+(i)).collapse('toggle');
-          }
       }
 
-      // if (index == 1 && $("#editarpaquete").val() == '1') {
-      //   var dias = $(".card-dia").val();
-      //   for (var i = 0; i < dias; i++) {
-      //     $("#collapse"+(i+1)).collapse('toggle');
-      //   }
-      // }
-      // if (index == 1 && $("#editarpaquete").val() != '1') {
-      //   addServicioPaquete(1,'');
-      //   addHotelPaquete(1,'');
-      //   window.setTimeout("crear_table()",1000);
-      // }
+      if (index == 2) {
+        var total = $(".total_pasajeros").val();
+        var numero_pasajeros = parseInt($(".pasajero_nacional").val()) + parseInt($(".pasajero_extranjero").val());
+        if (total != numero_pasajeros) {
+          swal('Datos no coinciden', 'Ingrese una cantidad correcta','info');
+          return false;
+        }
+
+      }
+
       if (index == 3) {
         var datos =$(".dataTables_filter").find("input");
         for (var i = 0; i < datos.length; i++) {
@@ -661,21 +616,17 @@ $(document).ready(function(){
     }
   });
 
-  $('#wizardEditarCotizacion').bootstrapWizard({
+  $('#wizardSellCotizacion').bootstrapWizard({
     tabClass: 'nav nav-pills',
     nextSelector: '.btn-next',
     previousSelector: '.btn-back',
     onNext: function(tab, navigation, index) {
-      var $valid = $('#wizardFormEditarCotizacion').valid();
+      var $valid = $('#wizardFormSellCotizacion').valid();
       if(!$valid) {
         $validator.focusInvalid();
         return false;
       }
       if (index == 1) {
-        var dias = $(".card-dia").val();
-        for (var i = 0; i < dias; i++) {
-          $("#collapse"+(i+1)).collapse('toggle');
-        }
       }
     },
     onInit : function(tab, navigation, index){
@@ -761,67 +712,10 @@ $(document).ready(function(){
       location.href="cotizaciones.php?action=edit&id="+row.id;
     },
     'click .cotizar': function (e, value, row, index) {
-      if ($($(this).parents("tr").children("td")[8]).html() == "Vendido") {
+      if ($(this).parents("tr").find("td.estado").html() == "Vendido") {
         swal('Lo sentimos', 'Esta cotizacion ya fue Vendida');
       }else {
-
-        var html = '<form id="form_vender_cotizacion" action="index.html" method="post">'+
-                      '<div class="row">'+
-                        '<input hidden name="id" type="text" value="'+row.id+'" />'+
-                        '<input hidden name="action" type="text" value="VenderCotizacion" />'+
-                        '<div class="col-md-10 col-md-offset-1">'+
-                          '<div class="form-group">'+
-                            '<label class="control-label">Forma de Pago</label>'+
-                            '<select id="list_forma_pago" name="id_tipo_pago">'+
-                              '<option value="0">Pago Efectivo</option>'+
-                              '<option value="1">Pago Tarjeta 5%</option>'+
-                              '<option value="2">Pago tarjeta 7%</option>'+
-                            '</select>'+
-                          '</div>'+
-                        '</div>'+
-                        '<div class="col-md-12">'+
-                          '<div class="form-group">'+
-                            '<label class="control-label">Observaciones</label>'+
-                            '<textarea style="max-width: 100%;" name="observacion" class="form-control" rows="5"></textarea>'+
-                          '</div>'+
-                        '</div>'+
-                      '</div>'+
-                    '</form>';
-
-        swal({
-            title: 'Vender Cotizacion',
-            html: html,
-            showCancelButton: true,
-            confirmButtonText: 'Vender',
-            showLoaderOnConfirm: false,
-            allowOutsideClick: false,
-            preConfirm: () => {
-              var formData = new FormData($("#form_vender_cotizacion")[0]);
-              $.ajax({
-                url: 'ajax2.php',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function(datos){
-                  // alert(datos);
-                  swal({
-                    title: 'Vendido!',
-                    text: "Cotizacion Vendida",
-                    type: 'success',
-                    confirmButtonText: 'Ok!',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    onClose: function(){
-                      location.href="cotizaciones.php";
-                    }
-                  })
-                }
-              });
-              swal.close();
-            }
-          });
-          $("#list_forma_pago").selectpicker();
+        location.href="cotizaciones.php?action=sell&id="+row.id;
       }
     },
     'click .remove': function (e, value, row, index) {
@@ -914,15 +808,17 @@ $(document).ready(function(){
 
 //INICIO AGREGAR DIAS Y SERVICIOS
 function addHabitaciones(dia,item,id){
-  var panel_pasajeros = $("#lista_pasajeros").find(".panel-body");
+  var nacionales = parseInt($(".pasajero_nacional").val());
+  var extranjero = parseInt($(".pasajero_extranjero").val());
 
   var pasajeros = [];
 
-  for (var i = 0; i < panel_pasajeros.length; i++) {
-    var id_pasajero = $(panel_pasajeros[i]).find(".pasajero").val();
-    var nombre = $(panel_pasajeros[i]).find(".Nombres_pasajero").val();
-    var documento = $(panel_pasajeros[i]).find(".Documento_pasajero").val();
-    pasajeros[id_pasajero] = nombre;
+  for (var i = 0; i < nacionales; i++) {
+    pasajeros[i] = "Nacional_"+(i+1);
+  }
+  for (var j = 0; j < extranjero; j++) {
+    pasajeros[i] = "Extranjero_"+(j+1);
+    i++;
   }
 
   $.ajax({
@@ -1079,7 +975,7 @@ $("#wizardFormCotizacion").submit(function(e) { //AGREGAR UN PAQUETE
       //alert(datos);
       swal({
         title: 'Registrado!',
-        text: "",
+        text: datos,
         type: 'success',
         confirmButtonText: 'Ok!',
         allowOutsideClick: false,
@@ -1092,25 +988,15 @@ $("#wizardFormCotizacion").submit(function(e) { //AGREGAR UN PAQUETE
   });
   return false;
 });
-$("#wizardFormEditarCotizacion").submit(function(e) {
+$("#wizardFormSellCotizacion").submit(function(e) {
   e.preventDefault();
 
   var $form = $(this);
 
   if(! $form.valid()) return false;
 
-  var formData = new FormData($("#wizardFormEditarCotizacion")[0]);
+  var formData = new FormData($("#wizardFormSellCotizacion")[0]);
   var ruta = "ajax2.php";
-
-  var dias = $(".card-dia").val();
-
-  for (var i = 0; i < dias; i++) {
-    var dia = $(".card-"+(i+1));
-    var servicios = dia.find(".table_servicio").find(".selected .id");
-    for (var k = 0; k < servicios.length; k++) {
-      formData.append('servicios['+i+']['+k+']', servicios[k].innerHTML);
-    }
-  }
 
   $.ajax({
     url: ruta,
@@ -1118,9 +1004,13 @@ $("#wizardFormEditarCotizacion").submit(function(e) {
     data: formData,
     contentType: false,
     processData: false,
+    beforeSend: function(){
+      $("#loader").show();
+    },
     success: function(datos){
+      $("#loader").hide();
       swal({
-        title: 'Actualizado!',
+        title: 'Cotizacion Vendida!',
         text: datos,
         type: 'success',
         confirmButtonText: 'Ok!',
@@ -1135,31 +1025,6 @@ $("#wizardFormEditarCotizacion").submit(function(e) {
   });
   return false;
 });
-
-function onFinishWizardPaquetes(){
-  //CUANDO FINALIZA EL FORM WIZARD GUARDAMOS LOS DATOS Y MOSTRAMOS ALERTA
-
-  $.ajax({
-    type : "GET",
-    url :"ajax.php",
-    data: $("#wizardFormEditarCotizacion").serialize()+"&action=actualizarPaquete",
-    beforeSend: function(){
-    },
-    success: function(datos){
-      alert(datos);
-      swal({
-        title: 'Listo!',
-        text: 'El Paquete fué registrado con éxito',
-        type: 'success',
-        allowOutsideClick: false,
-        allowEscapeKey: false
-      }).then(function (email) {
-        location.href="paquetes.php";
-      })
-    }
-  });
-}
-//FIN AGREGAR DIAS Y SERVICIOS
 
 
 function archivo(evt) {

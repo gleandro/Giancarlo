@@ -40,9 +40,9 @@
                 <td><?php echo "$".$cotizacion['precio'] ?></td>
                 <?php
                 if($cotizacion['estado'] == 1){
-                  echo "<td class='text-info'>Vendido</td>";
+                  echo "<td class='text-info estado'>Vendido</td>";
                 }else {
-                  echo "<td class='text-success'>Cotizado</td>";
+                  echo "<td class='text-success estado'>Cotizado</td>";
                 }
                 ?>
                 <td></td>

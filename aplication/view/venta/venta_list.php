@@ -29,7 +29,7 @@
 							<td><?php echo ($venta['nombre']) ?></td>
 							<td><?php echo "$".($venta['precio']) ?></td>
 							<td><?php echo ($venta['pasajeros']) ?></td>
-							<td><?php echo $objVentas->getEstado($venta['estado'],$estados) ?></td>
+							<td><?php echo $objVentas->getEstado($venta['estado'],$estados,$venta['pagado']); ?></td>
 							<td><?php echo $venta['estado'] ?></td>
 						</tr>
 					<?php

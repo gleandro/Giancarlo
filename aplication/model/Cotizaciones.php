@@ -25,6 +25,26 @@ class Cotizaciones{
 		}
 		return $datos;
 	}
+
+	static public function getPasajeros($id){
+
+		$sql = "SELECT DISTINCT p.* FROM cotizaciones c
+						INNER JOIN cotizaciones_itinerarios ci USING(id_cotizacion)
+						INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
+						INNER JOIN cotizaciones_itinerarios_detalles_pasajeros cidp USING(id_cotizacion_itinerario_detalle)
+						INNER JOIN pasajeros p USING(id_pasajero)
+						WHERE id_cotizacion = $id";
+		$query = new Consulta($sql);
+		while ($row = $query->VerRegistro()) {
+			$result[] = array(
+				'id_pasajero' => $row['id_pasajero'],
+				'nombres_pasajero' => $row['nombres_pasajero'],
+				'id_nacionalidad' => $row['id_nacionalidad']
+			);
+		}
+		return $result;
+	}
+
 	static public function getCotizacionesItinerarioDetalle($id)
 	{
 		$sql   = "SELECT * FROM cotizaciones_itinerarios_detalles WHERE id_cotizacion_itinerario= '".$id."' ";
@@ -60,18 +80,23 @@ class Cotizaciones{
 	}
 
 	static public function GetListaPasajeros($lista_pasajeros){
+		$c = 0;
 		foreach ($lista_pasajeros as $key => $pasajero) {
-			$nombre = $pasajero['Nombres'];
-			$documento = $pasajero['Documento'];
-			$whatsapp = $pasajero['WhatsApp'];
-			$id_nacionalidad = $pasajero['nacionalidad'];
-			$sexo = $pasajero['sexo'];
-			$sql_pasajero = "INSERT INTO pasajeros(id_pasajero,nombres_pasajero,documento_pasajero,whatsapp_pasajero,id_nacionalidad,sexo)
-											VALUES(null,'$nombre','$documento','$whatsapp',$id_nacionalidad,$sexo)";
-			$query_pasajero = new Consulta($sql_pasajero);
-			$nuevo_id_pasajero = $query_pasajero->nuevoid();
-			$lista_pasajeros_salida[$key]['id'] = $nuevo_id_pasajero;
-			$lista_pasajeros_salida[$key]['nacionalidad'] = $id_nacionalidad;
+			if ($key == "Nacional") {
+				$id_nacionalidad = 0;
+			}else {
+				$id_nacionalidad = 1;
+			}
+			for ($i=0; $i < $pasajero; $i++) {
+				$nombre = $key."_".($i+1);
+				$sql_pasajero = "INSERT INTO pasajeros(id_pasajero,nombres_pasajero,documento_pasajero,whatsapp_pasajero,id_nacionalidad,sexo)
+												VALUES(null,'$nombre','','',$id_nacionalidad,0)";
+				$query_pasajero = new Consulta($sql_pasajero);
+				$nuevo_id_pasajero = $query_pasajero->nuevoid();
+				$lista_pasajeros_salida[$c]['id'] = $nuevo_id_pasajero;
+				$lista_pasajeros_salida[$c]['nacionalidad'] = $id_nacionalidad;
+				$c++;
+			}
 		}
 		return $lista_pasajeros_salida;
 	}

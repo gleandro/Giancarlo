@@ -26,6 +26,7 @@
     		 'descripcion' => $row['descripcion_venta'],
     		 'observacion' => $row['observacion_venta'],
          'estado' => $row['bl_estado_venta'],
+         'pagado' => $row['pagado_venta'],
          'cliente' => $row['nombres_cliente'],
          'documento' => $row['documento_cliente']
        );
@@ -98,6 +99,40 @@
     return $row['precio_total'];
   }
 
+  public function getPrecio($id){
+    $query = new Consulta("SELECT precio_venta FROM ventas WHERE id_venta = $id");
+    $row = $query->VerRegistro();
+
+    return $row['precio_venta'];
+  }
+
+  public function getPagos($id){
+    $sql = "SELECT * FROM pagos WHERE id_venta = $id ORDER BY orden_pago ASC";
+    $query  = new Consulta($sql);
+    $total = 0.00;
+
+    while ($row = $query->VerRegistro()) {
+      $result[] = array(
+        'orden' => $row['orden_pago'],
+        'fecha' => $row['fecha_pago'],
+        'pago' => $row['forma_pago'],
+        'observacion' => $row['observacion_pago'],
+        'monto' => $row['monto_pago']
+      );
+      $total += $row['monto_pago'];
+    }
+
+    $result[] = array(
+      'orden' => '',
+      'fecha' => '',
+      'pago' => '',
+      'observacion' => 'Total',
+      'monto' => $total
+    );
+
+    return $result;
+  }
+
   public function getReservaXTipo($id,$tipo_reserva){
     if ($tipo_reserva) {
       $sql = "SELECT r.id_reserva,s.nombre_servicio 'nombre',r.codigo_reserva FROM reservas r
@@ -121,17 +156,21 @@
     return $list_reserva;
   }
 
-  public function getEstado($bl_estado,$array){
+  public function getEstado($bl_estado,$array,$pagado){
     if ($bl_estado == 0) {
-      return '<span class="text-warning">'.$array[$bl_estado].'</span>';
+      $html =  '<span class="text-warning">'.$array[$bl_estado].'</span>';
     }
     else if ($bl_estado == 1) {
-      return '<span class="text-success">'.$array[$bl_estado].'</span>';
+      $html = '<span class="text-success">'.$array[$bl_estado].'</span>';
     }
     else{
-      return '<span class="text-danger">'.$array[$bl_estado].'</span>';
+      $html = '<span class="text-danger">'.$array[$bl_estado].'</span>';
     }
 
+    if ($pagado) {
+      $html .= ' / <span class="text-success">Pagado</span>';
+    }
+    return $html;
   }
 
   public function getDestinos($departamentos){

@@ -745,7 +745,8 @@ class Ajax{
 
 					function registrarCotizacionAjax(){
 						date_default_timezone_set("America/Lima");
-
+						// $lista_pasajeros = Cotizaciones::GetListaPasajeros($_POST['list_pasajeros']);
+						// exit;
 						if(isset($_FILES['files']) && ($_FILES['files']['name'] != "")){
 
 							$obj  = new Upload();
@@ -870,160 +871,191 @@ class Ajax{
 
 					}
 
-					function actualizarCotizacionAjax(){
+					function sellCotizacionAjax(){
+						date_default_timezone_set("America/Lima");
 
-						// print_r($_POST);
-						// exit;
-
-						if(isset($_FILES['files']) && ($_FILES['files']['name'] != "")){
-
-							$obj  = new Upload();
-							$destino = "../aplication/webroot/imgs/";
-
-							$name = strtolower(date("ymdhis").$_FILES['files']['name']);
-							$temp = $_FILES['files']['tmp_name'];
-							$type = $_FILES['files']['type'];
-							$size = $_FILES['files']['size'];
-
-							$obj->upload_imagen($name, $temp, $destino, $type, $size);
-							$update="imagen_cotizacion = '".$name."',";
+						$pasajaeros = $_POST['pasajeros'];
+						foreach ($pasajaeros as $key => $pasajero) {
+							$query = new Consulta("UPDATE pasajeros SET
+																			nombres_pasajero = '".$pasajero['nombre']."',
+																			documento_pasajero = '".$pasajero['documento']."',
+																			whatsapp_pasajero = '".$pasajero['whatsapp']."',
+																			sexo = '".$pasajero['sexo']."'
+																			WHERE id_pasajero = $key");
 						}
-
 						$id = $_POST['id'];
-
-						$query_cotizacion = new Consulta("UPDATE  cotizaciones SET
-							".$update."
-							id_cliente = ".$_POST['id_cliente'].",
-							numero_pasajeros = ".$_POST['numero_pasajeros'].",
-							nombre_cotizacion = '".$_POST['nombre_paquete']."',
-							descripcion_cotizacion = '".$_POST['descripcion_paquete']."'
-							WHERE id_cotizacion =".$id);
-
-						$query = new Consulta("DELETE FROM cotizaciones_destinos WHERE id_cotizacion = '".$id."' ");
-						$departamento = $_POST['departamento'];
-						if ($_POST['departamento']) {
-							foreach ($departamento as $depa) {
-								$query2 =new Consulta( "INSERT INTO cotizaciones_destinos values('','".$id."','".$depa."')" );
-							}
+						$fecha_actual = date("Y-m-d");
+						$observacion = $_POST['observacion'];
+						$id_tipo_pago = $_POST['id_tipo_pago'];
+						$precio = $_POST['precio'];
+						$pagado_venta = 0;
+						if (!$precio) {
+							$query_precio_total = new Consulta("SELECT precio_cotizacion FROM cotizaciones WHERE id_cotizacion = $id");
+							$r = $query_precio_total->VerRegistro();
+							$precio = $r['precio_cotizacion'];
+							$pagado_venta = 1;
 						}
 
-						$query_cotizaciones_itinerarios = new Consulta("SELECT id_cotizacion_itinerario FROM cotizaciones_itinerarios WHERE id_cotizacion = '".$id."' ");
+						$consulta_ventas = new Consulta("INSERT INTO ventas select null,id_cotizacion,id_cliente,id_agencia,'$fecha_actual',fecha_reserva,precio_cotizacion,numero_pasajeros,nombre_cotizacion,descripcion_cotizacion,$pagado_venta,0 from cotizaciones where id_cotizacion = $id");
+						$id_venta = $consulta_ventas->nuevoid();
 
-						while($row = $query_cotizaciones_itinerarios->VerRegistro()) {
-							$query = new Consulta("DELETE FROM cotizaciones_itinerarios_detalles WHERE id_cotizacion_itinerario = '".$row['id_cotizacion_itinerario']."' ");
-							$query = new Consulta("DELETE FROM cotizaciones_itinerarios_hoteles WHERE id_cotizacion_itinerario = '".$row['id_cotizacion_itinerario']."' ");
+						$consulta_pagos = new Consulta("INSERT INTO pagos VALUES(null,$id_venta,'$fecha_actual',$precio,$id_tipo_pago,'$observacion',0)");
+
+						$get_fecha = new Consulta("SELECT fecha_reserva FROM ventas WHERE id_venta = $id_venta");
+						$row_v = $get_fecha->VerRegistro();
+						$fecha = $row_v['fecha_reserva'];
+
+						//Insert destinos
+						$consulta_ventas_destinos = new Consulta("INSERT INTO ventas_destinos SELECT null,$id_venta,id_departamento FROM cotizaciones_destinos WHERE id_cotizacion = $id");
+						//insert ventas itinerario
+
+						$get_itinerarios = new Consulta("SELECT dia,nombre_cotizacion_itinerario,descripcion_cotizacion_itinerario FROM cotizaciones_itinerarios WHERE id_cotizacion = $id");
+						while ($row_i = $get_itinerarios->VerRegistro()) {
+							$consulta_ventas_itinerarios = new Consulta("INSERT INTO ventas_itinerarios VALUES(null,$id_venta,".$row_i['dia'].",'$fecha','".$row_i['nombre_cotizacion_itinerario']."','".$row_i['descripcion_cotizacion_itinerario']."')");
+							$mod_date = strtotime($fecha."+ 1 days");
+							$fecha = date("Y-m-d",$mod_date) ;
 						}
+						//obtenemos todos los id_itinerarios
+						$query_itinerario = new Consulta("SELECT id_venta_itinerario from ventas_itinerarios where id_venta = $id_venta");
+						//agrupamos en un arreglo
+						while ($row1 = $query_itinerario->VerRegistro()) {
+							$datos_itinerario[] = array(
+							 'id_venta_itinerario' => $row1['id_venta_itinerario']
+						 );
+					 }
 
-						$query = new Consulta("DELETE FROM cotizaciones_itinerarios WHERE id_cotizacion = '".$id."' ");
-
-						$servicio = $_POST['servicios'];
-						$nombreDia = $_POST['nombreDia'];
-						$hoteles = $_POST['hotel'];
-						$descripcion = $_POST['descripcion'];
-
-						$check_habitaciones = $_POST['check_habitaciones'];
-						$precios_habitaciones = $_POST['precios_habitaciones'];
-						$cantidad_habitaciones = $_POST['cantidad_habitaciones'];
-
-						foreach ($nombreDia as $key => $nombre) {
-
-							$query_itinerarios = new Consulta("INSERT INTO cotizaciones_itinerarios VALUES('','". $id ."',".$key.",'". $nombre ."','". $descripcion[$key] ."') ");
-							$nuevoIdItinerarios = $query_itinerarios->nuevoid();
-							$servicioarray = $servicio[$key];
-
-							if (is_array($servicioarray) || is_object($servicioarray)) {
-								foreach ($servicioarray as $llave => $value) {
-									$query_itinerario_detalle = new Consulta("INSERT INTO cotizaciones_itinerarios_detalles VALUES('','". $nuevoIdItinerarios ."','". $value ."') ");
+					 //INSERT SERVICIOS
+						$query_servicios = new Consulta("SELECT dia,cid.* FROM cotizaciones_itinerarios ci
+																						INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
+																						WHERE id_cotizacion = $id");
+						while ($row2 = $query_servicios->VerRegistro()) {
+							$datos_servicios[] = array(
+							 'dia' => $row2['dia'] ,
+							 'id_servicio' => $row2['id_servicio'],
+							 'precio_n' => $row2['precio_nacional_servicio'],
+							 'precio_e' => $row2['precio_extranjero_servicio']
+						 );
+						}
+						$c = (int)0;
+						for ($i=0; $i < count($datos_itinerario); $i++) {
+							foreach ($datos_servicios as $key => $servicio) {
+								if ($i == $servicio['dia']) {
+									$id_venta_itinerario = $datos_itinerario[$i]['id_venta_itinerario'];
+									$id_servicio = $servicio['id_servicio'];
+									$precio_n = $servicio['precio_n'];
+									$precio_e = $servicio['precio_e'];
+									$consulta_ventas_itinerarios_detalles = new Consulta("INSERT INTO ventas_itinerarios_detalles values(null,$id_venta_itinerario,$id_servicio,$precio_n,$precio_e)");
+									$list_ventas_itinerarios_detalles[$c] = $consulta_ventas_itinerarios_detalles->nuevoid();
+									$c++;
 								}
 							}
+						}
+						$query_servicios_pasajeros = new Consulta("SELECT cidp.id_pasajero,cidp.precio FROM cotizaciones_itinerarios ci
+																											INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
+																											INNER JOIN cotizaciones_itinerarios_detalles_pasajeros cidp USING(id_cotizacion_itinerario_detalle)
+																											WHERE id_cotizacion = $id");
+						$c = (int)0;
+						while ($row3 = $query_servicios_pasajeros->VerRegistro()) {
+							 $id_pasajero = $row3['id_pasajero'];
+							 if(!$id_first) {
+									$id_first = $id_pasajero;
+							 }else {
+								 if ($id_first == $id_pasajero) {
+									$c++;
+									$id_first = $id_pasajero;
+								 }
+							 }
 
-							$hotel = $hoteles[$key];  //Listo solo los de un dia a la vez
+							 $precio = $row3['precio'];
+							 $id_venta_itinerario_detalle = $list_ventas_itinerarios_detalles[$c];
+							 $insert_detalles_pasajeros = new Consulta("INSERT INTO ventas_itinerarios_detalles_pasajeros VALUES(null,$id_venta_itinerario_detalle,$id_pasajero,$precio)");
+						}
 
-							$checkarray = $check_habitaciones[$key];
-							$preciosarray = $precios_habitaciones[$key];
-							$cantidadarray = $cantidad_habitaciones[$key];
+						//INSERT HOTELES
 
-							if (is_array($checkarray) || is_object($checkarray)) {
-								foreach ($checkarray as $k => $value) {
-										$preciosarray[$k];
-										$cantidadarray[$k];
-										$queryItinerariosHoteles = new Consulta("INSERT INTO cotizaciones_itinerarios_hoteles
-											VALUES('','". $nuevoIdItinerarios ."','". $hotel ."','". $value ."','". $cantidadarray[$k] ."') ");
+						$query_hoteles = new Consulta("SELECT * FROM cotizaciones_itinerarios ci
+																						INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
+																						WHERE id_cotizacion = $id");
+						while ($row2 = $query_hoteles->VerRegistro()) {
+							$datos_hoteles[] = array(
+							 'dia' => $row2['dia'] ,
+							 'id_hotel' => $row2['id_hotel'],
+							 'id_habitacion' => $row2['id_habitacion'],
+							 'cantidad' => $row2['cantidad'],
+							 'precio_n' => $row2['precio_nacional_hotel'],
+							 'precio_e' => $row2['precio_extranjero_hotel']
+						 );
+						}
+
+						$c = (int)0;
+						for ($i=0; $i < count($datos_itinerario); $i++) {
+							foreach ($datos_hoteles as $key => $hotel) {
+								if ($i == $hotel['dia']) {
+									$id_venta_itinerario = $datos_itinerario[$i]['id_venta_itinerario'];
+									$id_hotel = $hotel['id_hotel'];
+									$id_habitacion = $hotel['id_habitacion'];
+									$cantidad = $hotel['cantidad'];
+									$precio_n = $hotel['precio_n'];
+									$precio_e = $hotel['precio_e'];
+									$consulta_ventas_itinerarios_hoteles = new Consulta("INSERT INTO ventas_itinerarios_hoteles values(null,$id_venta_itinerario,$id_hotel,$id_habitacion,$cantidad,$precio_n,$precio_e)");
+									$list_ventas_itinerarios_hoteles[$c] = $consulta_ventas_itinerarios_hoteles->nuevoid();
+									$c++;
 								}
 							}
 						}
-						$incluye = $_POST['incluye'];
-						$excluye = $_POST['excluye'];
+						$query_hoteles_pasajeros = new Consulta("SELECT cihp.id_pasajero,cihp.precio_hotel FROM cotizaciones_itinerarios ci
+																											INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
+																											INNER JOIN cotizaciones_itinerarios_hoteles_pasajeros cihp USING(id_cotizacion_itinerario_hotel)
+																											WHERE id_cotizacion = $id");
 
-						$query4 = new Consulta("DELETE FROM inclusiones where tipo_programa = 1 AND id_cotizacion = '".$id."'");
-						if (is_array($incluye) || is_object($incluye)) {
-							foreach ($incluye as $key => $value) {
-								$query4 = new Consulta("INSERT INTO inclusiones values(null,null,$id,null,'".$value."',1,1)");
-							}
+						unset($id_first);
+						$c = (int)0;
+						while ($row3 = $query_hoteles_pasajeros->VerRegistro()) {
+							 $id_pasajero = $row3['id_pasajero'];
+							 // echo $id_pasajero."--";
+							 if(!$id_first) {
+									$id_first = $id_pasajero;
+							 }else {
+								 if ($id_first == $id_pasajero) {
+									$c++;
+									$id_first = $id_pasajero;
+								 }
+							 }
+							 $precio = $row3['precio_hotel'];
+							 $id_venta_itinerario_hotel = $list_ventas_itinerarios_hoteles[$c];
+							 $insert_detalles_pasajeros = new Consulta("INSERT INTO ventas_itinerarios_hoteles_pasajeros VALUES(null,$id_venta_itinerario_hotel,$id_pasajero,$precio)");
 						}
-						if (is_array($excluye) || is_object($excluye)) {
-							foreach ($excluye as $key => $value) {
-								$query4 = new Consulta("INSERT INTO inclusiones values(null,null,$id,null,'".$value."',2,1)");
-							}
+
+						//INSERT RESERVAS HOTEL
+						$query_reserva_hotel = new Consulta("SELECT DISTINCT cih.id_hotel FROM cotizaciones c
+																	INNER JOIN cotizaciones_itinerarios ci USING(id_cotizacion)
+																	INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
+																	WHERE c.id_cotizacion = $id");
+
+						while ($row = $query_reserva_hotel->VerRegistro()) {
+							$id_hotel = $row['id_hotel'];
+							$query = new Consulta("INSERT INTO reservas SELECT null,$id_venta,$id_hotel,null,'',0");
 						}
+
+						//INSERT RESERVAS SERVICIO
+						$query_reserva_servicio = new Consulta("SELECT DISTINCT cid.id_servicio from cotizaciones c
+																	INNER JOIN cotizaciones_itinerarios ci USING(id_cotizacion)
+																	INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
+																	where c.id_cotizacion = $id");
+
+						while ($row = $query_reserva_servicio->VerRegistro()) {
+							$id_servicio = $row['id_servicio'];
+							$query = new Consulta("INSERT INTO reservas SELECT null,$id_venta,null,$id_servicio,'',1");
+						}
+						$consulta_inclusiones = new Consulta("INSERT INTO inclusiones SELECT null,null,null,$id_venta,nombre_inclusion,tipo_inclusion,2 from inclusiones where id_cotizacion =$id");
+
+						$query_update_cotizacion = new Consulta("UPDATE cotizaciones SET estado_cotizacion = 1 WHERE id_cotizacion = $id");
+
+
+
 
 					}
 
-					function actualizarCotizacionAjax____(){
-
-						if(isset($_FILES['files']) && ($_FILES['files']['name'] != "")){
-
-							$obj  = new Upload();
-							$destino = "../aplication/webroot/imgs/";
-
-							$name = strtolower(date("ymdhis").$_FILES['files']['name']);
-							$temp = $_FILES['files']['tmp_name'];
-							$type = $_FILES['files']['type'];
-							$size = $_FILES['files']['size'];
-
-							$obj->upload_imagen($name, $temp, $destino, $type, $size);
-							$update="imagen_paquete = '".$name."',";
-
-						}
-
-						$id_paquete = $_POST['id'];
-						$query = new Consulta("UPDATE paquetes SET
-							".$update."
-							nombre_paquete = '".$_POST['nombre_paquete']."',
-							descripcion_paquete = '".$_POST['descripcion_paquete']."'
-							WHERE id_paquete = '".$id_paquete."' ");
-
-
-							$query = new Consulta("DELETE FROM paquetes_destinos WHERE id_paquete = '".$id_paquete."' ");
-							$departamento = $_POST['departamento'];
-							if ($_POST['departamento']) {
-								foreach ($departamento as $depa) {
-									$query2 =new Consulta( "quetes_destinos values('','".$id_paquete."','".$depa."')" );
-								}
-							}
-
-							$id_paquete = $_POST['id'];
-							$query = new Consulta("DELETE FROM paquetes_itinerarios WHERE id_paquete = '".$id_paquete."' ");
-
-							$servicio = $_POST['servicio'];
-							$nombreDia = $_POST['nombreDia'];
-							$hoteles = $_POST['hotel'];
-							$descripcion = $_POST['descripcion'];
-							foreach ($nombreDia as $key => $nombre) {
-								$query2 = new Consulta("INSERT INTO paquetes_itinerarios VALUES('','". $id_paquete ."','41','". $nombre['0'] ."','". $descripcion[$key]['0'] ."') ");
-								$nuevoid2 = $query2->nuevoid();
-								$servicioarray = $servicio[$key];
-								foreach ($servicioarray as $llave => $value) {
-									$query3 = new Consulta("INSERT INTO paquetes_itinerarios_detalles VALUES('','". $nuevoid2 ."','". $value ."') ");
-								}
-								$hotelarray = $hoteles[$key];
-								foreach ($hotelarray as $llave => $hotel) {
-									$query3 = new Consulta("INSERT INTO paquetes_itinerario_hoteles VALUES('','". $nuevoid2 ."','". $hotel ."') ");
-								}
-							}
-
-
-						}
 
 						function borrarCotizacionAjax(){
 							$id = $_GET['id'];
@@ -1077,167 +1109,27 @@ class Ajax{
 							echo json_encode($paquete);
 						}
 
+						function registrarGastoCotizacionAjax(){
+							date_default_timezone_set("America/Lima");
+							$fecha_actual = date("Y-m-d");
+							$id = $_POST['id'];
+							$tipo_pago = $_POST['id_tipo_pago'];
+							$precio = number_format($_POST['precio'],2);
+							$observacion = $_POST['observacion'];
+
+							$query_orden = new Consulta("SELECT MAX(orden_pago)+1 'orden' FROM pagos WHERE id_venta = $id");
+							$row = $query_orden->VerRegistro();
+							$orden = $row['orden'];
+
+							$query = new Consulta("INSERT INTO pagos VALUES(null,$id,'$fecha_actual',$precio,$tipo_pago,'$observacion',$orden)");
+
+							if ($_POST['key_pago'] == 1) {
+								$query = new Consulta("UPDATE ventas SET pagado_venta = 1 WHERE id_venta = $id");
+							}
+						}
+
 						function VenderCotizacionAjax(){
 
-							date_default_timezone_set("America/Lima");
-
-							$id = $_POST['id'];
-							$fecha_actual = date("Y-m-d");
-							$observacion = $_POST['observacion'];
-							$id_tipo_pago = $_POST['id_tipo_pago'];
-
-							$consulta_ventas = new Consulta("INSERT INTO ventas select null,id_cotizacion,id_cliente,id_agencia,'$fecha_actual',fecha_reserva,precio_cotizacion,numero_pasajeros,nombre_cotizacion,descripcion_cotizacion,'$observacion',$id_tipo_pago,0 from cotizaciones where id_cotizacion = $id");
-							$id_venta = $consulta_ventas->nuevoid();
-
-							$get_fecha = new Consulta("SELECT fecha_reserva FROM ventas WHERE id_venta = $id_venta");
-							$row_v = $get_fecha->VerRegistro();
-							$fecha = $row_v['fecha_reserva'];
-
-							//Insert destinos
-							$consulta_ventas_destinos = new Consulta("INSERT INTO ventas_destinos SELECT null,$id_venta,id_departamento FROM cotizaciones_destinos WHERE id_cotizacion = $id");
-							//insert ventas itinerario
-
-							$get_itinerarios = new Consulta("SELECT dia,nombre_cotizacion_itinerario,descripcion_cotizacion_itinerario FROM cotizaciones_itinerarios WHERE id_cotizacion = $id");
-							while ($row_i = $get_itinerarios->VerRegistro()) {
-								$consulta_ventas_itinerarios = new Consulta("INSERT INTO ventas_itinerarios VALUES(null,$id_venta,".$row_i['dia'].",'$fecha','".$row_i['nombre_cotizacion_itinerario']."','".$row_i['descripcion_cotizacion_itinerario']."')");
-								$mod_date = strtotime($fecha."+ 1 days");
-								$fecha = date("Y-m-d",$mod_date) ;
-							}
-							//obtenemos todos los id_itinerarios
-							$query_itinerario = new Consulta("SELECT id_venta_itinerario from ventas_itinerarios where id_venta = $id_venta");
-							//agrupamos en un arreglo
-							while ($row1 = $query_itinerario->VerRegistro()) {
-								$datos_itinerario[] = array(
-								 'id_venta_itinerario' => $row1['id_venta_itinerario']
-							 );
-						 }
-
-						 //INSERT SERVICIOS
-							$query_servicios = new Consulta("SELECT dia,cid.* FROM cotizaciones_itinerarios ci
-																							INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
-																							WHERE id_cotizacion = $id");
-							while ($row2 = $query_servicios->VerRegistro()) {
-								$datos_servicios[] = array(
-								 'dia' => $row2['dia'] ,
-								 'id_servicio' => $row2['id_servicio'],
-								 'precio_n' => $row2['precio_nacional_servicio'],
-								 'precio_e' => $row2['precio_extranjero_servicio']
-							 );
-							}
-							$c = (int)0;
-							for ($i=0; $i < count($datos_itinerario); $i++) {
-								foreach ($datos_servicios as $key => $servicio) {
-									if ($i == $servicio['dia']) {
-										$id_venta_itinerario = $datos_itinerario[$i]['id_venta_itinerario'];
-										$id_servicio = $servicio['id_servicio'];
-										$precio_n = $servicio['precio_n'];
-										$precio_e = $servicio['precio_e'];
-										$consulta_ventas_itinerarios_detalles = new Consulta("INSERT INTO ventas_itinerarios_detalles values(null,$id_venta_itinerario,$id_servicio,$precio_n,$precio_e)");
-										$list_ventas_itinerarios_detalles[$c] = $consulta_ventas_itinerarios_detalles->nuevoid();
-										$c++;
-									}
-								}
-							}
-							$query_servicios_pasajeros = new Consulta("SELECT cidp.id_pasajero,cidp.precio FROM cotizaciones_itinerarios ci
-																												INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
-																												INNER JOIN cotizaciones_itinerarios_detalles_pasajeros cidp USING(id_cotizacion_itinerario_detalle)
-																												WHERE id_cotizacion = $id");
-							$c = (int)0;
-							while ($row3 = $query_servicios_pasajeros->VerRegistro()) {
-								 $id_pasajero = $row3['id_pasajero'];
-								 if(!$id_first) {
-										$id_first = $id_pasajero;
-								 }else {
-									 if ($id_first == $id_pasajero) {
-										$c++;
-										$id_first = $id_pasajero;
-									 }
-								 }
-
-								 $precio = $row3['precio'];
-								 $id_venta_itinerario_detalle = $list_ventas_itinerarios_detalles[$c];
-								 $insert_detalles_pasajeros = new Consulta("INSERT INTO ventas_itinerarios_detalles_pasajeros VALUES(null,$id_venta_itinerario_detalle,$id_pasajero,$precio)");
-							}
-
-							//INSERT HOTELES
-
-							$query_hoteles = new Consulta("SELECT * FROM cotizaciones_itinerarios ci
-																							INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
-																							WHERE id_cotizacion = $id");
-							while ($row2 = $query_hoteles->VerRegistro()) {
-								$datos_hoteles[] = array(
-								 'dia' => $row2['dia'] ,
-								 'id_hotel' => $row2['id_hotel'],
-								 'id_habitacion' => $row2['id_habitacion'],
-								 'cantidad' => $row2['cantidad'],
-								 'precio_n' => $row2['precio_nacional_hotel'],
-								 'precio_e' => $row2['precio_extranjero_hotel']
-							 );
-							}
-
-							$c = (int)0;
-							for ($i=0; $i < count($datos_itinerario); $i++) {
-								foreach ($datos_hoteles as $key => $hotel) {
-									if ($i == $hotel['dia']) {
-										$id_venta_itinerario = $datos_itinerario[$i]['id_venta_itinerario'];
-										$id_hotel = $hotel['id_hotel'];
-										$id_habitacion = $hotel['id_habitacion'];
-										$cantidad = $hotel['cantidad'];
-										$precio_n = $hotel['precio_n'];
-										$precio_e = $hotel['precio_e'];
-										$consulta_ventas_itinerarios_hoteles = new Consulta("INSERT INTO ventas_itinerarios_hoteles values(null,$id_venta_itinerario,$id_hotel,$id_habitacion,$cantidad,$precio_n,$precio_e)");
-										$list_ventas_itinerarios_hoteles[$c] = $consulta_ventas_itinerarios_hoteles->nuevoid();
-										$c++;
-									}
-								}
-							}
-							$query_hoteles_pasajeros = new Consulta("SELECT cihp.id_pasajero,cihp.precio_hotel FROM cotizaciones_itinerarios ci
-																												INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
-																												INNER JOIN cotizaciones_itinerarios_hoteles_pasajeros cihp USING(id_cotizacion_itinerario_hotel)
-																												WHERE id_cotizacion = $id");
-
-							unset($id_first);
-							$c = (int)0;
-							while ($row3 = $query_hoteles_pasajeros->VerRegistro()) {
-								 $id_pasajero = $row3['id_pasajero'];
-								 // echo $id_pasajero."--";
-								 if(!$id_first) {
-										$id_first = $id_pasajero;
-								 }else {
-									 if ($id_first == $id_pasajero) {
-										$c++;
-										$id_first = $id_pasajero;
-									 }
-								 }
-								 $precio = $row3['precio_hotel'];
-								 $id_venta_itinerario_hotel = $list_ventas_itinerarios_hoteles[$c];
-								 $insert_detalles_pasajeros = new Consulta("INSERT INTO ventas_itinerarios_hoteles_pasajeros VALUES(null,$id_venta_itinerario_hotel,$id_pasajero,$precio)");
-							}
-
-							//INSERT RESERVAS HOTEL
-							$query_reserva_hotel = new Consulta("SELECT DISTINCT cih.id_hotel FROM cotizaciones c
-																		INNER JOIN cotizaciones_itinerarios ci USING(id_cotizacion)
-																		INNER JOIN cotizaciones_itinerarios_hoteles cih USING(id_cotizacion_itinerario)
-																		WHERE c.id_cotizacion = $id");
-
-							while ($row = $query_reserva_hotel->VerRegistro()) {
-								$id_hotel = $row['id_hotel'];
-								$query = new Consulta("INSERT INTO reservas SELECT null,$id_venta,$id_hotel,null,'',0");
-							}
-
-							//INSERT RESERVAS SERVICIO
-							$query_reserva_servicio = new Consulta("SELECT DISTINCT cid.id_servicio from cotizaciones c
-																		INNER JOIN cotizaciones_itinerarios ci USING(id_cotizacion)
-																		INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
-																		where c.id_cotizacion = $id");
-
-							while ($row = $query_reserva_servicio->VerRegistro()) {
-								$id_servicio = $row['id_servicio'];
-								$query = new Consulta("INSERT INTO reservas SELECT null,$id_venta,null,$id_servicio,'',1");
-							}
-							$consulta_inclusiones = new Consulta("INSERT INTO inclusiones SELECT null,null,null,$id_venta,nombre_inclusion,tipo_inclusion,2 from inclusiones where id_cotizacion =$id");
-
-							$query_update_cotizacion = new Consulta("UPDATE cotizaciones SET estado_cotizacion = 1 WHERE id_cotizacion = $id");
 						}
 
 						//FIN COTIZACIONES

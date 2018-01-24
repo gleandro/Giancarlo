@@ -1,8 +1,8 @@
 <?php include("inc.aplication_top.php");
 
 switch ($_GET['action']) {
-    case 'edit':
-        $template = 'cotizacion_edit.php';
+    case 'sell':
+        $template = 'cotizacion_sell.php';
         $titlecontent = "Editar Cotización";
         break;
     case 'add':
@@ -41,21 +41,7 @@ $objAgencias = new Agencias();
 $listadoAgencias = $objAgencias->getAgencias();
 
 if ($_GET['id']) {
-    $objCotizacion= new Cotizacion($_GET['id']);
-    $cotizacion_cliente = $objCotizacion->__get('_cliente');
-    $cotizacion_itinerario = $objCotizacion->__get('_itinerario');
-    //INICIO CARGAR UBICACIONES DE LOS SERVICIOS
-    foreach ($objCotizacion->__get('_departamento') as $key => $value) {
-       $ubicaciones_lista .= $value.',';
-    }
-    $ubicaciones = substr($ubicaciones_lista, 0, -1);
-    $listadoServiciosxDepartamentos = $objServicios->getServiciosxDepartamentos($ubicaciones);
-
-    $listadoHotelesxDepartamentos = $objHoteles->getHotelesxDepartamentos($ubicaciones);
-
-    $array_incluye = $objCotizaciones->getInclusiones($_GET['id'],1);
-    $array_excluye = $objCotizaciones->getInclusiones($_GET['id'],2);
-
+  $list_pasajeros = Cotizaciones::getPasajeros($_GET['id']);
 }
 // print_r($cotizacion_itinerario);
 // exit;

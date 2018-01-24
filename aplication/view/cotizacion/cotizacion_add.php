@@ -182,7 +182,7 @@
             <div class="tab-pane" id="tab2">
               <div class="row">
                 <div class="col-md-10 col-md-offset-1">
-                  <h5 class="text-center">Datos de los Pasajeros.</h5>
+                  <h5 class="text-center">Creación de Pasajeros.</h5>
                   <div class="panel-group" id="lista_pasajeros" role="tablist" aria-multiselectable="true"></div>
                 </div>
               </div>
