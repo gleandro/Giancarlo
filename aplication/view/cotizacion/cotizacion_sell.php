@@ -80,7 +80,7 @@
                                   </div>
                                   <div class="col-md-4">
                                     <div class="form-group">
-                                      <label class="control-label">Dcoumento</label>
+                                      <label class="control-label">Documento</label>
                                       <input class="form-control" type="text" required="" name="pasajeros[<?php echo $pasajero['id_pasajero'] ?>][documento]" placeholder="Nombre para Identificar el Día" value="" aria-required="true">
                                     </div>
                                   </div>
@@ -124,7 +124,16 @@
                       </select>
                     </div>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <label class="control-label">Precio</label>
+                      <div class="input-group">
+                        <div class="input-group-addon">$</div>
+                        <input type="number" id="precio_venta" disabled class="form-control" required value="<?php echo $pasajero['precio'] ?>">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
                     <div class="form-group">
                       <label class="control-label">Inicial</label>
                       <div class="input-group">

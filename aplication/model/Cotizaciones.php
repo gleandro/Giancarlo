@@ -28,7 +28,7 @@ class Cotizaciones{
 
 	static public function getPasajeros($id){
 
-		$sql = "SELECT DISTINCT p.* FROM cotizaciones c
+		$sql = "SELECT DISTINCT p.*,c.precio_cotizacion FROM cotizaciones c
 						INNER JOIN cotizaciones_itinerarios ci USING(id_cotizacion)
 						INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
 						INNER JOIN cotizaciones_itinerarios_detalles_pasajeros cidp USING(id_cotizacion_itinerario_detalle)
@@ -39,7 +39,8 @@ class Cotizaciones{
 			$result[] = array(
 				'id_pasajero' => $row['id_pasajero'],
 				'nombres_pasajero' => $row['nombres_pasajero'],
-				'id_nacionalidad' => $row['id_nacionalidad']
+				'id_nacionalidad' => $row['id_nacionalidad'],
+				'precio' => $row['precio_cotizacion']
 			);
 		}
 		return $result;

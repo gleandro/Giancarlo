@@ -426,9 +426,12 @@ $(document).ready(function(){
 
   $("#check_pagar").change(function(event) {
     if ($(this).prop("checked")) {
+      var precio = $("#precio_venta").val()
       $("#precio").prop('disabled', true);
+      $("#precio").val(precio);
     }else {
       $("#precio").prop('disabled', false);
+      $("#precio").val('');
     }
   });
 
