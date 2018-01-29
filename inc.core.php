@@ -22,6 +22,10 @@ include("aplication/inc.config.php");
 	define("_imagen_","aplication/utilities/imagen.php");
 	define("_imgs_prod_","aplication/webroot/imgs/catalogo/");
 	define("_language_",$_config["server"]["host"]."aplication/language/");
+	define("_pdf_",$_config["server"]["host"]."aplication/webroot/pdf/");
+	define("_pdf_url_",$_config["server"]["url"]."/rasgos/aplication/webroot/pdf/");
+	define("_pdf_ventas_",_pdf_."ventas/");
+	define("_pdf_url_ventas_",_pdf_url_."ventas/");
 
 
 	define("_js_template_","../aplication/webroot/js/template/");

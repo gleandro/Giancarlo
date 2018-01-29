@@ -16,6 +16,7 @@
                         <th data-field="pasajero" data-sortable="true">Pasajero</th>
 												<th data-field="estado" data-sortable="true">Estado</th>
 												<th data-field="id_estado" data-visible="false">id_estado</th>
+												<th data-field="id_agencia" data-visible="false">id_agencia</th>
                         <th data-field="actions" class="td-actions text-right" data-events="operateEvents" data-formatter="operateFormatter">Actions</th>
 					</thead>
 					<?php foreach ($listVentas as $venta) {?>
@@ -31,6 +32,7 @@
 							<td><?php echo ($venta['pasajeros']) ?></td>
 							<td><?php echo $objVentas->getEstado($venta['estado'],$estados,$venta['pagado']); ?></td>
 							<td><?php echo $venta['estado'] ?></td>
+							<td><?php echo $venta['id_agencia'] ?></td>
 						</tr>
 					<?php
 					} ?>

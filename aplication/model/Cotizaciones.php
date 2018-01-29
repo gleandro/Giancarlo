@@ -90,8 +90,8 @@ class Cotizaciones{
 			}
 			for ($i=0; $i < $pasajero; $i++) {
 				$nombre = $key."_".($i+1);
-				$sql_pasajero = "INSERT INTO pasajeros(id_pasajero,nombres_pasajero,documento_pasajero,whatsapp_pasajero,id_nacionalidad,sexo)
-												VALUES(null,'$nombre','','',$id_nacionalidad,0)";
+				$sql_pasajero = "INSERT INTO pasajeros(id_pasajero,id_venta,nombres_pasajero,documento_pasajero,whatsapp_pasajero,id_nacionalidad,sexo)
+												VALUES(null,null,'$nombre','','',$id_nacionalidad,0)";
 				$query_pasajero = new Consulta($sql_pasajero);
 				$nuevo_id_pasajero = $query_pasajero->nuevoid();
 				$lista_pasajeros_salida[$c]['id'] = $nuevo_id_pasajero;

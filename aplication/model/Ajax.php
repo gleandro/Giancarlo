@@ -736,13 +736,6 @@ class Ajax{
 						$query = new Consulta("UPDATE ventas SET bl_estado_venta = $estado  WHERE id_venta = $id");
 					}
 
-					function getIdCotizacionAjax(){
-						$id = $_POST['id'];
-						$query = new Consulta("SELECT * FROM ventas WHERE id_venta = $id");
-						$row = $query->VerRegistro();
-						echo $row['id_cotizacion'];
-					}
-
 					function registrarCotizacionAjax(){
 						date_default_timezone_set("America/Lima");
 						// $lista_pasajeros = Cotizaciones::GetListaPasajeros($_POST['list_pasajeros']);
@@ -874,15 +867,6 @@ class Ajax{
 					function sellCotizacionAjax(){
 						date_default_timezone_set("America/Lima");
 
-						$pasajaeros = $_POST['pasajeros'];
-						foreach ($pasajaeros as $key => $pasajero) {
-							$query = new Consulta("UPDATE pasajeros SET
-																			nombres_pasajero = '".$pasajero['nombre']."',
-																			documento_pasajero = '".$pasajero['documento']."',
-																			whatsapp_pasajero = '".$pasajero['whatsapp']."',
-																			sexo = '".$pasajero['sexo']."'
-																			WHERE id_pasajero = $key");
-						}
 						$id = $_POST['id'];
 						$fecha_actual = date("Y-m-d");
 						$observacion = $_POST['observacion'];
@@ -896,8 +880,19 @@ class Ajax{
 							$pagado_venta = 1;
 						}
 
-						$consulta_ventas = new Consulta("INSERT INTO ventas select null,id_cotizacion,id_cliente,id_agencia,'$fecha_actual',fecha_reserva,precio_cotizacion,numero_pasajeros,nombre_cotizacion,descripcion_cotizacion,$pagado_venta,0 from cotizaciones where id_cotizacion = $id");
+						$consulta_ventas = new Consulta("INSERT INTO ventas select null,id_cotizacion,id_cliente,id_agencia,'$fecha_actual',fecha_reserva,precio_cotizacion,numero_pasajeros,nombre_cotizacion,descripcion_cotizacion,$pagado_venta,0,0 from cotizaciones where id_cotizacion = $id");
 						$id_venta = $consulta_ventas->nuevoid();
+
+						$pasajeros = $_POST['pasajeros'];
+						foreach ($pasajeros as $key => $pasajero) {
+							$query = new Consulta("UPDATE pasajeros SET
+																			id_venta = $id_venta,
+																			nombres_pasajero = '".$pasajero['nombre']."',
+																			documento_pasajero = '".$pasajero['documento']."',
+																			whatsapp_pasajero = '".$pasajero['whatsapp']."',
+																			sexo = '".$pasajero['sexo']."'
+																			WHERE id_pasajero = $key");
+						}
 
 						$consulta_pagos = new Consulta("INSERT INTO pagos VALUES(null,$id_venta,'$fecha_actual',$precio,$id_tipo_pago,'$observacion',0)");
 
@@ -1010,6 +1005,7 @@ class Ajax{
 
 						unset($id_first);
 						$c = (int)0;
+
 						while ($row3 = $query_hoteles_pasajeros->VerRegistro()) {
 							 $id_pasajero = $row3['id_pasajero'];
 							 // echo $id_pasajero."--";
@@ -1634,6 +1630,17 @@ class Ajax{
 								/*AJAX PARA CLIENTES */
 
 								/*AJAX PARA VENTAS*/
+
+
+								function removerVentaAJax(){
+									$ids = $_POST['ids'];
+									$list_id = explode(",",$ids);
+
+									foreach ($list_id as $key => $id) {
+										$query_remove = new Consulta("UPDATE ventas SET bl_estado = 1 WHERE id_venta = $id");
+									}
+								}
+
 							  function reservarServicioAjax(){
 									$id = $_POST['id'];
 									$codigo = $_POST['codigo'];
@@ -1649,7 +1656,7 @@ class Ajax{
 													INNER JOIN ventas_itinerarios vi USING(id_venta)
 													INNER JOIN ventas_itinerarios_detalles vid USING(id_venta_itinerario)
 													INNER JOIN servicios s USING(id_servicio)
-													WHERE vi.fecha_itinerario = '$fecha'
+													WHERE vi.fecha_itinerario = '$fecha' AND v.bl_estado = 0
 													ORDER BY id_venta DESC";
 									$query = new consulta($sql);
 
@@ -1666,12 +1673,12 @@ class Ajax{
 											 $c++;
 									}
 
-									$sql = "SELECT v.id_venta,vi.id_venta_itinerario,c.nombres_cliente,c.documento_cliente,vi.fecha_itinerario,h.id_hotel,h.nombre_hotel FROM ventas v
+									$sql = "SELECT DISTINCT v.id_venta,vi.id_venta_itinerario,c.nombres_cliente,c.documento_cliente,vi.fecha_itinerario,h.id_hotel,h.nombre_hotel FROM ventas v
 													INNER JOIN clientes c using(id_cliente)
 													INNER JOIN ventas_itinerarios vi USING(id_venta)
 													INNER JOIN ventas_itinerarios_hoteles vih USING(id_venta_itinerario)
 													INNER JOIN hoteles h USING(id_hotel)
-													WHERE vi.fecha_itinerario = '$fecha'
+													WHERE vi.fecha_itinerario = '$fecha' AND v.bl_estado = 0
 													ORDER BY id_venta DESC";
 									$query = new consulta($sql);
 

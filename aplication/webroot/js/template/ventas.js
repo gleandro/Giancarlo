@@ -25,11 +25,11 @@ function reservar(element,id){
   function operateFormatter(value, row, index) {
       return [
   '<div class="table-icons">',
-            // '<a rel="tooltip" title="Descargar" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
-            // '<i class="ti-image"></i>',
-            // '</a>',
             '<a rel="tooltip" title="Pagos" class="btn btn-simple btn-success btn-icon table-action pago" href="javascript:void(0)">',
             '<i class="ti-money"></i>',
+            '</a>',
+            '<a rel="tooltip" title="Exportar" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
+            '<i class="ti-image"></i>',
             '</a>',
             '<a rel="tooltip" title="Reservar" class="btn btn-simple btn-info btn-icon table-action reserve" href="javascript:void(0)">',
                 '<i class="ti-calendar"></i>',
@@ -43,23 +43,40 @@ function reservar(element,id){
 
   function exportExcel(){
 
-    var datos = $table.bootstrapTable('getSelections');
-    var ventas = new Array();
-    for (var i = 0; i < datos.length; i++) {
-      ventas.push(parseInt(datos[i].id));
-    }
+    // var datos = $table.bootstrapTable('getSelections');
+    // var ventas = new Array();
+    // for (var i = 0; i < datos.length; i++) {
+    //   ventas.push(parseInt(datos[i].id));
+    // }
+    //
+    // $.ajax({
+    //   url: 'excel.php',
+    //   type: 'POST',
+    //   data: {'ventas':JSON.stringify(ventas)},
+    //   success: function(result){
+    //     alert(result);
+    //   }
+    // });
 
-    $.ajax({
-      url: 'excel.php',
-      type: 'POST',
-      data: {'ventas':JSON.stringify(ventas)},
-      success: function(result){
-        alert(result);
-      }
+  }
+
+  function removeRow(){
+    var ids = $.map($table.bootstrapTable('getSelections'), function (row) {
+    return row.id;
     });
 
-
-
+    $.ajax({
+      url: 'ajax2.php',
+      type: 'POST',
+      data: '&action=removerVenta&ids='+ids,
+      success: function(result){
+        swal('Venta Removida', '','success');
+        $table.bootstrapTable('remove', {
+            field: 'id',
+            values: ids
+        });
+      }
+    });
   }
 
   $().ready(function(){
@@ -67,11 +84,32 @@ function reservar(element,id){
       window.operateEvents = {
           'click .view': function (e, value, row, index) {
             info = JSON.stringify(row);
-            var html = '<h4>Selecciona un Tipo de Documento</4>'+
-                        '<select class="tipo_documento">'+
-                          '<option value ="0">PDF</option>'+
-                          '<option value ="1">WORD</option>'+
-                        '</select>';
+            var html = '<h4>Descargar vouchers</h4>';
+            if (row.id_agencia != "") {
+              html += '<div class="row">'+
+                '<div class="col-md-8 col-md-offset-2">'+
+                    '<label class="control-label">Incentivo x pasajero</label>'+
+                    '<div class="input-group">'+
+                      '<div class="input-group-addon">$</div>'+
+                      '<input type="number" id="incentivo" name="precio" class="form-control" required placeholder="0">'+
+                    '</div>'+
+                '</div>'+
+                '<div class="col-md-8 col-md-offset-2">'+
+                  '<label class="control-label">Comision</label>'+
+                  '<div class="input-group">'+
+                    '<div class="input-group-addon">%</div>'+
+                    '<input type="number" id="comision" name="precio" class="form-control" required placeholder="0">'+
+                  '</div>'+
+                '</div>'+
+                '<div class="col-md-8 col-md-offset-2">'+
+                  '<label class="control-label">Fecha limite pago</label>'+
+                  '<div class="form-group">'+
+                    '<input type="text" class="form-control" placeholder="2018-01-13" id="fecha_pago" />'+
+                  '</div>'
+                '</div>'+
+              '</div>';
+            }
+
             swal({
               type: 'info',
               html: html,
@@ -86,28 +124,21 @@ function reservar(element,id){
               allowEscapeKey: false,
               buttonsStyling: false,
               preConfirm: () => {
-                var dato = $("select.tipo_documento").val();
-                if (dato == 0) {
-                  swal('', 'Se descargo el archivo pdf','success');
+                var incentivo = $("#incentivo").val();
+                var comision = $("#comision").val();
+                var fecha = $("#fecha_pago").val();
+                if (row.id_agencia != "") {
+                  location.href="pdf_ventas.php?id="+row.id+"&agencia="+row.id_agencia+"&incentivo="+incentivo+"&comision="+comision+"&fecha="+fecha;
                 }else {
-                  swal('', 'Se descargo el archivo word','success');
+                  location.href="pdf_ventas.php?id="+row.id;
                 }
-                $.ajax({
-                  url: 'ajax2.php',
-                  type: 'POST',
-                  data: '&action=getIdCotizacion&id='+row.id,
-                  success: function(datos){
-                    var id_cotizacion = datos.replace("	","");
-                    location.href="pdf_cotizacion.php?id="+id_cotizacion+"&tipo="+dato;
-
-                  }
-                });
-
               }
             })
 
             $(".tipo_documento").selectpicker();
-
+            $('#fecha_pago').datetimepicker({
+              format: 'YYYY-MM-DD'
+            });
           },
           'click .reserve': function (e, value, row, index){
             info = JSON.stringify(row);
@@ -330,6 +361,7 @@ function reservar(element,id){
           searchAlign: 'left',
           pageSize: 8,
           clickToSelect: false,
+          deleteRowButton: true,
           showExportExcelButton: true,
           pageList: [8,10,25,50,100],
 

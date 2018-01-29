@@ -70,50 +70,6 @@ function reservar(element,id){
   $().ready(function(){
 
       window.operateEvents = {
-          'click .view': function (e, value, row, index) {
-            info = JSON.stringify(row);
-            var html = '<h4>Selecciona un Tipo de Documento</4>'+
-                        '<select class="tipo_documento">'+
-                          '<option value ="0">PDF</option>'+
-                          '<option value ="1">WORD</option>'+
-                        '</select>';
-            swal({
-              type: 'info',
-              html: html,
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Descargar',
-              cancelButtonText: 'Cancelar',
-              confirmButtonClass: 'btn btn-success',
-              cancelButtonClass: 'btn btn-danger',
-              allowOutsideClick: false,
-              allowEscapeKey: false,
-              buttonsStyling: false,
-              preConfirm: () => {
-                var dato = $("select.tipo_documento").val();
-                if (dato == 0) {
-                  swal('', 'Se descargo el archivo pdf','success');
-                }else {
-                  swal('', 'Se descargo el archivo word','success');
-                }
-                $.ajax({
-                  url: 'ajax2.php',
-                  type: 'POST',
-                  data: '&action=getIdCotizacion&id='+row.id,
-                  success: function(datos){
-                    var id_cotizacion = datos.replace("	","");
-                    location.href="pdf_cotizacion.php?id="+id_cotizacion+"&tipo="+dato;
-
-                  }
-                });
-
-              }
-            })
-
-            $(".tipo_documento").selectpicker();
-
-          },
           'click .reserve': function (e, value, row, index){
             info = JSON.stringify(row);
             if (row.id_estado < 2) {

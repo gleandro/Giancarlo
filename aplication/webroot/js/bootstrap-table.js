@@ -277,6 +277,7 @@
         showAddButtonHotel: false,
         showAddButtonPaquete: false,
         showExportExcelButton: false,
+        deleteRowButton: false,
         seachDate: false,
         showToggle: false,
         buttonsAlign: 'right',
@@ -426,6 +427,9 @@
         },
         formatExcelButton: function () {
             return 'Exportar';
+        },
+        formatRemovelButton: function () {
+            return 'Eliminar';
         },
         formatToggle: function () {
             return 'Toggle';
@@ -986,6 +990,12 @@
             html.push(sprintf('<button onclick="exportExcel()'+'" class="btn btn-success' + (this.options.iconSize === undefined ? '' : ' btn-' + this.options.iconSize) + '" type="button" name="plus" title="%s">',
                     this.options.formatExcelButton()),
                 sprintf('<i class="ti-file"></i>'),
+                '</button>');
+        }
+        if (this.options.deleteRowButton) {
+            html.push(sprintf('<button onclick="removeRow()'+'" class="btn btn-danger' + (this.options.iconSize === undefined ? '' : ' btn-' + this.options.iconSize) + '" type="button" name="plus" title="%s">',
+                    this.options.formatRemovelButton()),
+                sprintf('<i class="ti-trash"></i>'),
                 '</button>');
         }
 

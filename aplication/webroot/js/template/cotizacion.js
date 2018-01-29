@@ -1020,7 +1020,7 @@ $("#wizardFormSellCotizacion").submit(function(e) {
         allowOutsideClick: false,
         allowEscapeKey: false,
         onClose: function(){
-          location.href="cotizaciones.php";
+          // location.href="cotizaciones.php";
         }
       })
 
