@@ -361,13 +361,16 @@ $formato_servicio .= '
 // INICIO CUERPO LIQUIDACION
 
 if ($id_agencia) {
-  $incentivo = $_GET['incentivo'];
-  $comision = $_GET['comision'];
+  $incentivo = (float)$_GET['incentivo'];
+  $comision = (float)$_GET['comision'];
   $fecha_v = date_create($_GET['fecha']);
   $fecha_limite = date_format($fecha_v,'d \d\\e M Y');
-  $incentito_pasajero = number_format($incentivo*$cantidad_pasajeros,2);
-  $comision_final = number_format($precio/$comision,2);
-  $total_pagar = $precio-$incentito_pasajero-$comision_final;
+  $incentito_pasajero = (float)($incentivo*$cantidad_pasajeros);
+  $precio_p = (float)($precio-$incentito_pasajero);
+  $comision_final = (float)(($precio_p/100)*$comision);
+  $total_pagar = ceil($precio-$incentito_pasajero-$comision_final);
+
+  // ventas::addLiquidacion();
 
   $formato_agencia .= '<div class="container">
     <table class="table-voucher center">

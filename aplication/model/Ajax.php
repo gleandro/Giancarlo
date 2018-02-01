@@ -847,7 +847,7 @@ class Ajax{
 						}
 
 
-						$precio_final = $precio_v*(($utilidad/100)+1);
+						$precio_final = ceil($precio_v*(($utilidad/100)+1));
 
 						Cotizaciones::InsertInclusion($_POST['incluye'],$nuevoIdCotizacion,1);
 						Cotizaciones::InsertInclusion($_POST['incluye'],$nuevoIdCotizacion,2);
@@ -863,15 +863,16 @@ class Ajax{
 						$observacion = $_POST['observacion'];
 						$id_tipo_pago = $_POST['id_tipo_pago'];
 						$precio = $_POST['precio'];
+						$precio_venta = $_POST['precio_venta'];
 						$pagado_venta = 0;
 						if (!$precio) {
 							$query_precio_total = new Consulta("SELECT precio_cotizacion FROM cotizaciones WHERE id_cotizacion = $id");
 							$r = $query_precio_total->VerRegistro();
-							$precio = $r['precio_cotizacion'];
+							$precio = $precio_venta;
 							$pagado_venta = 1;
 						}
 
-						$consulta_ventas = new Consulta("INSERT INTO ventas select null,id_cotizacion,id_cliente,id_agencia,'$fecha_actual',fecha_reserva,precio_cotizacion,numero_pasajeros,nombre_cotizacion,descripcion_cotizacion,$pagado_venta,0,0 from cotizaciones where id_cotizacion = $id");
+						$consulta_ventas = new Consulta("INSERT INTO ventas select null,id_cotizacion,id_cliente,id_agencia,'$fecha_actual',fecha_reserva,precio_cotizacion,'$precio_venta',numero_pasajeros,nombre_cotizacion,descripcion_cotizacion,$pagado_venta,0,0 from cotizaciones where id_cotizacion = $id");
 						$id_venta = $consulta_ventas->nuevoid();
 
 						$pasajeros = $_POST['pasajeros'];

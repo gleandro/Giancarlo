@@ -99,7 +99,7 @@
                       <label class="control-label">Precio</label>
                       <div class="input-group">
                         <div class="input-group-addon">$</div>
-                        <input type="number" id="precio_venta" disabled class="form-control" required value="<?php echo $pasajero['precio'] ?>">
+                        <input type="number" id="precio_venta" name="precio_venta" class="form-control" required value="<?php echo $pasajero['precio'] ?>">
                       </div>
                     </div>
                   </div>
