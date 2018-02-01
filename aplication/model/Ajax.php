@@ -473,8 +473,8 @@ class Ajax{
 							<tbody>
 								<?php foreach ($habitaciones as $key => $habitacion) {
 									$cantidad = $habitacion['cantidad_habitacion'];
-									$precio_n = ceil($habitacion['precio_hotel_tarifa_n']);
-									$precio_e = ceil($habitacion['precio_hotel_tarifa_e']);
+									$precio_n = $habitacion['precio_hotel_tarifa_n'];
+									$precio_e = $habitacion['precio_hotel_tarifa_e'];
 									?>
 									<tr>
 										<td class="text-center">
@@ -738,7 +738,7 @@ class Ajax{
 
 					function registrarCotizacionAjax(){
 						date_default_timezone_set("America/Lima");
-						// $lista_pasajeros = Cotizaciones::GetListaPasajeros($_POST['list_pasajeros']);
+						// print_r($_POST['habitaciones']);
 						// exit;
 						if(isset($_FILES['files']) && ($_FILES['files']['name'] != "")){
 
@@ -757,7 +757,9 @@ class Ajax{
 							$_POST['id_agencia'] = "null";
 						}
 
-						$query_cotizacion = new Consulta("INSERT INTO cotizaciones values('','".$_POST['id_cliente']."',".$_POST['id_agencia'].",'".$_POST['numero_pasajeros']."','".$_POST['nombre_paquete']."','".$_POST['descripcion_paquete']."','".$name."','".date('Y-m-d')."','".$_POST['fecha_reserva']."',0,0,0)");
+						$utilidad = $_POST['utilidad'];
+
+						$query_cotizacion = new Consulta("INSERT INTO cotizaciones values('','".$_POST['id_cliente']."',".$_POST['id_agencia'].",'".$_POST['numero_pasajeros']."','".$_POST['nombre_paquete']."','".$_POST['descripcion_paquete']."','".$name."','".date('Y-m-d')."','".$_POST['fecha_reserva']."',0,0,".$utilidad.",0)");
 						$nuevoIdCotizacion = $query_cotizacion->nuevoid();
 
 						$departamento = $_POST['departamento'];
@@ -792,9 +794,9 @@ class Ajax{
 									foreach ($lista_pasajeros as $key_pasajero => $pasajero) {
 										$id_pasajero_detalle = $pasajero['id'];
 										if ($pasajero['nacionalidad'] == 0) {
-											$precio = ceil((float)$servicio['precio_n']);
+											$precio = (float)$servicio['precio_n'];
 										}else {
-											$precio = ceil((float)$servicio['precio_e']);
+											$precio = (float)$servicio['precio_e'];
 										}
 										$precio_v += $precio;
 										$query_detalle_pasajero = new Consulta("INSERT INTO cotizaciones_itinerarios_detalles_pasajeros VALUES(null,$id_servicio_detalle,$id_pasajero_detalle,$precio)");
@@ -827,9 +829,9 @@ class Ajax{
 														$alcanse = (float)$habitacion['alcanse_habitacion'];
 
 														if ($bl_nacional) {
-															$precio = ceil((float)$habitacion['precio_n']/$alcanse);
+															$precio = (float)$habitacion['precio_n']/$alcanse;
 														}else {
-															$precio = ceil((float)$habitacion['precio_e']/$alcanse);
+															$precio = (float)$habitacion['precio_e']/$alcanse;
 														}
 														$precio_v += $precio;
 
@@ -837,20 +839,6 @@ class Ajax{
 														VALUES('','".$nuevoIdItinerarioshoteles."',$id_pasajero,$precio)");
 													}
 
-                          //
-													// $id_pasajero = $lista_pasajeros[$pasajero]['id'];
-													// $alcanse = (float)$habitacion['alcanse_habitacion'];
-                          //
-													// if ($bl_nacional) {
-													// 	$precio = ceil((float)$habitacion['precio_n']/$alcanse);
-													// }else {
-													// 	$precio = ceil((float)$habitacion['precio_e']/$alcanse);
-													// }
-                          //
-													// $precio_v += $precio;
-                          //
-													// $queryItinerariosHotelesPasajeros = new Consulta("INSERT INTO cotizaciones_itinerarios_hoteles_pasajeros
-													// VALUES('','".$nuevoIdItinerarioshoteles."',$id_pasajero,$precio)");
 												}
 											}
 									}
@@ -858,9 +846,12 @@ class Ajax{
 							}
 						}
 
+
+						$precio_final = $precio_v*(($utilidad/100)+1);
+
 						Cotizaciones::InsertInclusion($_POST['incluye'],$nuevoIdCotizacion,1);
 						Cotizaciones::InsertInclusion($_POST['incluye'],$nuevoIdCotizacion,2);
-						Cotizaciones::updatePrecioCotizacion($precio_v,$nuevoIdCotizacion);
+						Cotizaciones::updatePrecioCotizacion($precio_final,$nuevoIdCotizacion);
 
 					}
 
@@ -1073,6 +1064,7 @@ class Ajax{
 							$paquete['nombre']=$row['nombre_paquete'];
 							$paquete['descripcion']=$row['descripcion_paquete'];
 							$paquete['imagen']=$row['imagen_paquete'];
+							$paquete['utilidad']=$row['utilidad_paquete'];
 
 							$departamentos_tmp = array();
 							$query2 = new Consulta("SELECT * FROM paquetes_destinos where id_paquete = ".$id);
@@ -1298,6 +1290,7 @@ class Ajax{
 
 						function registrarPaqueteAjax(){
 
+
 							if(isset($_FILES['files']) && ($_FILES['files']['name'] != "")){
 								$obj  = new Upload();
 								$destino = "../aplication/webroot/imgs/";
@@ -1370,6 +1363,8 @@ class Ajax{
 
 						function actualizarPaqueteAjax(){
 
+							// Paquetes::generateJSON();
+
 							if(isset($_FILES['files']) && ($_FILES['files']['name'] != "")){
 
 								$obj  = new Upload();
@@ -1389,6 +1384,7 @@ class Ajax{
 							$query = new Consulta("UPDATE paquetes SET
 								".$update."
 								nombre_paquete = '".$_POST['nombre_paquete']."',
+								cantidad_paquete = '".$_POST['cantidad_paquete']."',
 								utilidad_paquete = '".$_POST['utilidad_paquete']."',
 								descripcion_paquete = '".$_POST['descripcion_paquete']."'
 								WHERE id_paquete = '".$id_paquete."' ");
@@ -1462,7 +1458,7 @@ class Ajax{
 
 								$utilidad = $_SESSION['sede']->__get("_utilidad");
 
-								$consulta_paquete = new Consulta("INSERT INTO paquetes SELECT '',nombre_paquete,descripcion_paquete,imagen_paquete,pdf_paquete,$utilidad,bl_estado FROM paquetes WHERE id_paquete=".$id);
+								$consulta_paquete = new Consulta("INSERT INTO paquetes SELECT '',nombre_paquete,descripcion_paquete,imagen_paquete,pdf_paquete,cantidad_paquete,$utilidad,bl_estado FROM paquetes WHERE id_paquete=".$id);
 								$nuevoid = $consulta_paquete->nuevoid();
 
 								$update_paquete = new Consulta("UPDATE paquetes SET nombre_paquete = CONCAT(nombre_paquete,' copy') where id_paquete=".$nuevoid);
@@ -1613,7 +1609,7 @@ class Ajax{
 
 								function sweelAgregarClienteAjax(){
 
-									$query = new Consulta("INSERT INTO clientes VALUES(null,1,".$_POST['fuente'].",".$_POST['nacionalidad'].",'".$_POST['nombre']."',".$_POST['documento'].",".$_POST['telefono'].",'".$_POST['email']."','".$_POST['sexo']."')");
+									$query = new Consulta("INSERT INTO clientes VALUES(null,1,".$_POST['fuente'].",".$_POST['nacionalidad'].",'".$_POST['nombre']."','".$_POST['documento']."','".$_POST['telefono']."','".$_POST['email']."','".$_POST['sexo']."')");
 									$id = $query->nuevoid();
 
 									$result['id_cliente'] = $id;
@@ -1626,6 +1622,24 @@ class Ajax{
 									$result['email'] = $_POST['email'];
 									echo json_encode($result);
 								}
+
+								function registrarClienteAjax(){
+									$query = new Consulta("INSERT INTO clientes VALUES(null,1,".$_POST['fuente'].",".$_POST['nacionalidad'].",'".$_POST['nombre']."','".$_POST['documento']."','".$_POST['telefono']."','".$_POST['email']."','".$_POST['sexo']."')");
+								}
+
+								function modificarClienteAjax()
+								{
+									$query = new Consulta("UPDATE clientes SET id_fuente = '".$_POST['fuente']."',
+																				id_nacionalidad ='".$_POST['nacionalidad']."',
+																				nombres_cliente='".$_POST['nombre']."',
+																				documento_cliente = '".$_POST['documento']."',
+																				telefono_cliente='".$_POST['telefono']."',
+																				email_cliente = '".$_POST['email']."',
+																				sexo_cliente = '".$_POST['sexo']."'
+																				WHERE id_cliente = '".$_POST['id']."' ");
+
+								}
+
 
 								/*AJAX PARA CLIENTES */
 

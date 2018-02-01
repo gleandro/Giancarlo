@@ -128,10 +128,48 @@ function reservar(element,id){
                 var comision = $("#comision").val();
                 var fecha = $("#fecha_pago").val();
                 if (row.id_agencia != "") {
-                  location.href="pdf_ventas.php?id="+row.id+"&agencia="+row.id_agencia+"&incentivo="+incentivo+"&comision="+comision+"&fecha="+fecha;
-                }else {
-                  location.href="pdf_ventas.php?id="+row.id;
+                  var bl_agencia = 0;
+                }else{
+                  var bl_agencia = 1;
                 }
+                $.ajax({
+                  url: 'pdf_ventas.php',
+                  type: 'GET',
+                  dataType: 'json',
+                  data: {
+                    id: row.id,
+                    agencia: row.id_agencia,
+                    incentivo: incentivo,
+                    comision: comision,
+                    fecha: fecha
+                  },
+                  beforeSend: function(){
+                    $(".swal2-content").append("<div id='loader'></div>")
+                  },
+                  success: function(datos){
+
+                    var link=document.createElement('a');
+
+                    link.href = datos.url+'_hotel.pdf';
+                    link.download = datos.documento+'_hotel.pdf';
+                    link.click();
+
+                    link.href = datos.url+'_servicio.pdf';
+                    link.download = datos.documento+'_servicio.pdf';
+                    link.click();
+                    if (row.id_agencia) {
+                      link.href = datos.url+'_liquidacion.pdf';
+                      link.download = datos.documento+'_liquidacion.pdf';
+                      link.click();
+                    }
+                    swal('', 'Se descargaron los archivos pdf','success');
+                  }
+                });
+                // if (row.id_agencia != "") {
+                  // location.href="pdf_ventas.php?id="+row.id+"&agencia="+row.id_agencia+"&incentivo="+incentivo+"&comision="+comision+"&fecha="+fecha;
+                // }else {
+                //   location.href="pdf_ventas.php?id="+row.id;
+                // }
               }
             })
 

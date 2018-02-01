@@ -140,6 +140,12 @@ class Clientes{
 			$datos[] = array(
 				'id'  => $row['id_cliente'],
         'nombre'  => $row['nombres_cliente'],
+        'documento'  => $row['documento_cliente'],
+        'telefono'  => $row['telefono_cliente'],
+        'email'  => $row['email_cliente'],
+        'sexo'  => $row['sexo_cliente'],
+        'nacionalidad'  => $row['id_nacionalidad'],
+        'fuente' => new Fuente($row['id_fuente']) 
 			);
 		}
 		return $datos;

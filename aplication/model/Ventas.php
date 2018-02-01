@@ -1,17 +1,14 @@
 <?php
  class Ventas{
 
- 	public function getVentas($reserva = 0){
-    $sql_v = "WHERE v.bl_estado = 0";
-    if ($reserva) {
-      $sql_v .= " AND v.bl_estado_venta =  0 ";
-    }
+ 	public function getVentas(){
 
- 		$sql = "SELECT v.*,cot.fecha_reserva,c.nombres_cliente,c.documento_cliente FROM ventas v
+ 		$sql = "SELECT v.*,cot.fecha_reserva,c.nombres_cliente,c.documento_cliente,a.razon_social_empresa FROM ventas v
             INNER JOIN clientes c using(id_cliente)
             INNER JOIN cotizaciones cot USING(id_cotizacion)
-            $sql_v
-            ORDER BY id_venta DESC";
+						LEFT JOIN agencias a on v.id_agencia=a.id_agencia
+            WHERE v.bl_estado = 0
+            ORDER BY v.id_venta DESC";
  		$query = new consulta($sql);
 
  		$datos = array();
@@ -29,7 +26,8 @@
          'estado' => $row['bl_estado_venta'],
          'pagado' => $row['pagado_venta'],
          'cliente' => $row['nombres_cliente'],
-         'documento' => $row['documento_cliente']
+         'documento' => $row['documento_cliente'],
+         'agencia' => $row['razon_social_empresa']
        );
 		}
 		return $datos;

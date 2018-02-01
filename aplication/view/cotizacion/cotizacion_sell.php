@@ -2,36 +2,6 @@
 
 <script type="text/javascript" language="javascript" src="<?php echo _js_ ?>bootstrap-multiselect.js"></script>
 
-<style>
-/* Center the loader */
-#loader {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  width: 150px;
-  height: 150px;
-  margin: -75px 0 0 -75px;
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid #3498db;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-}
-
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-</style>
 <div id="loader" hidden></div>
 
 <div class="row">
@@ -75,19 +45,19 @@
                                   <div class="col-md-6">
                                     <div class="form-group">
                                       <label class="control-label">Nombre</label>
-                                      <input class="form-control" type="text" required="" name="pasajeros[<?php echo $pasajero['id_pasajero'] ?>][nombre]" placeholder="Nombre para Identificar el Día" value="<?php echo $pasajero['nombres_pasajero'] ?>" aria-required="true">
+                                      <input class="form-control" type="text" required="" name="pasajeros[<?php echo $pasajero['id_pasajero'] ?>][nombre]" placeholder="Nombre" value="<?php echo $pasajero['nombres_pasajero'] ?>" aria-required="true">
                                     </div>
                                   </div>
                                   <div class="col-md-4">
                                     <div class="form-group">
                                       <label class="control-label">Documento</label>
-                                      <input class="form-control" type="text" required="" name="pasajeros[<?php echo $pasajero['id_pasajero'] ?>][documento]" placeholder="Nombre para Identificar el Día" value="" aria-required="true">
+                                      <input class="form-control" type="text" required="" name="pasajeros[<?php echo $pasajero['id_pasajero'] ?>][documento]" placeholder="Nro Documento" value="" aria-required="true">
                                     </div>
                                   </div>
                                   <div class="col-md-4">
                                     <div class="form-group">
                                       <label class="control-label">Whatsapp</label>
-                                      <input class="form-control" type="text" required="" name="pasajeros[<?php echo $pasajero['id_pasajero'] ?>][whatsapp]" placeholder="Nombre para Identificar el Día" value="" aria-required="true">
+                                      <input class="form-control" type="text" required="" name="pasajeros[<?php echo $pasajero['id_pasajero'] ?>][whatsapp]" placeholder="Nro Whatsapp" value="" aria-required="true">
                                     </div>
                                   </div>
                                   <div class="col-md-4">

@@ -6,6 +6,8 @@
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.2.3/js/dataTables.select.min.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo _js_ ?>bootstrap-multiselect.js"></script>
 
+<div id="loader" hidden></div>
+
 <div class="row">
   <input type="hidden" id="id_paquete" value="<?php echo $_GET['id'] ?>">
   <div class="col-md-12">

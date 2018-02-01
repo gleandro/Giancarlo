@@ -3,10 +3,11 @@ class Cotizaciones{
 
 	public function getCotizaciones()
 	{
-		$sql   = "SELECT c.*,cli.nombres_cliente,cli.documento_cliente FROM cotizaciones c
+		$sql   = "SELECT c.*,cli.nombres_cliente,cli.documento_cliente,a.razon_social_empresa FROM cotizaciones c
 							INNER JOIN clientes cli USING(id_cliente)
-							WHERE bl_estado = 0
-							ORDER BY id_cotizacion DESC";
+							left JOIN agencias a USING(id_agencia)
+							WHERE c.bl_estado = 0
+							ORDER BY c.id_cotizacion DESC";
 		$query = new Consulta($sql);
 		$datos = array();
 
@@ -21,7 +22,8 @@ class Cotizaciones{
 		 'estado' => $row['estado_cotizacion'],
 		 'fecha' => $row['fecha_cotizacion'],
 		 'fecha_reserva' => $row['fecha_reserva'],
-	   'precio' => $row['precio_cotizacion']  );
+	   'precio' => $row['precio_cotizacion'],
+		 'agencia' => $row['razon_social_empresa']  );
 		}
 		return $datos;
 	}
@@ -204,10 +206,12 @@ class Cotizaciones{
 	}
 
 	public function getServiciosxCotizacion($id){
-		$sql = "SELECT ci.id_cotizacion_itinerario,cid.id_cotizacion_itinerario_detalle,cid.id_servicio,cidp.id_pasajero,cidp.precio FROM cotizaciones c
+		$sql = "SELECT ci.id_cotizacion_itinerario,cid.id_cotizacion_itinerario_detalle,cid.id_servicio,cidp.id_pasajero,cidp.precio,s.nombre_servicio,p.nombres_pasajero,p.documento_pasajero FROM cotizaciones c
 						INNER JOIN cotizaciones_itinerarios ci USING(id_cotizacion)
 						INNER JOIN cotizaciones_itinerarios_detalles cid USING(id_cotizacion_itinerario)
 						INNER JOIN cotizaciones_itinerarios_detalles_pasajeros cidp USING(id_cotizacion_itinerario_detalle)
+						INNER JOIN servicios s USING(id_servicio)
+						INNER JOIN pasajeros p USING(id_pasajero)
 						WHERE ci.id_cotizacion = $id";
 		$query = new Consulta($sql);
 
@@ -217,7 +221,10 @@ class Cotizaciones{
 				'id_cotizacion_itinerario_detalle' => $row['id_cotizacion_itinerario_detalle'],
 				'id_servicio' => $row['id_servicio'],
 				'id_pasajero' => $row['id_pasajero'],
-				'precio' => $row['precio']
+				'precio' => $row['precio'],
+				'nombre' => $row['nombre_servicio'],
+				'pasajero' => $row['nombres_pasajero'],
+				'documento' => $row['documento_pasajero']
 			);
 		}
 		return $datos;

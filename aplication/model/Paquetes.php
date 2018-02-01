@@ -135,7 +135,7 @@ class Paquetes{
 				$sql = "SELECT s.* from paquetes_itinerarios pit
 							inner join paquetes_itinerarios_detalles pid using(id_paquete_itinerario)
 							inner join servicios s using(id_servicio)
-							where pit.id_paquete = ".$id;
+							where pit.id_paquete = $id and s.bl_estado = 0";
 				$query = new Consulta($sql);
 				$result['precio_nacional']=0;
 				$result['precio_extranjero']=0;

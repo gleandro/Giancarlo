@@ -170,7 +170,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#panda">
+                                    <a href="clientes.php">
                                         <span class="sidebar-mini"><i class="ti-user"></i></span>
                                         <span class="sidebar-normal">Clientes</span>
                                     </a>

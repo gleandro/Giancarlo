@@ -60,8 +60,8 @@ function cargar_listas(){
           beforeSend: function(){
           },
           success: function(datos){
-
             $("#nombre").val(datos.nombre);
+            $("#utilidad").val(datos.utilidad);
             $("#descripcion").val(datos.descripcion);
             $($('.selectpicker')[0]).selectpicker('val',datos.departamentos);
             if (datos.imagen) {
@@ -129,15 +129,18 @@ function cargar_listas(){
             if (datos.inclusiones) {
               $("#incluye").html("");
               for (var i = 0; i < datos.inclusiones.length; i++) {
-                var for_inclusiones = datos.inclusiones[i]
+                var for_inclusiones = datos.inclusiones[i];
                 var html = '<li class="list-group-item list-group-item-success">'+for_inclusiones+'<input name="incluye[]" value="'+for_inclusiones+'" type="hidden"><button type="button" class="close" onclick="javascript:eliminar_inclusiones(this)" aria-label="Close"><span aria-hidden="true">×</span></button></li>';
                 $("#incluye").append(html);
               }
             }
             if (datos.exclusiones) {
               $("#excluye").html("");
-              var html = '<li class="list-group-item list-group-item-danger">'+for_inclusiones+'<input name="excluye[]" value="'+for_inclusiones+'" type="hidden"><button type="button" class="close" onclick="javascript:eliminar_inclusiones(this)" aria-label="Close"><span aria-hidden="true">×</span></button></li>';
-              $("#excluye").append(html);
+              for (var i = 0; i < datos.exclusiones.length; i++) {
+                var for_exclusiones = datos.exclusiones[i];
+                var html = '<li class="list-group-item list-group-item-danger">'+for_exclusiones+'<input name="excluye[]" value="'+for_exclusiones+'" type="hidden"><button type="button" class="close" onclick="javascript:eliminar_inclusiones(this)" aria-label="Close"><span aria-hidden="true">×</span></button></li>';
+                $("#excluye").append(html);
+              }
             }
             $(".card-dia").val(datos.itinerario.length);
             $("#editarpaquete").val('1');
@@ -218,7 +221,7 @@ function agregarCliente(){
   '<input class="form-control" type="text" name="documento" placeholder="Documento"/>'+
   '</div>'+
   '<div class="form-group">'+
-  '<input class="form-control" type="number" name="telefono" placeholder="Telefono"/>'+
+  '<input class="form-control" type="text" name="telefono" placeholder="Whatsapp"/>'+
   '</div>'+
   '<div class="form-group">'+
   '<input class="form-control" type="email" name="email" placeholder="Email"/>'+
@@ -228,6 +231,7 @@ function agregarCliente(){
   '<option value="0">Masculino</option>'+
   '<option value="1">Femenino</option>'+
   '</select>'+
+  '</div>'+
   '<div class="form-group">'+
   '<select class="form-control" data-style="btn-info btn-fill btn-block" name="nacionalidad">'+
   '<option value="1">Nacional</option>'+
@@ -280,6 +284,16 @@ function agregarCliente(){
         $("#ajax_Documento").val(datos.documento);
         $("#ajax_Telefono").val(datos.telefono);
         $("#ajax_Email").val(datos.email);
+        if (datos.sexo == 0) {
+          $("#ajax_Sexo").val("Masculino");
+        }else{
+          $("#ajax_Sexo").val("Femenino");
+        }
+        if (datos.nacionalidad == 1) {
+          $("#ajax_Nacionalidad").val("Nacional");
+        }else{
+          $("#ajax_Nacionalidad").val("Extranjero");
+        }
         if (datos.sexo == 0) {
           $("#ajax_Sexo").val("Masculino");
         }else{
@@ -629,8 +643,6 @@ $(document).ready(function(){
         $validator.focusInvalid();
         return false;
       }
-      if (index == 1) {
-      }
     },
     onInit : function(tab, navigation, index){
 
@@ -974,7 +986,11 @@ $("#wizardFormCotizacion").submit(function(e) { //AGREGAR UN PAQUETE
     data: formData,
     contentType: false,
     processData: false,
+    beforeSend: function(){
+      $("#loader").show();
+    },
     success: function(datos){
+      $("#loader").hide();
       //alert(datos);
       swal({
         title: 'Registrado!',
@@ -1001,31 +1017,36 @@ $("#wizardFormSellCotizacion").submit(function(e) {
   var formData = new FormData($("#wizardFormSellCotizacion")[0]);
   var ruta = "ajax2.php";
 
-  $.ajax({
-    url: ruta,
-    type: "POST",
-    data: formData,
-    contentType: false,
-    processData: false,
-    beforeSend: function(){
-      $("#loader").show();
-    },
-    success: function(datos){
-      $("#loader").hide();
-      swal({
-        title: 'Cotizacion Vendida!',
-        text: datos,
-        type: 'success',
-        confirmButtonText: 'Ok!',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        onClose: function(){
-          // location.href="cotizaciones.php";
-        }
-      })
-
-    }
-  });
+  var precio = parseFloat($("#precio_venta").val());
+  var pago = parseFloat($("#precio").val());
+  if (pago > precio) {
+    swal('Ocurrió un problema', 'No puede ingresar un monto superior al restante','error');
+  }else {
+    $.ajax({
+      url: ruta,
+      type: "POST",
+      data: formData,
+      contentType: false,
+      processData: false,
+      beforeSend: function(){
+        $("#loader").show();
+      },
+      success: function(datos){
+        $("#loader").hide();
+        swal({
+          title: 'Cotizacion Vendida!',
+          text: datos,
+          type: 'success',
+          confirmButtonText: 'Ok!',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          onClose: function(){
+            location.href="cotizaciones.php";
+          }
+        })
+      }
+    });
+  }
   return false;
 });
 

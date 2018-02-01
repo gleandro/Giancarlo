@@ -11,6 +11,7 @@
             <th data-field="state" data-checkbox="true"></th>
             <th data-field="id" class="text-center">ID</th>
             <th data-field="nombre" data-sortable="true">Nombre</th>
+            <th data-field="agencia" data-sortable="true">Agencia</th>
             <th data-field="cliente" data-sortable="true">Cliente</th>
             <th data-field="documento" data-sortable="true">Documento</th>
             <th data-field="cantidad" data-sortable="true">Pax</th>
@@ -32,6 +33,7 @@
                     <span class="text-muted"><?php echo $cotizacion['descripcion'] ?></span>
                   </div>
                 </td>
+                <td><?php echo ($cotizacion['agencia']) ? $cotizacion['agencia'] : '-' ?></td>
                 <td><?php echo $cotizacion['cliente'] ?></td>
                 <td><?php echo $cotizacion['documento'] ?></td>
                 <td><?php echo $cotizacion['cantidad'] ?></td>

@@ -6,6 +6,8 @@
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.2.3/js/dataTables.select.min.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo _js_ ?>bootstrap-multiselect.js"></script>
 
+<div id="loader" hidden></div>
+
 <div class="row">
   <div class="col-md-12">
     <div class="card card-wizard" id="wizardPaquete">

@@ -10,6 +10,7 @@ class Cotizacion{
 	$_fecha_cotizacion,
 	$_fecha_venta,
 	$_precio,
+	$_utilidad,
 	$_fecha;
 
 	public function __construct($id = 0, Idioma $idioma = Null){
@@ -32,6 +33,7 @@ class Cotizacion{
 				$this->_descripcion =  $row['descripcion_cotizacion'];
 				$this->_imagen =  $row['imagen_cotizacion'];
 				$this->_fecha =  $row['fecha_cotizacion'];
+				$this->_utilidad =  $row['utilidad_cotizacion'];
 			}
 
 			$sql_destinos = "SELECT * FROM cotizaciones_destinos WHERE id_cotizacion = '".$this->_id."' " ;

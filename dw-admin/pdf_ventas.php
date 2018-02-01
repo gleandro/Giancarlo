@@ -6,6 +6,7 @@ require_once(_ruta_.'dompdf/autoload.inc.php');
 date_default_timezone_set("America/Lima");
 
 $fecha_actual = date('d \d\\e M Y');
+$anio_actual = date('Y');
 
 // Introducimos HTML de prueba
 $id = $_GET['id'];
@@ -165,7 +166,7 @@ $formato_header ='<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang=
             <img src="logo.jpg" alt="">
           </td>
           <td class="center">
-            <h1>VOUCHERS</h1>
+            <h1>VOUCHERS '.$anio_actual.'-'.$id.'</h1>
           </td>
         </tr>
       </tbody>
@@ -443,8 +444,7 @@ if ($id_agencia) {
     $formato_agencia = $formato_header.$formato_agencia.$formato_footer;
   }
 
-  echo $formato_agencia;
-  exit;
+  // exit;
 
   use Dompdf\Dompdf;
   // Instanciamos un objeto de la clase DOMPDF.
@@ -456,9 +456,8 @@ if ($id_agencia) {
   // Renderizamos el documento PDF.
   $pdf_hotel->render();
 
-  $ruta_h = _pdf_ventas_.$id."_hotel.pdf";
+  $ruta_h = _pdf_ventas_.$documento."_hotel.pdf";
   file_put_contents($ruta_h, $pdf_hotel->output());
-  $ruta_salida_h = _pdf_url_ventas_.$id."_hotel.pdf";
 
 
   $pdf_servicio = new DOMPDF();
@@ -466,9 +465,8 @@ if ($id_agencia) {
   $pdf_servicio->set_paper("A4", "portrait");
   $pdf_servicio->render();
 
-  $ruta_s = _pdf_ventas_.$id."_servicio.pdf";
+  $ruta_s = _pdf_ventas_.$documento."_servicio.pdf";
   file_put_contents($ruta_s, $pdf_servicio->output());
-  $ruta_salida_s = _pdf_url_ventas_.$id."_servicio.pdf";
 
   if ($id_agencia) {
     $pdf_agencia = new DOMPDF();
@@ -476,33 +474,11 @@ if ($id_agencia) {
     $pdf_agencia->set_paper("A4", "portrait");
     $pdf_agencia->render();
 
-    $ruta_a = _pdf_ventas_.$id."_liquidacion.pdf";
+    $ruta_a = _pdf_ventas_.$documento."_liquidacion.pdf";
     file_put_contents($ruta_a, $pdf_agencia->output());
-    $ruta_salida_a = _pdf_url_ventas_.$id."_liquidacion.pdf";
   }
 
+  $result['url'] = _pdf_url_ventas_.$documento;
+  $result['documento'] = $documento;
 
-  ?>
-
-  <script type='text/javascript'>
-
-    (function() {
-      var link=document.createElement('a');
-      var url_hotel = '<?php echo $ruta_salida_h ?>';
-      link.href = url_hotel;
-      link.download = '<?php echo $documento; ?>_hotel.pdf';
-      link.click();
-      var url_servicio = '<?php echo $ruta_salida_s ?>';
-      link.href = url_servicio;
-      link.download = '<?php echo $documento; ?>_servicio.pdf';
-      link.click();
-      <?php if ($id_agencia) { ?>
-        var url_agencia = '<?php echo $ruta_salida_a ?>';
-        link.href = url_agencia;
-        link.download = '<?php echo $documento; ?>_liquidacion.pdf';
-        link.click();
-      <?php } ?>
-      location.href = "ventas.php";
-    })();
-
-  </script>
+  echo json_encode($result);

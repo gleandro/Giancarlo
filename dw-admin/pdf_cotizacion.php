@@ -13,23 +13,32 @@ $descripcion_cotizacion = $cotizacion->__get('_descripcion');
 $itinerarios = $cotizacion->__get('_itinerario');
 $cantidad_itinerario = count($cotizacion->__get('_itinerario'));
 
+$precio_total = 0;
+
 $cotizaciones = new Cotizaciones();
 
 $array_inclusiones = $cotizaciones->getInclusiones($id,1);
 $array_exclusiones = $cotizaciones->getInclusiones($id,2);
-// $utilidad = $cotizacion->__get('_utilidad');
+$utilidad = (int)$cotizacion->__get('_utilidad');
 
 $precios_servicios = $cotizaciones->getServiciosxCotizacion($id);
 
 foreach ($precios_servicios as $key_s => $servicio) {
   $id_pasajero = $servicio['id_pasajero'];
-  $precio = $servicio['precio'];
+  $precio = (float)$servicio['precio'];
+  $id_servicio = $servicio['id_servicio'];
+  $nombre = $servicio['nombre'];
+  $pasajero = $servicio['pasajero'];
+  $documento = $servicio['documento'];
   $id_cotizacion_itinerario = $servicio['id_cotizacion_itinerario'];
-  $servicio_list[$id_cotizacion_itinerario][$id_pasajero] += (float)$precio ;
+  $hoteles_habitaciones_pasajeros[$id_cotizacion_itinerario]['servicios_pasajero'][$id_pasajero]['nombre'] = $pasajero;
+  $hoteles_habitaciones_pasajeros[$id_cotizacion_itinerario]['servicios_pasajero'][$id_pasajero]['documento'] = $documento;
+  $hoteles_habitaciones_pasajeros[$id_cotizacion_itinerario]['servicios_pasajero'][$id_pasajero]['servicios'][$id_servicio]['nombre'] = $nombre;
+  $hoteles_habitaciones_pasajeros[$id_cotizacion_itinerario]['servicios_pasajero'][$id_pasajero]['servicios'][$id_servicio]['precio'] = $precio;
 }
 
 // echo "<pre>";
-// print_r($servicio_list);
+// print_r($precios_servicios);
 
 $hoteles = $cotizaciones->getHotelesxPasajeros($id);
 
@@ -261,6 +270,11 @@ hr {
   border: 1px solid #333;
   color: #000000;
 }
+.table-precios .cabecera4{
+  color: red;
+  font-size: 14px;
+  font-weight: 600;
+}
 
 </style>
 
@@ -354,7 +368,7 @@ hr {
         <td class="cabecera1" colspan ="3">
           TARIFA EN DOLARES AMERICANOS
         </td>
-        <td colspan="6" rowspan="2" class="cabecera2 firma">
+        <td rowspan="2" class="cabecera2 firma">
           PRECIO
         </td>
     </tr>
@@ -362,87 +376,125 @@ hr {
       <td class="cabecera2" colspan="2">Nombre</td>
       <td class="cabecera2">Documento</td>
     </tr>';
-    // echo "<pre>";
-    // print_r($hoteles_habitaciones_pasajeros);
     foreach ($hoteles_habitaciones_pasajeros as $key => $dias) {
       $id_cotizacion_itinerario = $key;
       $habitaciones = $dias['habitacion'];
+      $servicios = $dias['servicios_pasajero'];
       $contador ++;
       $contador_h = 1;
+      $precio_dia = 0;
       $html .= '
         <tr>
-          <td class="cabecera1" colspan="10">Dia '.$contador.'</td>
-        </tr>
-        <tr>
-          <td class="cabecera1" colspan="10">Hotel : '.$dias['nombre_hotel'].' - '.$dias['estrellas_hotel'].' estrellas</td>
+          <td class="cabecera1" colspan="4">Dia '.$contador.'</td>
         </tr>';
-        foreach ($habitaciones as $key2 => $value) {
-          $pasajeros = $value['pasajeros'];
-          $cantidad_comp = (float)$value['cantidad_comprada'];
-          $cantidad_pasajero = (float)count($pasajeros);
+        if (is_array($habitaciones) || is_object($habitaciones)) {
+          foreach ($habitaciones as $key2 => $value) {
+            $html .='<tr>
+                <td class="cabecera1" colspan="4">Hotel : '.$dias['nombre_hotel'].' - '.$dias['estrellas_hotel'].' estrellas</td>
+              </tr>';
+            $pasajeros = $value['pasajeros'];
+            $cantidad_comp = (float)$value['cantidad_comprada'];
+            $cantidad_pasajero = (float)count($pasajeros);
 
-          if ($value['alcanse_habitacion'] < count($pasajeros)) {
+            if ($value['alcanse_habitacion'] < count($pasajeros)) {
 
-            $alcanse_hab = $value['alcanse_habitacion'];
-            $contador_c =1;
+              $alcanse_hab = $value['alcanse_habitacion'];
+              $contador_c =1;
 
-            foreach ($pasajeros as $key3 => $pasajero) {
+              foreach ($pasajeros as $key3 => $pasajero) {
 
-              if ($alcanse_hab == 1) {
-                $html .='
-                <tr>
-                  <td class="cabecera3" colspan="10">Habitacion '.$contador_h.' - '.$value['nombre_habitacion'].'</td>
-                </tr>';
-              }else {
-                if ($contador_c == 1) {
+                if ($alcanse_hab == 1) {
                   $html .='
                   <tr>
-                    <td class="cabecera3" colspan="10">Habitacion '.$contador_h.' - '.$value['nombre_habitacion'].'</td>
+                    <td class="cabecera3" colspan="4">Habitacion '.$contador_h.' - '.$value['nombre_habitacion'].'</td>
                   </tr>';
                 }else {
-                  $contador_h--;
+                  if ($contador_c == 1) {
+                    $html .='
+                    <tr>
+                      <td class="cabecera3" colspan="4">Habitacion '.$contador_h.' - '.$value['nombre_habitacion'].'</td>
+                    </tr>';
+                  }else {
+                    $contador_h--;
+                  }
+                  if ($alcanse_hab == $contador_c) {
+                    $contador_c =0 ;
+                  }
                 }
-                if ($alcanse_hab == $contador_c) {
-                  $contador_c =0 ;
-                }
+                $html .= '
+                  <tr>
+                    <td colspan="2">'.$pasajero['nombre'].'</td>
+                    <td>'.$pasajero['documento'].'</td>
+                    <td colspan="7" class="firma">$'.$pasajero['precio'].'</td>
+                  </tr>';
+                $contador_c++;
+                $contador_h++;
+                // print_r($pasajero);
+                // echo "<br>";
               }
-              $precio_s = (int)$servicio_list[$id_cotizacion_itinerario][$key3] + (int)$pasajero['precio'];
-              $html .= '
-                <tr>
-                  <td colspan="2">'.$pasajero['nombre'].'</td>
-                  <td>'.$pasajero['documento'].'</td>
-                  <td colspan="7" style="text-align:center">$'.ceil($precio_s).'</td>
-                </tr>';
-              $contador_c++;
-              $contador_h++;
-              // print_r($pasajero);
-              // echo "<br>";
-            }
-          }else{
-            $html .='
-            <tr>
-              <td class="cabecera3" colspan="10">Habitacion '.$contador_h.' - '.$value['nombre_habitacion'].'</td>
-            </tr>';
-            foreach ($pasajeros as $key4 => $pasajero) {
-              $precio_s = (int)$servicio_list[$id_cotizacion_itinerario][$key4] + (int)$pasajero['precio'];
+              $precio_dia += $pasajero['precio'];
+            }else{
               $html .='
-                <tr>
-                  <td colspan="2">'.$pasajero['nombre'].'</td>
-                  <td>'.$pasajero['documento'].'</td>
-                  <td colspan="7" style="text-align:center">$'.ceil($precio_s).'</td>
-                </tr>';
+              <tr>
+                <td class="cabecera3" colspan="4">Habitacion '.$contador_h.' - '.$value['nombre_habitacion'].'</td>
+              </tr>';
+              foreach ($pasajeros as $key4 => $pasajero) {
+                $html .='
+                  <tr>
+                    <td colspan="2">'.$pasajero['nombre'].'</td>
+                    <td>'.$pasajero['documento'].'</td>
+                    <td colspan="7" class="firma">$'.$pasajero['precio'].'</td>
+                  </tr>';
+                $precio_dia += $pasajero['precio'];
+              }
+              $contador_h++;
             }
-            $contador_h++;
           }
-
         }
+        if (is_array($servicios) || is_object($servicios)) {
 
-      $html .= '</tr>';
+          foreach ($servicios as $key5 => $pasajero) {
+            $html .='<tr>
+                <td class="cabecera3" colspan="2">Servicios del pasajero : '.$pasajero['nombre'].'</td>
+                <td class="cabecera3">'.$pasajero['documento'].'</td>
+                <td class="cabecera3"></td>
+              </tr>';
+              $servicios_v = $pasajero['servicios'];
+            foreach ($servicios_v as $key6 => $servicio_v) {
+              $html .='<tr>
+              <td colspan="2">'.$servicio_v['nombre'].'</td>
+              <td></td>
+              <td class="firma">$'.$servicio_v['precio'].'</td>
+              </tr>';
+              $precio_dia += $servicio_v['precio'];
+            }
+          }
+        }
+      $html .= '</tr>
+      <tr>
+        <td class="cabecera4" colspan="3">Precio diario total</td>
+        <td class="cabecera4 firma">$'.$precio_dia.'</td>
+      </tr>';
+      $precio_total += $precio_dia;
     }
       $formato .=$html;
 
-  $formato .=
-  '</table>
+
+  $precio_utilidad = floor($precio_total*$utilidad) /100;
+
+  $formato .='<tr>
+    <td class="cabecera4 titulo-paquete" colspan="3">PRECIO TOTAL</td>
+    <td class="cabecera4 firma">$'.$precio_total.'</td>
+  </tr>
+  <tr>
+    <td class="cabecera4 titulo-paquete" colspan="3">Utilidad - '.$utilidad.'%</td>
+    <td class="cabecera4 firma">$'.$precio_utilidad.'</td>
+  </tr>
+  <tr>
+    <td class="cabecera4 titulo-paquete" colspan="3">PRECIO TOTAL CON UTILIDAD</td>
+    <td class="cabecera4 firma">$'.ceil($precio_total+$precio_utilidad).'</td>
+  </tr>
+  </table>
 </body>
 </html>';
 // echo $formato;

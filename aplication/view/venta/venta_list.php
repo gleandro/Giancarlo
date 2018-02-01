@@ -1,3 +1,5 @@
+<div id="loader" hidden></div>
+
 <div class="row">
 	<div class="col-md-12">
 		<div class="card">
@@ -7,6 +9,7 @@
 					<thead>
 						<th data-field="state" data-checkbox="true"></th>
                         <th data-field="id" class="text-center">ID</th>
+												<th data-field="agencia" data-sortable="true">Agencia</th>
                         <th data-field="cliente" data-sortable="true">Cliente</th>
 												<th data-field="documento" data-sortable="true">Documento</th>
                         <th data-field="fecha" data-sortable="true">Fecha Venta</th>
@@ -23,6 +26,7 @@
 						<tr>
 							<td></td>
 							<td><?php echo ($venta['id']) ?></td>
+							<td><?php echo ($venta['agencia']) ? $venta['agencia'] : '-' ?></td>
 							<td><?php echo ($venta['cliente']) ?></td>
 							<td><?php echo ($venta['documento']) ?></td>
 							<td><?php echo ($venta['fecha']) ?></td>

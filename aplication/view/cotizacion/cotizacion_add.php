@@ -6,6 +6,8 @@
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/select/1.2.3/js/dataTables.select.min.js"></script>
 <script type="text/javascript" language="javascript" src="<?php echo _js_ ?>bootstrap-multiselect.js"></script>
 
+<div id="loader" hidden></div>
+
 <div class="row">
   <div class="col-md-12">
     <div class="card card-wizard" id="wizardCotizacion">
@@ -80,7 +82,7 @@
                     <label class="control-label">
                       Documento (DNI/PASAPORTE)
                     </label>
-                    <input disabled class="form-control" type="number" placeholder="Documento" required="required" id="ajax_Documento"/>
+                    <input disabled class="form-control" type="text" placeholder="Documento" required="required" id="ajax_Documento"/>
                   </div>
                 </div>
                 <div class="col-md-5">
@@ -88,7 +90,7 @@
                     <label class="control-label">
                       Teléfono
                     </label>
-                    <input disabled class="form-control" type="number" placeholder="Teléfono" required="required" id="ajax_Telefono"/>
+                    <input disabled class="form-control" type="text" placeholder="Teléfono" required="required" id="ajax_Telefono"/>
                   </div>
                 </div>
                 <div class="col-md-5 col-md-offset-1">
@@ -132,6 +134,15 @@
                       Nombre del Programa
                     </label>
                     <input id="nombre" class="form-control" type="text" name="nombre_paquete" placeholder="Viaje" required="required"/>
+                  </div>
+                </div>
+
+                <div class="col-md-10 col-md-offset-1">
+                  <div class="form-group">
+                    <label class="control-label">
+                      Utilidad
+                    </label>
+                    <input id="utilidad" class="form-control" type="number" name="utilidad" placeholder="utilidad" required="required"/>
                   </div>
                 </div>
 

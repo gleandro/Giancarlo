@@ -612,9 +612,10 @@ $().ready(function(){
             url: "ajax2.php",
             data: "&action=paqueteCopy&id="+row.id,
             beforeSend: function(){
-
+              $("#loader").show();
             },
             success: function(datos){
+              $("#loader").hide();
               swal(
                 'Listo!',
                 'El programa fué copiado.',
@@ -756,7 +757,7 @@ $().ready(function(){
   $(".btn-next-add").click(function(e){
     if (activar=='1') {
       addServicioPaquete(activar,'');
-      window.setTimeout("crear_table()",1000);
+      window.setTimeout("crear_table()",2000);
     }
     activar++;
   })
@@ -909,7 +910,11 @@ $("#wizardForm").submit(function(e) { //AGREGAR UN PAQUETE
     data: formData,
     contentType: false,
     processData: false,
+    beforeSend: function(){
+      $("#loader").show();
+    },
     success: function(datos){
+      $("#loader").hide();
       swal({
         title: 'Registrado!',
         text: datos,
@@ -953,8 +958,11 @@ $("#wizardFormEditarPaquete").submit(function(e) {
     data: formData,
     contentType: false,
     processData: false,
+    beforeSend: function(){
+      $("#loader").show();
+    },
     success: function(datos){
-
+      $("#loader").hide();
       swal({
         title: 'Actualizado!',
         text: datos,

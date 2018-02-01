@@ -90,6 +90,12 @@ foreach ($hoteles as $key => $value) {
   }
   $contador++;
 }
+// echo "<pre>";
+// print_r($precios_servicios);
+// print_r($detalle_hoteles);
+// echo "</pre>";
+//
+// exit;
 header("Content-Type: text/html;charset=utf-8");
 if ($tipo == 1) {
   header("Content-type: application/vnd.ms-word");

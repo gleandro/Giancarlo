@@ -1013,6 +1013,13 @@
                 '</button>');
         }
 
+        if (this.options.showAddButtonCliente) {
+            html.push(sprintf('<button onclick="addClientes()'+'" class="btn btn-success' + (this.options.iconSize === undefined ? '' : ' btn-' + this.options.iconSize) + '" type="button" name="plus" title="%s">',
+                    this.options.formatAddButton()),
+                sprintf('<i class="fa fa-plus"></i>'),
+                '</button>');
+        }
+
         if (this.options.showAddButtonCounter) {
             html.push(sprintf('<button onclick="addCounter()'+'" class="btn btn-success' + (this.options.iconSize === undefined ? '' : ' btn-' + this.options.iconSize) + '" type="button" name="plus" title="%s">',
                     this.options.formatAddButton()),
