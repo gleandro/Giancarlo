@@ -43,7 +43,7 @@ include("aplication/inc.config.php");
 	define("_view_counter_",$_config["server"]["host"]."aplication/view/counter/");
 	define("_view_agencia_",$_config["server"]["host"]."aplication/view/agencia/");
 	define("_view_venta_",$_config["server"]["host"]."aplication/view/venta/");
-	define("_view_reporte_",$_config["server"]["host"]."aplication/view/reporte/");
+	define("_view_biblia_",$_config["server"]["host"]."aplication/view/biblia/");
 	define("_view_cliente_",$_config["server"]["host"]."aplication/view/cliente/");
 
 ?>

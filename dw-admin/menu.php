@@ -110,9 +110,9 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="reportes.php">
+                                    <a href="biblias.php">
                                         <span class="sidebar-mini"><i class="ti-bar-chart"></i></span>
-                                        <span class="sidebar-normal">Reporte</span>
+                                        <span class="sidebar-normal">Biblia</span>
                                     </a>
                                 </li>
                             </ul>

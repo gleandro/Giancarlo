@@ -2,8 +2,8 @@
 
 switch ($_GET['action']) {
 	default:
-	$template = 'reporte_list.php';
-	$titlecontent = "Lista de Reportes";
+	$template = 'biblia_list.php';
+	$titlecontent = "Biblia de servicios";
 	break;
 }
 
@@ -20,7 +20,7 @@ $listVentas = $objVentas->getVentasHoy();
 	<div class="container-fluid">
 
 		<!-- PINTA EL TEMPLATE -->
-		<?php include _view_reporte_.$template; ?>
+		<?php include _view_biblia_.$template; ?>
 		<!-- PINTA EL TEMPLATE -->
 
 	</div>
@@ -42,7 +42,7 @@ output#list{
 <!-- HOTELES -->
 
 <!-- LLAMO AL JS DEL TEMPLATE CORRESPONDIENTE AL MODULO -->
-<script src="<?php echo _js_template_ ?>reportes.js" type="text/javascript"></script>
+<script src="<?php echo _js_template_ ?>biblias.js" type="text/javascript"></script>
 <!-- LLAMO AL JS DEL TEMPLATE CORRESPONDIENTE AL MODULO -->
 
 <?php include 'footer.php'; ?> <!--EL FOOTER ES EL QUE CONTIENE LOS JS -->

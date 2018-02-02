@@ -305,7 +305,7 @@ function reservar(element,id){
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     onClose: function(){
-                      // location.href="ventas.php";
+                      location.href="ventas.php";
                     }
                   })
               }
