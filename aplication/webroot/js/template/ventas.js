@@ -28,6 +28,9 @@ function reservar(element,id){
             '<a rel="tooltip" title="Pagos" class="btn btn-simple btn-success btn-icon table-action pago" href="javascript:void(0)">',
             '<i class="ti-money"></i>',
             '</a>',
+            '<a rel="tooltip" title="Liquidación" class="btn btn-simple btn-warning btn-icon table-action liquidacion" href="javascript:void(0)">',
+            '<i class="ti-receipt"></i>',
+            '</a>',
             '<a rel="tooltip" title="Exportar" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
             '<i class="ti-image"></i>',
             '</a>',
@@ -79,37 +82,42 @@ function reservar(element,id){
     });
   }
 
+  function calcula_liquidacion(){
+    var precio_venta = parseFloat($("#precio_venta").val());
+    var incentivo = parseFloat($("#incentivo").val());
+    var comision = parseFloat($("#comision").val());
+    var cantidad = parseFloat($("#pasajeros").val());
+
+    var incentivo_total = incentivo*cantidad;
+    var precio_venta_p = precio_venta-incentivo_total;
+    var comision_total = precio_venta_p*(comision/100);
+    var total = Math.ceil(precio_venta-incentivo_total-comision_total);
+
+    $("#incentivo_total").val(incentivo_total);
+    $("#comision_total").val(comision_total);
+    $("#total").val(total);
+
+  }
+
+
   $().ready(function(){
+
+    calcula_liquidacion();
+
+    $(".formula").change(function(event) {
+      calcula_liquidacion();
+    });
+
+    if ($('#fecha_pago').length > 0) {
+      $('#fecha_pago').datetimepicker({
+        format: 'YYYY-MM-DD'
+      });
+    }
 
       window.operateEvents = {
           'click .view': function (e, value, row, index) {
             info = JSON.stringify(row);
             var html = '<h4>Descargar vouchers</h4>';
-            if (row.id_agencia != "") {
-              html += '<div class="row">'+
-                '<div class="col-md-8 col-md-offset-2">'+
-                    '<label class="control-label">Incentivo x pasajero</label>'+
-                    '<div class="input-group">'+
-                      '<div class="input-group-addon">$</div>'+
-                      '<input type="number" id="incentivo" name="precio" class="form-control" required placeholder="0">'+
-                    '</div>'+
-                '</div>'+
-                '<div class="col-md-8 col-md-offset-2">'+
-                  '<label class="control-label">Comision</label>'+
-                  '<div class="input-group">'+
-                    '<div class="input-group-addon">%</div>'+
-                    '<input type="number" id="comision" name="precio" class="form-control" required placeholder="0">'+
-                  '</div>'+
-                '</div>'+
-                '<div class="col-md-8 col-md-offset-2">'+
-                  '<label class="control-label">Fecha limite pago</label>'+
-                  '<div class="form-group">'+
-                    '<input type="text" class="form-control" placeholder="2018-01-13" id="fecha_pago" />'+
-                  '</div>'
-                '</div>'+
-              '</div>';
-            }
-
             swal({
               type: 'info',
               html: html,
@@ -124,24 +132,13 @@ function reservar(element,id){
               allowEscapeKey: false,
               buttonsStyling: false,
               preConfirm: () => {
-                var incentivo = $("#incentivo").val();
-                var comision = $("#comision").val();
-                var fecha = $("#fecha_pago").val();
-                if (row.id_agencia != "") {
-                  var bl_agencia = 0;
-                }else{
-                  var bl_agencia = 1;
-                }
                 $.ajax({
                   url: 'pdf_ventas.php',
                   type: 'GET',
                   dataType: 'json',
                   data: {
                     id: row.id,
-                    agencia: row.id_agencia,
-                    incentivo: incentivo,
-                    comision: comision,
-                    fecha: fecha
+                    agencia: row.id_agencia
                   },
                   beforeSend: function(){
                     $(".swal2-content").append("<div id='loader'></div>")
@@ -165,18 +162,8 @@ function reservar(element,id){
                     swal('', 'Se descargaron los archivos pdf','success');
                   }
                 });
-                // if (row.id_agencia != "") {
-                  // location.href="pdf_ventas.php?id="+row.id+"&agencia="+row.id_agencia+"&incentivo="+incentivo+"&comision="+comision+"&fecha="+fecha;
-                // }else {
-                //   location.href="pdf_ventas.php?id="+row.id;
-                // }
               }
             })
-
-            $(".tipo_documento").selectpicker();
-            $('#fecha_pago').datetimepicker({
-              format: 'YYYY-MM-DD'
-            });
           },
           'click .reserve': function (e, value, row, index){
             info = JSON.stringify(row);
@@ -189,6 +176,9 @@ function reservar(element,id){
           },
           'click .pago': function (e, value, row, index){
             location.href="ventas.php?action=pago&id="+row.id;
+          },
+          'click .liquidacion': function (e, value, row, index){
+            location.href="ventas.php?action=liquidacion&id="+row.id;
           },
           'click .remove': function (e, value, row, index) {
               info = JSON.stringify(row);
@@ -293,6 +283,33 @@ function reservar(element,id){
                }
              })
           }
+          return false;
+      });
+
+      $("#wizardFormLiquidacionVentas").submit(function(e) { //AGREGAR UN PAQUETE
+          e.preventDefault();
+          var formData = new FormData(this);
+          $.ajax({
+              url: "ajax2.php",
+              type: "POST",
+              data:  formData,
+              contentType: false,
+              processData: false,
+              success: function(datos){
+                // alert(datos);
+                 swal({
+                    title: 'Actualizado!',
+                    text: datos,
+                    type: 'success',
+                    confirmButtonText: 'Ok!',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    onClose: function(){
+                      // location.href="ventas.php";
+                    }
+                  })
+              }
+          });
           return false;
       });
 

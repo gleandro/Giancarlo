@@ -1039,8 +1039,7 @@ class Ajax{
 
 						$query_update_cotizacion = new Consulta("UPDATE cotizaciones SET estado_cotizacion = 1 WHERE id_cotizacion = $id");
 
-
-
+						$query = new Consulta("INSERT INTO ventas_liquidaciones VALUES(null,$id_venta,null,0,0,0)");
 
 					}
 
@@ -1385,7 +1384,6 @@ class Ajax{
 							$query = new Consulta("UPDATE paquetes SET
 								".$update."
 								nombre_paquete = '".$_POST['nombre_paquete']."',
-								cantidad_paquete = '".$_POST['cantidad_paquete']."',
 								utilidad_paquete = '".$_POST['utilidad_paquete']."',
 								descripcion_paquete = '".$_POST['descripcion_paquete']."'
 								WHERE id_paquete = '".$id_paquete."' ");
@@ -1459,7 +1457,7 @@ class Ajax{
 
 								$utilidad = $_SESSION['sede']->__get("_utilidad");
 
-								$consulta_paquete = new Consulta("INSERT INTO paquetes SELECT '',nombre_paquete,descripcion_paquete,imagen_paquete,pdf_paquete,cantidad_paquete,$utilidad,bl_estado FROM paquetes WHERE id_paquete=".$id);
+								$consulta_paquete = new Consulta("INSERT INTO paquetes SELECT '',nombre_paquete,descripcion_paquete,imagen_paquete,pdf_paquete,$utilidad,bl_estado FROM paquetes WHERE id_paquete=".$id);
 								$nuevoid = $consulta_paquete->nuevoid();
 
 								$update_paquete = new Consulta("UPDATE paquetes SET nombre_paquete = CONCAT(nombre_paquete,' copy') where id_paquete=".$nuevoid);
@@ -1709,6 +1707,17 @@ class Ajax{
 										$c++;
 									}
 									echo json_encode($result);
+								}
+
+								function actualizarLiquidacionVentasAjax(){
+// 									print_r($_POST);
+// exit;
+									$query = new Consulta("UPDATE ventas_liquidaciones SET fecha_limite = '".$_POST['fecha_pago']."',
+																																					incentivo = '".$_POST['incentivo']."',
+																																					comision = '".$_POST['comision']."',
+																																					total = '".$_POST['total']."'
+																																					WHERE id_venta = '".$_POST['id']."'");
+
 								}
 
 								function getServiciosXVentaAjax(){

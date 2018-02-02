@@ -361,16 +361,18 @@ $formato_servicio .= '
 // INICIO CUERPO LIQUIDACION
 
 if ($id_agencia) {
-  $incentivo = (float)$_GET['incentivo'];
-  $comision = (float)$_GET['comision'];
-  $fecha_v = date_create($_GET['fecha']);
+  $objVentas = new Ventas();
+
+  $datos_liquidacion = $objVentas->getLiquidacion($id);
+
+  $incentivo = (float)$datos_liquidacion['incentivo'];
+  $comision = (float)$datos_liquidacion['comision'];
+  $fecha_v = date_create($datos_liquidacion['fecha']);
   $fecha_limite = date_format($fecha_v,'d \d\\e M Y');
   $incentito_pasajero = (float)($incentivo*$cantidad_pasajeros);
   $precio_p = (float)($precio-$incentito_pasajero);
   $comision_final = (float)(($precio_p/100)*$comision);
   $total_pagar = ceil($precio-$incentito_pasajero-$comision_final);
-
-  // ventas::addLiquidacion();
 
   $formato_agencia .= '<div class="container">
     <table class="table-voucher center">
@@ -446,8 +448,6 @@ if ($id_agencia) {
   if ($id_agencia) {
     $formato_agencia = $formato_header.$formato_agencia.$formato_footer;
   }
-
-  // exit;
 
   use Dompdf\Dompdf;
   // Instanciamos un objeto de la clase DOMPDF.

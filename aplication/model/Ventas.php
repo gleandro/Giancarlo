@@ -87,10 +87,6 @@
 		return $datos;
  	}
 
-  // static public function addLiquidacion($id,$incentivo,$comision,$total){
-  //   $query = new Consulta("INSERT INTO ventas_liquidaciones VALUES(null,$id,$incentivo,$comision,$total)");
-  // }
-
   static public function getVentasTotal(){
     $sql = "SELECT SUM(v.precio_venta) 'precio_total' FROM ventas v
             INNER JOIN cotizaciones c USING(id_cotizacion)
@@ -148,6 +144,7 @@
 
     return $result;
   }
+
 
   public function getPrecio($id){
     $query = new Consulta("SELECT precio_venta FROM ventas WHERE id_venta = $id");
@@ -256,6 +253,20 @@
        );
       }
       return $datos;
+  }
+
+  public function getLiquidacion($id){
+
+    $query = new Consulta("SELECT * FROM ventas_liquidaciones WHERE id_venta = $id");
+    $row = $query->VerRegistro();
+
+    $result['incentivo'] = $row['incentivo'];
+    $result['comision'] = $row['comision'];
+    $result['total'] = $row['total'];
+    $result['fecha'] = $row['fecha_limite'];
+
+    return $result;
+
   }
 
  }

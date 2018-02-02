@@ -9,6 +9,10 @@ switch ($_GET['action']) {
 	$template = 'venta_pago.php';
 	$titlecontent = "Registro de Pago";
 	break;
+	case 'liquidacion':
+	$template = 'venta_liquidacion.php';
+	$titlecontent = "liquidacion de Pago";
+	break;
 	default:
 	$template = 'venta_list.php';
 	$titlecontent = "Lista de Ventas";
@@ -23,6 +27,8 @@ $listVentas = $objVentas->getVentas();
 $estados = array('x Reservar', 'Confirmado', 'Cancelado', 'Cancelado con penalidad');
 
 if ($_GET['id']) {
+
+	$objVenta = new Venta($_GET['id']);
 	if ($_GET['action'] == "reserve") {
 		$list_hoteles = $objVentas->getReservaXTipo($_GET['id'],0);
 		$list_servicios = $objVentas->getReservaXTipo($_GET['id'],1);
@@ -30,6 +36,10 @@ if ($_GET['id']) {
 	if ($_GET['action'] == "pago") {
 		$precio_venta = $objVentas->getPrecio($_GET['id']);
 		$list_pagos = $objVentas->getPagos($_GET['id']);
+	}
+	if ($_GET['action'] == "liquidacion") {
+		$precio_venta = $objVentas->getPrecio($_GET['id']);
+		$liquidacion = $objVentas->getLiquidacion($_GET['id']);
 	}
 }
 
