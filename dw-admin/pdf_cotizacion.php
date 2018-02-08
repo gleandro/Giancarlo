@@ -425,7 +425,7 @@ hr {
                   <tr>
                     <td colspan="2">'.$pasajero['nombre'].'</td>
                     <td>'.$pasajero['documento'].'</td>
-                    <td colspan="7" class="firma">$'.$pasajero['precio'].'</td>
+                    <td colspan="7" class="firma"></td>
                   </tr>';
                 $contador_c++;
                 $contador_h++;
@@ -443,7 +443,7 @@ hr {
                   <tr>
                     <td colspan="2">'.$pasajero['nombre'].'</td>
                     <td>'.$pasajero['documento'].'</td>
-                    <td colspan="7" class="firma">$'.$pasajero['precio'].'</td>
+                    <td colspan="7" class="firma"></td>
                   </tr>';
                 $precio_dia += $pasajero['precio'];
               }
@@ -464,17 +464,13 @@ hr {
               $html .='<tr>
               <td colspan="2">'.$servicio_v['nombre'].'</td>
               <td></td>
-              <td class="firma">$'.$servicio_v['precio'].'</td>
+              <td class="firma"></td>
               </tr>';
               $precio_dia += $servicio_v['precio'];
             }
           }
         }
-      $html .= '</tr>
-      <tr>
-        <td class="cabecera4" colspan="3">Precio diario total</td>
-        <td class="cabecera4 firma">$'.$precio_dia.'</td>
-      </tr>';
+      $html .= '</tr>';
       $precio_total += $precio_dia;
     }
       $formato .=$html;
@@ -482,16 +478,9 @@ hr {
 
   $precio_utilidad = floor($precio_total*$utilidad) /100;
 
-  $formato .='<tr>
-    <td class="cabecera4 titulo-paquete" colspan="3">PRECIO TOTAL</td>
-    <td class="cabecera4 firma">$'.$precio_total.'</td>
-  </tr>
+  $formato .='
   <tr>
-    <td class="cabecera4 titulo-paquete" colspan="3">Utilidad - '.$utilidad.'%</td>
-    <td class="cabecera4 firma">$'.$precio_utilidad.'</td>
-  </tr>
-  <tr>
-    <td class="cabecera4 titulo-paquete" colspan="3">PRECIO TOTAL CON UTILIDAD</td>
+    <td class="cabecera4 titulo-paquete" colspan="3">PRECIO TOTAL A PAGAR</td>
     <td class="cabecera4 firma">$'.ceil($precio_total+$precio_utilidad).'</td>
   </tr>
   </table>
